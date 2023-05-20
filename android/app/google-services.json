@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "431618692118",
+    "project_id": "nushoplah",
+    "storage_bucket": "nushoplah.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431618692118:android:d9400211e557c835135137",
+        "android_client_info": {
+          "package_name": "com.orbital"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431618692118-7stbpkb1ggfngtpt7kacss50uklls70u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1mjmzQrtBhzuOVh_ksMnG6_Qoh6PbyIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431618692118-7stbpkb1ggfngtpt7kacss50uklls70u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
