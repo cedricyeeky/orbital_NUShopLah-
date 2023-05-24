@@ -10,7 +10,7 @@ const OnboardingScreen = ({navigation}) => {
         onDone={() => navigation.navigate("Login")}
         pages={[
           {
-            backgroundColor: '#FED8B1',
+            backgroundColor: '#ffffff',
             image: <Image 
             source={require('../assets/onboarding1.png')} 
             style={{
@@ -23,7 +23,7 @@ const OnboardingScreen = ({navigation}) => {
             subtitle: 'Just 1 scan away from earning points',
           },
           {
-            backgroundColor: '#FED8B1',
+            backgroundColor: '#ffffff',
             image: <Image 
             source={require('../assets/onboarding2.png')} 
             style={{
@@ -36,7 +36,7 @@ const OnboardingScreen = ({navigation}) => {
             subtitle: 'Get rewarded as you shop',
           },
           {
-            backgroundColor: '#FED8B1',
+            backgroundColor: '#ffffff',
             image: <Image 
             source={require('../assets/onboarding3.png')} 
             style={{
@@ -49,7 +49,7 @@ const OnboardingScreen = ({navigation}) => {
             subtitle: 'Shop more, Earn more',
           },
           {
-            backgroundColor: '#FED8B1',
+            backgroundColor: '#ffffff',
             image: <Image 
             source={require('../assets/NUShopLah!.png')} 
             style={{

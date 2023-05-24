@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, {useContext, useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { AuthContext } from './AuthProvider';
-import auth from '@react-native-firebase/auth';
+import { firebase } from '../firebaseconfig';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 
@@ -18,7 +18,7 @@ const Routes = () => {
     }
 
     useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
     }, []);
 

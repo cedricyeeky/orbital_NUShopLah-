@@ -12,10 +12,10 @@ import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState()
+  const [password, setPassword] = useState()
 
-  const {login} = useContext(AuthContext);
+  const {login} = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    fontFamily: 'Kufam-SemiBoldItalic',
     fontSize: 28,
     marginBottom: 10,
     color: '#051d5f',
@@ -99,6 +98,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#2e64e5',
-    fontFamily: 'Lato-Regular',
   },
 });

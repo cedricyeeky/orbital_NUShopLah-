@@ -1,13 +1,28 @@
-import React, { useContext} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
+import { firebase } from '../firebaseconfig';
 
 const HomeScreen = () => {
-    const {user, logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext)
+    const [name, setName] = useState('')
+
+    useEffect(() => {
+        firebase.firestore().collection('users')
+        .doc(firebase.auth().currentUser.uid).get()
+        .then((snapshot) => {
+            if (snapshot.exists) {
+                setName(snapshot.data())
+            } else {
+                console.log('User does not exist')
+            }
+        })
+    }, [])
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Welcome! {user.uid}</Text>
+            <Text style={styles.text}>Welcome! {name.firstName}</Text>
             <FormButton buttonTitle='Logout' onPress={() => logout()} />
         </View>
     );

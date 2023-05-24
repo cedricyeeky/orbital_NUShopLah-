@@ -1,10 +1,10 @@
 import React, {createContext, useState} from 'react';
-import auth from '@react-native-firebase/auth';
+import { firebase } from '../firebaseconfig';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null)
 
     return (
         <AuthContext.Provider 
@@ -13,21 +13,39 @@ export const AuthProvider = ({children}) => {
             setUser,
             login: async (email, password) => {
                 try {
-                    await auth().signInWithEmailAndPassword(email, password);
+                    await firebase.auth().signInWithEmailAndPassword(email, password);
                 } catch(e) {
                     console.log(e);
                 }
             },
-            register: async (email, password) => {
+            register: async (email, password,firstName, lastName) => {
                 try {
-                    await auth().createUserWithEmailAndPassword(email, password);
+                    await firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then(() => {
+                        firebase.auth().currentUser.sendEmailVerification({
+                            handleCodeInApp: true,
+                            url: 'https://nushoplah.firebaseapp.com',
+                        })
+                        .then(() => {
+                            alert('Verification email sent!')
+                        })
+                        .then(() => {
+                            firebase.firestore().collectioon('users')
+                            .doc(firebase.auth().currentUser.uid)
+                            .set({
+                                firstName,
+                                lastName,
+                                email,
+                            })
+                        })
+                    })
                 } catch(e) {
                     console.log(e);
                 }
             },
             logout: async () => {
                 try {
-                    await auth().signOut();
+                    await firebase.auth().signOut();
                 } catch(e) {
                     console.log(e);
                 }

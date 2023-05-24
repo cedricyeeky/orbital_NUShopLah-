@@ -6,9 +6,11 @@ import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const SignupScreen = ({navigation}) => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [email, setEmail] = useState()
+  const [password, setPassword] = useState()
+  const [confirmPassword, setConfirmPassword] = useState()
+  const [firstName, setFirstName] = useState()
+  const [lastName, setLastName] = useState() 
 
   const {register} = useContext(AuthContext);
 
@@ -23,6 +25,22 @@ const SignupScreen = ({navigation}) => {
         iconType="user"
         keyboardType="email-address"
         autoCapitalize="none"
+        autoCorrect={false}
+      />
+
+      <FormInput
+        labelValue={firstName}
+        onChangeText={(firstName) => setFirstName(firstName)}
+        placeholderText="First Name"
+        iconType="user"
+        autoCorrect={false}
+      />
+
+      <FormInput
+        labelValue={lastName}
+        onChangeText={(lastName) => setLastName(lastName)}
+        placeholderText="Last Name"
+        iconType="user"
         autoCorrect={false}
       />
 
@@ -46,21 +64,6 @@ const SignupScreen = ({navigation}) => {
         buttonTitle="Sign Up"
         onPress={() => register(email, password)}
       />
-
-      <View style={styles.textPrivate}>
-        <Text style={styles.color_textPrivate}>
-          By registering, you confirm that you accept our{' '}
-        </Text>
-        <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
-          <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-            Terms of service
-          </Text>
-        </TouchableOpacity>
-        <Text style={styles.color_textPrivate}> and </Text>
-        <Text style={[styles.color_textPrivate, {color: '#e88832'}]}>
-          Privacy Policy
-        </Text>
-      </View>
 
       <SocialButton
        buttonTitle="Sign Up with Google"
@@ -90,7 +93,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontFamily: 'Kufam-SemiBoldItalic',
     fontSize: 28,
     marginBottom: 10,
     color: '#051d5f',
@@ -103,7 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#2e64e5',
-    fontFamily: 'Lato-Regular',
   },
   textPrivate: {
     flexDirection: 'row',
@@ -114,7 +115,6 @@ const styles = StyleSheet.create({
   color_textPrivate: {
     fontSize: 13,
     fontWeight: '400',
-    fontFamily: 'Lato-Regular',
     color: 'grey',
   },
 });
