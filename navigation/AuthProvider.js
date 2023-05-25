@@ -30,7 +30,7 @@ export const AuthProvider = ({children}) => {
                             alert('Verification email sent!')
                         })
                         .then(() => {
-                            firebase.firestore().collectioon('users')
+                            firebase.firestore().collection('users')
                             .doc(firebase.auth().currentUser.uid)
                             .set({
                                 firstName,
