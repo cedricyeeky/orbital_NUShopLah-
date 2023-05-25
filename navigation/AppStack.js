@@ -1,13 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import { Ionicons } from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //Screens for Customers to see
-import HomeScreen from '../screens/HomeScreen';
-import IdScreen from '../screens/IdScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import HomeScreen from '../screens/customerScreens/HomeScreen';
+import IdScreen from '../screens/customerScreens/IdScreen';
+import SettingsScreen from '../screens/customerScreens/SettingsScreen';
 
 //Screen Names
 const homeName = "Home Screen";
