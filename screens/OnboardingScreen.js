@@ -1,14 +1,110 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import Onboarding from 'react-native-onboarding-swiper';
 
+//Props
+const Dots = ({ selected }) => {
+  let backgroundColor;
+
+  backgroundColor = selected ? 'rgba(255, 255, 255, 0.8)' : 'rgba(150, 150, 150, 0.5)'
+  
+  return (
+      <View 
+        style = {{
+          width: 6,
+          height: 6,
+          marginHorizontal: 3,
+          backgroundColor,
+          borderRadius: 5,
+        }}
+      />
+  )
+}
+
+const Skip = ({...props}) => (
+<TouchableOpacity 
+  style = {{
+    marginHorizontal : 15,
+    backgroundColor: 'red',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  }}
+  {...props}
+>
+  <Text style = {{
+      fontSize : 16,
+      color: 'white',
+      fontWeight: 'bold',
+    }}>SKIP</Text>
+</TouchableOpacity>
+)
+
+const Next = ({...props}) => (
+<TouchableOpacity 
+  style = {{
+    marginHorizontal : 15,
+    backgroundColor: '#F07B10',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  }}
+  {...props}
+>
+  <Text 
+    style = {{
+      fontSize : 16,
+      color: 'white',
+      fontWeight: 'bold',
+    }}>Next</Text>
+</TouchableOpacity>
+)
+
+const Done = ({...props}) => (
+<TouchableOpacity 
+    style = {{
+      marginHorizontal : 15,
+      backgroundColor: 'green',
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+      borderRadius: 10,
+    }}
+    {...props}
+>
+    <Text style = {{
+      fontSize : 16,
+      color: 'white',
+      fontWeight: 'bold',
+    }}>Done</Text>
+</TouchableOpacity>
+)
+
+//Main Onboarding Screen Codes
 const OnboardingScreen = ({navigation}) => {
     return (
         <Onboarding
+        SkipButtonComponent={Skip}
+        NextButtonComponent={Next}
+        DoneButtonComponent={Done}
+        DotComponent={Dots}
         onSkip={() => navigation.replace("Login")}
         onDone={() => navigation.navigate("Login")}
         pages={[
+          {
+            backgroundColor: "#ffffff",
+            image: 
+              <Image 
+                source = {require('../assets/NUShopLah!-logo.png')} 
+                style={{
+                  resizeMode: "contain",
+                  height: 120,
+                  width: 350,
+                }}
+              />,
+            title: 'Welcome to NUShopLah!',
+            subtitle: 'Shopping in NUS has never been so enjoyable!',
+          },
           {
             backgroundColor: '#ffffff',
             image: <Image 

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import FormButton from '../components/FormButton';
-import { AuthContext } from '../navigation/AuthProvider';
-import { firebase } from '../firebaseconfig';
+import FormButton from '../../components/FormButton';
+import { AuthContext } from '../../navigation/AuthProvider';
+import { firebase } from '../../firebaseconfig';
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -21,6 +21,7 @@ const HomeScreen = () => {
     }, [])
 
     return (
+        //Check how to render firstName of a customer
         <View style={styles.container}>
             <Text style={styles.text}>Welcome! {name.firstName}</Text>
             <FormButton buttonTitle='Logout' onPress={() => logout()} />
