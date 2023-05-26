@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {View, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
@@ -15,7 +15,7 @@ const SignupScreen = ({navigation}) => {
   const {register} = useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.text}>Create an account</Text>
 
       <FormInput
@@ -78,7 +78,7 @@ const SignupScreen = ({navigation}) => {
         onPress={() => navigation.navigate('Login')}>
         <Text style={styles.navButtonText}>Have an account? Sign In</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
-  View,
+  ScrollView,
   Text,
   TouchableOpacity,
   Image,
@@ -18,7 +18,7 @@ const LoginScreen = ({navigation}) => {
   const {login} = useContext(AuthContext)
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image
         source={require('../assets/NUShopLah!.png')}
         style={styles.logo}
@@ -64,7 +64,7 @@ const LoginScreen = ({navigation}) => {
         <Text style={styles.navButtonText}>Don't have an account? Create here</Text>
       </TouchableOpacity>
 
-    </View>
+    </ScrollView>
   );
 };
 

@@ -33,7 +33,7 @@ const AppStack = () => {
               if (rn == homeName) {
                 iconName = focused ? 'home' : 'home-outline';
               } else if (rn === idName) {
-                iconName = focused ? 'list' : 'list-outline';
+                iconName = focused ? 'qr-code' : 'qr-code-outline';
               } else if (rn === settingsName) {
                 iconName = focused ? 'settings' : 'settings-outline';
               }
@@ -44,7 +44,7 @@ const AppStack = () => {
             },
   
           })}
-  
+          
           tabBarOptions={{
             activeTintColor: 'tomato',
             inactiveTintColor: 'grey',
