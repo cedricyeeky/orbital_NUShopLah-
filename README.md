@@ -3,7 +3,7 @@ NUShopLah! - Apollo 11 - Milestone 1
 
 # Scope of Project:
 
-We want to create a mobile application with an intuitive user interface for a loyalty program within NUS premises to benefit both NUS students and staff and retail shops/dining outlets on campus.
+We hope to create a mobile application with an intuitive and simple to use user interface for a loyalty program within NUS premises to benefit NUS students, staff and retail shops/dining outlets on campus.
 
 # Features to be completed by mid June:
 
