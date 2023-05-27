@@ -59,12 +59,12 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 
 Key features:
 
-1.  Login and Authentication Page, secured using NUSNET ID and Password (Including dealing with Forgot Password)
+1.  Login and Authentication Page, secured using Email and Password
 2.  Home page. We envision our home page to encompass the following features:
     - List of participating brands/retails for users to select and view rewards (indicative of points for voucher exchange) + seasonal promotions offered
     - User points balance
 3.  Vouchers and Rewards Page. Ability to view both current vouchers purchased as well as past used vouchers. Current voucher purchased would have a validity period (expiry date).
-4.  Personal QR code/Barcode that is unique to each user to credit the points to each user’s account upon transaction.
+4.  Personal QR code that is unique to each user to credit the points to each user’s account upon transaction.
 5.  Account Page 
     - Name
     - Membership Tier Status (Note: The Membership tier status is calculated using the user’s points earned within a particular period; not their points balance at any particular time)
@@ -81,9 +81,9 @@ Features
 Completion Date
 Login and Authentication Page - 20 May
 
-Home page - 27 May
+Home page - 5 June
 
-Generate Personal QR code / Barcode - 28 May
+Generate Personal QR code - 1 June
 
 Account Page - 10 June
 
