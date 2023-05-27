@@ -104,7 +104,7 @@ On gitbash, navigate to the folder you would like to place the cloned repository
 After doing so, run the command:
 
 ```
-$ git clone https://github.com/cedricyeeky/orbital_NUShopLah-.git
+git clone https://github.com/cedricyeeky/orbital_NUShopLah-.git
 ```
 
 **Install dependencies**
