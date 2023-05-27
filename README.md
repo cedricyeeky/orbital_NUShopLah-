@@ -147,6 +147,7 @@ We are working on integrating Firestore to group user data into different catego
 
 # Software Diagram on Current App Navigation Flow
 
+![NUShopLah! Flowchart Milestone 1 drawio](https://github.com/cedricyeeky/orbital_NUShopLah-/assets/108988934/c7a3ca26-6c8d-4237-911d-0e337aeed0fe)
 
 
 
