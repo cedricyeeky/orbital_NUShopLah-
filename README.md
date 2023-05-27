@@ -7,15 +7,17 @@ We hope to create a mobile application with an intuitive and simple to use user 
 
 # Features to be completed by mid June:
 
-     1. Customer-side
+Customer-side
 - Better UI for the Home screen, showing Customers’ Points Balance
 - Feature more vouchers that can be used
 - Transaction History for Customers to track their spending
 - Showing Customers’ Membership Tier Status and Total accumulated points
-     2. Retailer-side
+ 
+ Retailer-side
 - Ability to scan Customer’s QR Code and key in the amount transacted so that points can be given to Customers accordingly
 - Transaction History for Retailers to track Customers who use NUShopLah! App
-     3. Mechanism to collect datasets for calculations and analysis
+ 
+ Mechanism to collect datasets for calculations and analysis
 
 
 # Features to be completed by mid July:
