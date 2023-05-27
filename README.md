@@ -145,6 +145,8 @@ We have also managed to utilise Firebase to send authentication emails to new us
 
 We are working on integrating Firestore to group user data into different categories.
 
+# Software Diagram on Current App Navigation Flow
+
 
 
 
