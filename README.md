@@ -114,7 +114,7 @@ Open up the project in VScode or any preferred code editor.
 In the terminal, run:
 
 ```
-$ npm install
+npm install
 ```
 
 This should install all the node.js dependencies required for the project.
@@ -124,7 +124,7 @@ This should install all the node.js dependencies required for the project.
 In the terminal, input the command:
 
 ```
-$ npx expo start --tunnel
+npx expo start --tunnel
 ```
 
 Scan the QR code on your phone camera app and wait for the project to build.
