@@ -131,9 +131,9 @@ Scan the QR code on your phone camera app and wait for the project to build.
 You may start using and testing our app after that!
 
 # Tech Stack 
--React Native (Front End)
--Firebase (Back End)
--Git and Github (Version Control)
+- React Native (Front End)
+- Firebase (Back End)
+- Git and Github (Version Control)
 
 
 
