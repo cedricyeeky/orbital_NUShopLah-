@@ -121,7 +121,7 @@ This should install all the node.js dependencies required for the project.
 
 **Download the Expo Go app on IOS / Android**
 
-On the terminal, input the command:
+In the terminal, input the command:
 
 ```
 $ npx expo start --tunnel
