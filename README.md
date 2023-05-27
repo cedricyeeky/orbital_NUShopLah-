@@ -103,7 +103,9 @@ On gitbash, navigate to the folder you would like to place the cloned repository
 
 After doing so, run the command:
 
+```
 $ git clone https://github.com/cedricyeeky/orbital_NUShopLah-.git
+```
 
 **Install dependencies**
 
@@ -111,7 +113,9 @@ Open up the project in VScode or any preferred code editor.
 
 In the terminal, run:
 
+```
 $ npm install
+```
 
 This should install all the node.js dependencies required for the project.
 
@@ -119,7 +123,9 @@ This should install all the node.js dependencies required for the project.
 
 On the terminal, input the command:
 
+```
 $ npx expo start --tunnel
+```
 
 Scan the QR code on your phone camera app and wait for the project to build.
 You may start using and testing our app after that!
