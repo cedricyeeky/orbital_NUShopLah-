@@ -1,4 +1,4 @@
-# orbital_NUShopLah-
+# orbital_NUShopLah!
 NUShopLah! - Apollo 11 - Milestone 1
 
 # Scope of Project:
