@@ -138,7 +138,9 @@ You may start using and testing our app after that!
 **Database Usage**
 
 Currently, we have successfully integrated Google firebase to to store and mange user data for authentication (email and password login).
+
 We have also managed to utilise Firebase to send authentication emails to new users to verify their email address.
+
 We are working on integrating Firestore to group user data into different categories.
 
 
