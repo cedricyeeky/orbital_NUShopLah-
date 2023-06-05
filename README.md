@@ -1,21 +1,25 @@
-# orbital_NUShopLah-
-NUShopLah! - Apollo 11 - Milestone 1
+# orbital_NUShopLah!
+NUShopLah! 
+- Apollo 11 
+- Milestone 1
 
 # Scope of Project:
 
-We want to create a mobile application with an intuitive user interface for a loyalty program within NUS premises to benefit both NUS students and staff and retail shops/dining outlets on campus.
+We hope to create a mobile application with an intuitive and simple to use user interface for a loyalty program within NUS premises to benefit NUS students, staff and retail shops/dining outlets on campus.
 
 # Features to be completed by mid June:
 
-     1. Customer-side
+Customer-side
 - Better UI for the Home screen, showing Customers’ Points Balance
 - Feature more vouchers that can be used
 - Transaction History for Customers to track their spending
 - Showing Customers’ Membership Tier Status and Total accumulated points
-     2. Retailer-side
+ 
+ Retailer-side
 - Ability to scan Customer’s QR Code and key in the amount transacted so that points can be given to Customers accordingly
 - Transaction History for Retailers to track Customers who use NUShopLah! App
-     3. Mechanism to collect datasets for calculations and analysis
+ 
+ Mechanism to collect datasets for calculations and analysis
 
 
 # Features to be completed by mid July:
@@ -25,7 +29,7 @@ Customer-Side
 
 
 
-# Motivation 
+# Problem Motivation 
 
 To allow NUS Students/Staff enjoy the exclusive benefits of a loyalty programme app specifically tailored for NUS Students/Staff when they patronize retail shops/dining places within the NUS Premises. 
 
@@ -53,16 +57,16 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 3. As a retailer of NUS, I can expect more students/staff to patronize my store as I offer vouchers in the loyalty app as well as introduce seasonal promotions in terms of “upsized points”. (Retailers may also include merchandise shops set up buy NUS clubs/societies)
 
 
-# Features
+# Proposed Features
 
 Key features:
 
-1.  Login and Authentication Page, secured using NUSNET ID and Password (Including dealing with Forgot Password)
+1.  Login and Authentication Page, secured using Email and Password
 2.  Home page. We envision our home page to encompass the following features:
     - List of participating brands/retails for users to select and view rewards (indicative of points for voucher exchange) + seasonal promotions offered
     - User points balance
 3.  Vouchers and Rewards Page. Ability to view both current vouchers purchased as well as past used vouchers. Current voucher purchased would have a validity period (expiry date).
-4.  Personal QR code/Barcode that is unique to each user to credit the points to each user’s account upon transaction.
+4.  Personal QR code that is unique to each user to credit the points to each user’s account upon transaction.
 5.  Account Page 
     - Name
     - Membership Tier Status (Note: The Membership tier status is calculated using the user’s points earned within a particular period; not their points balance at any particular time)
@@ -79,9 +83,9 @@ Features
 Completion Date
 Login and Authentication Page - 20 May
 
-Home page - 27 May
+Home page - 5 June
 
-Generate Personal QR code / Barcode - 28 May
+Generate Personal QR code - 1 June
 
 Account Page - 10 June
 
@@ -90,6 +94,60 @@ Vouchers and Rewards page - 17 June
 Testing (Round 1) - 26 June
 
 Think about Extension - TBC
+
+# App Setup
+
+**Ensure you have Node.js, npm, git and gitbash installed.**
+
+**Clone this repository**
+
+On gitbash, navigate to the folder you would like to place the cloned repository in.
+
+After doing so, run the command:
+
+```
+git clone https://github.com/cedricyeeky/orbital_NUShopLah-.git
+```
+
+**Install dependencies**
+
+Open up the project in VScode or any preferred code editor.
+
+In the terminal, run:
+
+```
+npm install
+```
+
+This should install all the node.js dependencies required for the project.
+
+**Download the Expo Go app on IOS / Android**
+
+In the terminal, input the command:
+
+```
+npx expo start --tunnel
+```
+
+Scan the QR code on your phone camera app and wait for the project to build.
+You may start using and testing our app after that!
+
+# Tech Stack 
+- React Native (Front End)
+- Firebase (Back End)
+- Git and Github (Version Control)
+
+**Database Usage**
+
+Currently, we have successfully integrated Google firebase to to store and mange user data for authentication (email and password login).
+
+We have also managed to utilise Firebase to send authentication emails to new users to verify their email address.
+
+We are working on integrating Firestore to group user data into different categories.
+
+# Software Diagram on Current App Navigation Flow
+
+![NUShopLah! Flowchart Milestone 1 drawio](https://github.com/cedricyeeky/orbital_NUShopLah-/assets/108988934/c7a3ca26-6c8d-4237-911d-0e337aeed0fe)
 
 
 
