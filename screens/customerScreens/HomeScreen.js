@@ -13,10 +13,13 @@ const HomeScreen = () => {
         .doc(firebase.auth().currentUser.uid).get()
         .then((snapshot) => {
             if (snapshot.exists) {
-                setName(snapshot.data())
+                setName(snapshot.data().firstName)
             } else {
                 console.log('User does not exist')
             }
+        })
+        .catch((error) => {
+            console.log("Error getting user: ", error)
         })
     }, [])
 
