@@ -16,9 +16,10 @@ export const AuthProvider = ({children}) => {
                     await firebase.auth().signInWithEmailAndPassword(email, password);
                 } catch(e) {
                     console.log(e);
+                    alert(e);
                 }
             },
-            register: async (email, password, firstName, lastName) => {
+            register: async (email, password, firstName, lastName, userType) => {
                 try {
                     await firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(() => {
@@ -30,17 +31,37 @@ export const AuthProvider = ({children}) => {
                             alert('Verification email sent!')
                         })
                         .then(() => {
-                            firebase.firestore().collection('users')
-                            .doc(firebase.auth().currentUser.uid)
-                            .set({
-                                firstName,
-                                lastName,
-                                email,
-                            })
+                            //Check if user is Customer or Seller
+                            if(userType == 'Customer') {
+                                firebase.firestore().collection('customer')
+                                .doc(firebase.auth().currentUser.uid)
+                                .set({
+                                    firstName,
+                                    lastName,
+                                    email,
+                                    userType,
+                                    currentPoint,
+                                    totalPoint,
+                                    amountPaid,
+                                })
+                            } else {
+                                //UserType is Seller
+                                firebase.firestore().collection('seller')
+                                .doc(firebase.auth().currentUser.uid)
+                                .set({
+                                    firstName,
+                                    lastName,
+                                    email,
+                                    userType,
+                                    totalRevenue,
+                                })
+                            }
+                            
                         })
                     })
                 } catch(e) {
                     console.log(e);
+                    alert(e);
                 }
             },
             logout: async () => {
@@ -48,6 +69,7 @@ export const AuthProvider = ({children}) => {
                     await firebase.auth().signOut();
                 } catch(e) {
                     console.log(e);
+                    alert(e);
                 }
             }
           }}

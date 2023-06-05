@@ -4,6 +4,7 @@ import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
+import UserTypeSelection from '../components/UserTypeSelection';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState()
@@ -11,6 +12,7 @@ const SignupScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState()
   const [firstName, setFirstName] = useState()
   const [lastName, setLastName] = useState() 
+  const [userType, setUserType] = useState('Customer'); // Default user type is 'Customer'
 
   const {register} = useContext(AuthContext);
 
@@ -60,9 +62,13 @@ const SignupScreen = ({navigation}) => {
         secureTextEntry={true}
       />
 
+      <UserTypeSelection selectedType={userType} onTypeSelect={(userType) => setUserType(userType)} /> 
+
+      {/**Register takes in: email, password, firstName, lastName,
+       *  userType = Customer (by default) || Seller, currentPoint = 0, TotalPoint = 0, amountPaid = 0 */}
       <FormButton
         buttonTitle="Sign Up"
-        onPress={() => register(email, password, firstName, lastName)}
+        onPress={() => register(email, password, firstName, lastName, userType)}
       />
 
       <SocialButton

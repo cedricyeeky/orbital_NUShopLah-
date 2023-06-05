@@ -7,14 +7,14 @@ import QRCode from 'react-native-qrcode-svg';
 
 const IdScreen = () => {
     const {user, logout} = useContext(AuthContext)
-    const [name, setName] = useState('')
+    const [firstName, setFirstName] = useState('')
 
     useEffect(() => {
         firebase.firestore().collection('users')
         .doc(firebase.auth().currentUser.uid).get()
         .then((snapshot) => {
             if (snapshot.exists) {
-                setName(snapshot.data())
+                setFirstName(snapshot.data().firstName)
             } else {
                 console.log('User does not exist')
             }
@@ -26,7 +26,7 @@ const IdScreen = () => {
         //QR Code Goes here
         
         <View style={styles.container}>
-            <Text style={styles.text}>Personal ID</Text>
+            <Text style={styles.text}>{firstName}'s Personal ID</Text>
             <FormButton buttonTitle='Logout' onPress={() => logout()} />
         </View>
     );
