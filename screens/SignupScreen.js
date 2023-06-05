@@ -13,7 +13,12 @@ const SignupScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState()
   const [lastName, setLastName] = useState() 
   const [userType, setUserType] = useState('Customer'); // Default user type is 'Customer'
-
+  const [currentPoint, setCurrentPoint] = useState(0);
+  const [totalPoint, setTotalPoint] = useState(0);
+  const [amountPaid, setAmountPaid] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0); 
+  
+  // currentPoint, totalPoint, amountPaid, totalRevenue
   const {register} = useContext(AuthContext);
 
   return (
@@ -68,7 +73,7 @@ const SignupScreen = ({navigation}) => {
        *  userType = Customer (by default) || Seller, currentPoint = 0, TotalPoint = 0, amountPaid = 0 */}
       <FormButton
         buttonTitle="Sign Up"
-        onPress={() => register(email, password, firstName, lastName, userType)}
+        onPress={() => register(email, password, firstName, lastName, userType, currentPoint, totalPoint, amountPaid, totalRevenue)}
       />
 
       <SocialButton

@@ -19,7 +19,7 @@ export const AuthProvider = ({children}) => {
                     alert(e);
                 }
             },
-            register: async (email, password, firstName, lastName, userType) => {
+            register: async (email, password, firstName, lastName, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
                 try {
                     await firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(() => {
@@ -32,7 +32,7 @@ export const AuthProvider = ({children}) => {
                         })
                         .then(() => {
                             //Check if user is Customer or Seller
-                            if(userType == 'Customer') {
+                            if (userType == "Customer") {
                                 firebase.firestore().collection('customer')
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
@@ -43,9 +43,11 @@ export const AuthProvider = ({children}) => {
                                     currentPoint,
                                     totalPoint,
                                     amountPaid,
-                                })
+                                });
+
                             } else {
                                 //UserType is Seller
+                                console.log(userType);
                                 firebase.firestore().collection('seller')
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
@@ -54,7 +56,7 @@ export const AuthProvider = ({children}) => {
                                     email,
                                     userType,
                                     totalRevenue,
-                                })
+                                });
                             }
                             
                         })
