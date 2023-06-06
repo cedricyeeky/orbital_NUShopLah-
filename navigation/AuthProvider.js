@@ -11,8 +11,10 @@ export const AuthProvider = ({children}) => {
           value={{
             user,
             setUser,
-            login: async (email, password) => {
+            login: async (email, password, userType) => {
                 try {
+                    console.log(email);
+                    //console.log(user);
                     await firebase.auth().signInWithEmailAndPassword(email, password);
                 } catch(e) {
                     console.log(e);
@@ -21,6 +23,7 @@ export const AuthProvider = ({children}) => {
             },
             register: async (email, password, firstName, lastName, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
                 try {
+                    console.log('Registered User Type:', userType);
                     await firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(() => {
                         firebase.auth().currentUser.sendEmailVerification({
