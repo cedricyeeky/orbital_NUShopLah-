@@ -9,9 +9,9 @@ import Scanner from '../screens/sellerScreens/Scanner';
 import SettingsScreen from '../screens/sellerScreens/SettingsScreen';
 
 //Screen Names
-const homeName = "Home Screen";
-const scannerName = "Scan QR Code";
-const settingsName = "Settings Screen";
+const homeName = "Home";
+const scannerName = "Scan QR";
+const settingsName = "Settings";
 
 //const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,7 +34,7 @@ const AppStackSeller = () => {
             if (rn == homeName) {
               iconName = focused ? 'home' : 'home-outline';
             } else if (rn === scannerName) {
-              iconName = focused ? 'list' : 'list-outline';
+              iconName = focused ? 'scan' : 'scan-outline';
             } else if (rn === settingsName) {
               iconName = focused ? 'settings' : 'settings-outline';
             }

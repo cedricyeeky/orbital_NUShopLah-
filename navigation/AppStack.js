@@ -9,9 +9,9 @@ import IdScreen from '../screens/customerScreens/IdScreen';
 import SettingsScreen from '../screens/customerScreens/SettingsScreen';
 
 //Screen Names
-const homeName = "Home Screen";
+const homeName = "Home";
 const idName = "Personal ID";
-const settingsName = "Settings Screen";
+const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
 
