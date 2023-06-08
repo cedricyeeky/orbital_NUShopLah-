@@ -67,7 +67,8 @@ const SignupScreen = ({navigation}) => {
         secureTextEntry={true}
       />
 
-      <UserTypeSelection selectedType={userType} onTypeSelect={(userType) => setUserType(userType)} /> 
+      {/* <UserTypeSelection selectedType={userType} onTypeSelect={(userType) => setUserType(userType)} />  */}
+      <UserTypeSelection selectedType={userType} onTypeSelect={setUserType} /> 
 
       {/**Register takes in: email, password, firstName, lastName,
        *  userType = Customer (by default) || Seller, currentPoint = 0, TotalPoint = 0, amountPaid = 0 */}

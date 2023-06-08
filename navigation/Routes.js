@@ -1,5 +1,4 @@
-//Version 1 GPT
-import 'react-native-gesture-handler';
+//gpt version 0
 import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from './AuthProvider';
@@ -9,38 +8,29 @@ import AppStack from './AppStack';
 import AppStackSeller from './AppStackSeller';
 
 const Routes = () => {
-  const {user, setUser} = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
   const [userType, setUserType] = useState('');
 
-  const getUserData = async (uid, userType) => {
+  const getUserType = async (uid) => {
     try {
-      const userCollectionRef = firebase.firestore().collection(userType);
-      const userData = await userCollectionRef.doc(uid).get();
-      if (userData.exists) {
-        return userData.data();
+      const userDoc = await firebase.firestore().collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        setUserType(userData.userType);
       }
-      return null;
     } catch (error) {
-      console.log('Error1 getting user data:', error);
-      return null;
+      console.log('Error getting user type:', error);
     }
   };
 
   const onAuthStateChanged = async (user) => {
     setUser(user);
-    // setUserType(user.userType);
-    // console.log(user.uid.get().firstName);
     if (user) {
       try {
-        const userData = await getUserData(user.uid, user.userType);
-        if (userData != null) {
-          setUserType(user.userType);
-        } else {
-          console.log('User data does not exist 2');
-        }
+        await getUserType(user.uid);
       } catch (error) {
-        console.log('Error2 getting user data:', error);
+        console.log('Error getting user type:', error);
       }
     } else {
       setUserType('');
@@ -69,6 +59,79 @@ const Routes = () => {
 };
 
 export default Routes;
+
+
+// //Version 1 GPT
+// import 'react-native-gesture-handler';
+// import React, { useContext, useState, useEffect } from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { AuthContext } from './AuthProvider';
+// import { firebase } from '../firebaseconfig';
+// import AuthStack from './AuthStack';
+// import AppStack from './AppStack';
+// import AppStackSeller from './AppStackSeller';
+
+// const Routes = () => {
+//   const {user, setUser} = useContext(AuthContext);
+//   const [initializing, setInitializing] = useState(true);
+//   const [userType, setUserType] = useState('');
+
+//   const getUserData = async (uid, userType) => {
+//     try {
+//       const userCollectionRef = firebase.firestore().collection(userType);
+//       const userData = await userCollectionRef.doc(uid).get();
+//       if (userData.exists) {
+//         return userData.data();
+//       }
+//       return null;
+//     } catch (error) {
+//       console.log('Error1 getting user data:', error);
+//       return null;
+//     }
+//   };
+
+//   const onAuthStateChanged = async (user) => {
+//     setUser(user);
+//     // setUserType(user.userType);
+//     // console.log(user.uid.get().firstName);
+//     if (user) {
+//       try {
+//         const userData = await getUserData(user.uid, user.userType);
+//         if (userData != null) {
+//           setUserType(user.userType);
+//         } else {
+//           console.log('User data does not exist 2');
+//         }
+//       } catch (error) {
+//         console.log('Error2 getting user data:', error);
+//       }
+//     } else {
+//       setUserType('');
+//     }
+//     if (initializing) setInitializing(false);
+//   };
+
+//   useEffect(() => {
+//     const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+//     return subscriber; // unsubscribe on unmount
+//   }, []);
+
+//   if (initializing) return null;
+
+//   return (
+//     <NavigationContainer>
+//       {userType === 'Customer' ? (
+//         <AppStack />
+//       ) : userType === 'Seller' ? (
+//         <AppStackSeller />
+//       ) : (
+//         <AuthStack />
+//       )}
+//     </NavigationContainer>
+//   );
+// };
+
+// export default Routes;
 
 
 

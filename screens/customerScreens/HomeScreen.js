@@ -9,7 +9,7 @@ const HomeScreen = () => {
     const [firstName, setFirstName] = useState('')
 
     useEffect(() => {
-        firebase.firestore().collection('customer')
+        firebase.firestore().collection('users')
         .doc(firebase.auth().currentUser.uid).get()
         .then((snapshot) => {
             if (snapshot.exists) {

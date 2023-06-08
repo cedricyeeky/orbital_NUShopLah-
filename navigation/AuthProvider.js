@@ -11,7 +11,7 @@ export const AuthProvider = ({children}) => {
           value={{
             user,
             setUser,
-            login: async (email, password, userType) => {
+            login: async (email, password) => {
                 try {
                     console.log(email);
                     //console.log(user);
@@ -34,9 +34,8 @@ export const AuthProvider = ({children}) => {
                             alert('Verification email sent!')
                         })
                         .then(() => {
-                            //Check if user is Customer or Seller
-                            if (userType == "Customer") {
-                                firebase.firestore().collection('customer')
+                            //Version 1: Store everything as "users"
+                            firebase.firestore().collection('users')
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
                                     firstName,
@@ -46,21 +45,36 @@ export const AuthProvider = ({children}) => {
                                     currentPoint,
                                     totalPoint,
                                     amountPaid,
-                                });
-
-                            } else {
-                                //UserType is Seller
-                                console.log(userType);
-                                firebase.firestore().collection('seller')
-                                .doc(firebase.auth().currentUser.uid)
-                                .set({
-                                    firstName,
-                                    lastName,
-                                    email,
-                                    userType,
                                     totalRevenue,
                                 });
-                            }
+
+                            //Version 2 Check if user is Customer or Seller
+                            // if (userType === "Customer") {
+                            //     firebase.firestore().collection('customer')
+                            //     .doc(firebase.auth().currentUser.uid)
+                            //     .set({
+                            //         firstName,
+                            //         lastName,
+                            //         email,
+                            //         userType,
+                            //         currentPoint,
+                            //         totalPoint,
+                            //         amountPaid,
+                            //     });
+
+                            // } else {
+                            //     //UserType is Seller
+                            //     console.log(userType);
+                            //     firebase.firestore().collection('seller')
+                            //     .doc(firebase.auth().currentUser.uid)
+                            //     .set({
+                            //         firstName,
+                            //         lastName,
+                            //         email,
+                            //         userType,
+                            //         totalRevenue,
+                            //     });
+                            // }
                             
                         })
                     })
