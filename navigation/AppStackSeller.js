@@ -54,7 +54,7 @@ const AppStackSeller = () => {
         }}>
 
         <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={scannerName} component={HomeScreen} />
+        <Tab.Screen name={scannerName} component={Scanner} />
         <Tab.Screen name={settingsName} component={SettingsScreen} />
 
         </Tab.Navigator>
