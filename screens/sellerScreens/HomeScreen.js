@@ -1,14 +1,31 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
-import React from 'react'
 import { useNavigation } from '@react-navigation/native'
-
+import React, { useContext, useEffect, useState } from 'react';
+import { firebase } from '../../firebaseconfig';
 
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [firstName, setFirstName] = useState('')
+
+  useEffect(() => {
+    firebase.firestore().collection('users')
+    .doc(firebase.auth().currentUser.uid).get()
+    .then((snapshot) => {
+      if (snapshot.exists) {
+        setFirstName(snapshot.data().firstName)
+      } else {
+        console.log('User does not exist')
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting user: ", error)
+    })
+  }, [])
+
   return (  
     <View style={styles.container}>
-      <Text>Seller HomeScreen</Text>
+      <Text style={styles.text}>Welcome! {firstName}</Text>
       <Button title='Scan' onPress={() => navigation.navigate("Scanner")}/>
     </View>
   )
