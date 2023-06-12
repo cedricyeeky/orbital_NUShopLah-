@@ -1,4 +1,4 @@
-//gpt version 0
+// correct version
 import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from './AuthProvider';
@@ -61,7 +61,7 @@ const Routes = () => {
 export default Routes;
 
 
-// //Version 1 GPT
+// //Version 1 
 // import 'react-native-gesture-handler';
 // import React, { useContext, useState, useEffect } from 'react';
 // import { NavigationContainer } from '@react-navigation/native';

@@ -102,7 +102,7 @@ const IdScreen = () => {
       alignItems: 'center',
     },
     title: {
-      fontSize: 24,
+      fontSize: 40,
       fontWeight: 'bold',
       marginBottom: 20,
     },

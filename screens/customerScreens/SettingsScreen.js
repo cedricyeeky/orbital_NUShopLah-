@@ -1,51 +1,17 @@
-// import React, { useContext, useEffect, useState } from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import FormButton from '../../components/FormButton';
-// import { AuthContext } from '../../navigation/AuthProvider';
-// import { firebase } from '../../firebaseconfig';
-
-// const SettingsScreen = () => {
-//     const {user, logout} = useContext(AuthContext)
-
-
-//     return (
-//         //Check how to render firstName of a customer
-//         <View style={styles.container}>
-//             <Text style={styles.text}>Settings Screen</Text>
-//             <FormButton buttonTitle='Logout' onPress={() => logout()} />
-//         </View>
-//     );
-// }
-
-// export default SettingsScreen;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: '#f9fafd',
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: 20,
-//     },
-//     text: {
-//         fontSize: 20,
-//         color: '#333333',
-//     }
-// });
-
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
 
 const SettingsScreen = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const [totalPoint, setTotalPoint] = useState(0);
   const [currentPoint, setCurrentPoint] = useState(0);
   const [loyaltyTier, setLoyaltyTier] = useState('');
   const [remainingPoints, setRemainingPoints] = useState(0);
   const [firstName, setFirstName] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
     
@@ -133,30 +99,106 @@ const SettingsScreen = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
-        <Text style={styles.title}>{firstName}'s Account</Text>
-        <Text style={styles.label}>Loyalty Tier:</Text>
-        <Text style={styles.text}>{loyaltyTier}</Text>
-        <Text style={styles.label}>Total Points:</Text>
-        <Text style={styles.text}>{totalPoint}</Text>
-        {loyaltyTier !== 'Platinum' && (
-          <View>
-            <Text style={styles.label}>
-              Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
-            </Text>
-            <Text style={styles.text}>{remainingPoints}</Text>
-          </View>
-        )}
-      </View>
+  let benefitDescriptions = [];
+  const bullet = '\u2022'; // Unicode character for bullet symbol
 
-      {/**Log Out Button */}
+  const tierBenefitDescriptions = () => {
+    
+  
+    switch (loyaltyTier) {
+      case 'Silver':
+        benefitDescriptions = [
+          'Benefit 1',
+          'Benefit 2',
+          'Benefit 3',
+          // Add more benefit descriptions as needed
+        ];
+        break;
+      case 'Gold':
+        benefitDescriptions = [
+          'Benefit 1',
+          'Benefit 2',
+          'Benefit 3',
+          // Add more benefit descriptions as needed
+        ];
+        break;
+      case 'Platinum':
+        benefitDescriptions = [
+          'Benefit 1',
+          'Benefit 2',
+          'Benefit 3',
+          // Add more benefit descriptions as needed
+        ];
+        break;
+      default:
+        benefitDescriptions = [
+          //Member
+          'Benefit 1',
+          'Benefit 2',
+          'Benefit 3',
+          // Add more benefit descriptions as needed
+        ];
+        break;
+    }
+  };
+  
+  tierBenefitDescriptions(); // Call the function to populate the benefitDescriptions array
+
+  const handleFeedbackSubmit = () => {
+    // Save feedback to Firestore or perform desired action
+    console.log('Feedback submitted:', feedback);
+    setFeedback('');
+  };
+
+  return (
+    <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.text}>Log out here</Text>
-        <FormButton buttonTitle='Logout' onPress={() => logout()} />
+        <Text style={styles.name}>{firstName}'s Account</Text>
+        <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
+          
+          <Text style={styles.label}>NUShopLah! Loyalty Tier:</Text>
+          <Text style={styles.title}>{loyaltyTier}</Text>
+          <Text style={styles.label}>Total NUShopLah! Points:</Text>
+          <Text style={styles.text}>{totalPoint}</Text>
+          {loyaltyTier !== 'Platinum' && (
+            <View>
+              <Text style={styles.label}>
+                Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
+              </Text>
+              <Text style={styles.text}>{remainingPoints}</Text>
+            </View>
+          )}
+        </View>
+
+        <View>
+          {benefitDescriptions.map((description, index) => (
+            <View key={index} style={styles.bulletPointContainer}>
+              <Text style={styles.bulletPoint}>{bullet}</Text>
+              <Text style={styles.bulletPointText}>{description}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.feedbackContainer}>
+          <Text style={styles.label}>Share Feedback</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Share your feedback with us! We would love to serve you better!"
+            value={feedback}
+            onChangeText={setFeedback}
+            multiline
+          />
+          <TouchableOpacity style={styles.feedbackButton} onPress={handleFeedbackSubmit}>
+            <Text style={styles.buttonText}>Submit Feedback</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/**Log Out Button */}
+        <View style={styles.container}>
+          <FormButton buttonTitle='Logout' onPress={() => logout()} />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -167,6 +209,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  name: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+    backgroundColor: 'blue',
+    borderRadius: 25,
+    padding: 50,
+    margin: 20,
+  },
   cardContainer: {
     width: '80%',
     padding: 20,
@@ -174,9 +225,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    marginBottom: 30,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#fff',
@@ -191,6 +243,54 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     color: '#fff',
+  },
+  tierDescription: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  feedbackContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  input: {
+    width: '100%',
+    height: 100,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    textAlignVertical: 'top',
+  },
+  feedbackButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  logoutContainer: {
+    marginTop: 20,
+  },
+  bulletPointContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  bulletPoint: {
+    marginRight: 10,
+    fontSize: 18,
+    color: 'grey',
+  },
+  bulletPointText: {
+    fontSize: 16,
+    color: 'grey',
   },
 });
 

@@ -20,7 +20,7 @@ const LoginScreen = ({navigation}) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image
-        source={require('../assets/NUShopLah!.png')}
+        source={require('../assets/NUShopLah!-logo.png')}
         style={styles.logo}
       />
       <Text style={styles.text}>Login</Text>

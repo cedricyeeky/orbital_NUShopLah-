@@ -4,10 +4,10 @@ import QRCode from 'react-native-qrcode-svg';
 
 const QRCodeWithLogo = ({ value, logo }) => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <QRCode
           value={value}
-          size={200}
+          size={230}
           logo={logo}
           logoSize={70}
           logoBackgroundColor="white"
