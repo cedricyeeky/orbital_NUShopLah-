@@ -6,6 +6,8 @@ import { firebase } from '../../firebaseconfig';
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
+    const [currentPoint, setCurrentPoint] = useState(0);
+    const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('')
 
     useEffect(() => {
@@ -20,14 +22,29 @@ const HomeScreen = () => {
         })
         .catch((error) => {
             console.log("Error getting user: ", error)
-        })
+        });
+
+        // Create a Firestore listener for the user's document
+        const userCollectionRef = firebase.firestore().collection('users');
+        const userDocRef = userCollectionRef.doc(user.uid);
+        const unsubscribe = userDocRef.onSnapshot((snapshot) => {
+        const userData = snapshot.data();
+        if (userData) {
+          const { currentPoint: updatedCurrentPoint, totalPoint: updatedTotalPoint } = userData;
+          setCurrentPoint(updatedCurrentPoint);
+          setTotalPoint(updatedTotalPoint);
+          }
+        });
+
+
     }, [])
+
 
     return (
         //Check how to render firstName of a customer
         <View style={styles.container}>
             <Text style={styles.text}>Welcome! {firstName}</Text>
-            <Text style={styles.text}>Your Current Point Balance: </Text>
+            <Text style={styles.text}>Your Current Point Balance: {currentPoint} </Text>
             <FormButton buttonTitle='Logout' onPress={() => logout()} />
         </View>
     );
