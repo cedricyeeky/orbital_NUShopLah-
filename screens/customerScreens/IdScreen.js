@@ -4,6 +4,7 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import * as Brightness from 'expo-brightness';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
+import { Card } from 'react-native-paper';
 
 const IdScreen = () => {
     const { user } = useContext(AuthContext);
@@ -82,17 +83,31 @@ const IdScreen = () => {
   
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{firstName}'s ID</Text>
-        <Text style={styles.label}>UID:</Text>
-        <Text style={styles.text}>{user.uid}</Text>
-        <Text style={styles.label}>Current Point Balance:</Text>
-        <Text style={styles.text}>{currentPoint}</Text>
-        <QRCodeWithLogo
-          value={generateQRCodeData()}
-          logo={logoImage}
-        />
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.title}>{firstName}'s ID</Text>
+            <Text style={styles.label}>UID:</Text>
+            <Text style={styles.text}>{user.uid}</Text>
+            <Text style={styles.label}>Current Point Balance:</Text>
+            <Text style={styles.text}>{currentPoint}</Text>
+            <QRCodeWithLogo value={generateQRCodeData()} logo={logoImage} />
+          </Card.Content>
+        </Card>
       </View>
     );
+    // return (
+    //   <View style={styles.container}>
+    //     <Text style={styles.title}>{firstName}'s ID</Text>
+    //     <Text style={styles.label}>UID:</Text>
+    //     <Text style={styles.text}>{user.uid}</Text>
+    //     <Text style={styles.label}>Current Point Balance:</Text>
+    //     <Text style={styles.text}>{currentPoint}</Text>
+    //     <QRCodeWithLogo
+    //       value={generateQRCodeData()}
+    //       logo={logoImage}
+    //     />
+    //   </View>
+    // );
   };
   
   const styles = StyleSheet.create({
@@ -101,19 +116,27 @@ const IdScreen = () => {
       justifyContent: 'center',
       alignItems: 'center',
     },
+    card: {
+      backgroundColor: '#ff914d',
+      padding: 16,
+    },
     title: {
       fontSize: 40,
       fontWeight: 'bold',
       marginBottom: 20,
+      color: 'white',
+      textAlign: 'center',
     },
     label: {
       fontSize: 18,
       fontWeight: 'bold',
       marginTop: 10,
+      color: 'white',
     },
     text: {
       fontSize: 16,
       marginBottom: 10,
+      color: 'white',
     },
   });
   
