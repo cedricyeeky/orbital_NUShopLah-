@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, Button } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react';
 import { firebase } from '../../firebaseconfig';
-
+import { FAB } from 'react-native-paper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({navigation}) => {
   //const navigation = useNavigation();
@@ -26,7 +27,13 @@ const HomeScreen = ({navigation}) => {
   return (  
     <View style={styles.container}>
       <Text style={styles.text}>Welcome! {firstName}</Text>
-      <Button title='Scan' onPress={() => navigation.navigate('Scan QR')}/>
+      <FAB
+        icon="qrcode-scan"
+        style={styles.fab}
+        label= 'Scan QR'
+        onPress={() => navigation.navigate('Scan QR')}
+      />
+      {/* <Button title='Scan' onPress={() => navigation.navigate('Scan QR')}/> */}
     </View>
   )
 }
@@ -40,5 +47,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+    },
+    text: {
+      fontSize: 20,
+      fontWeight: 'bold',
+
+    },
+    fab: {
+      marginTop: 20,
+      padding: 2,
+      backgroundColor: 'white'
     },
 })
