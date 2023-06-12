@@ -5,46 +5,17 @@ import { firebase } from '../../firebaseconfig';
 import QRCode from 'react-native-qrcode-svg';
 import * as Brightness from 'expo-brightness';
 
-// const IdScreen = () => {
-//     const {user, logout} = useContext(AuthContext)
-//     const [firstName, setFirstName] = useState('')
-
-//     useEffect(() => {
-//         firebase.firestore().collection('users')
-//         .doc(firebase.auth().currentUser.uid).get()
-//         .then((snapshot) => {
-//             if (snapshot.exists) {
-//                 setFirstName(snapshot.data().firstName)
-//             } else {
-//                 console.log('User does not exist')
-//             }
-//         })
-//     }, [])
-
-//     return (
-//         //Check how to render firstName of a customer
-//         //QR Code Goes here
-        
-//         <View style={styles.container}>
-//             <Text style={styles.text}>{firstName}'s Personal ID</Text>
-//             <FormButton buttonTitle='Logout' onPress={() => logout()} />
-//         </View>
-//     );
-// }
-
-// export default IdScreen;
-
 const IdScreen = () => {
     const { user } = useContext(AuthContext);
     const [currentPoint, setCurrentPoint] = useState(0);
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
-    const [previousBrightness, setPreviousBrightness] = useState(0);
+    const [previousBrightness, setPreviousBrightness] = useState();
   
     useEffect(() => {
       const fetchUserData = async () => {
         try {
-          const userCollectionRef = firebase.firestore().collection('customer');
+          const userCollectionRef = firebase.firestore().collection('users');
           const userData = await userCollectionRef.doc(user.uid).get();
           if (userData.exists) {
             const { currentPoint, totalPoint } = userData.data();
@@ -55,6 +26,18 @@ const IdScreen = () => {
           console.log('Error fetching user data:', error);
         }
       };
+
+        // Create a Firestore listener for the user's document
+        const userCollectionRef = firebase.firestore().collection('users');
+        const userDocRef = userCollectionRef.doc(user.uid);
+        const unsubscribe = userDocRef.onSnapshot((snapshot) => {
+        const userData = snapshot.data();
+        if (userData) {
+          const { currentPoint: updatedCurrentPoint, totalPoint: updatedTotalPoint } = userData;
+          setCurrentPoint(updatedCurrentPoint);
+          setTotalPoint(updatedTotalPoint);
+          }
+        });
   
       fetchUserData();
 
