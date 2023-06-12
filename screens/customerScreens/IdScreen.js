@@ -117,7 +117,10 @@ const IdScreen = () => {
       alignItems: 'center',
     },
     card: {
-      backgroundColor: '#ff914d',
+      //backgroundColor: '#ff914d',
+      //backgroundColor: '#003d7c',
+      //official nus orange colour
+      backgroundColor: '#f07b10',
       padding: 16,
     },
     title: {
