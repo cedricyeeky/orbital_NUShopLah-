@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
-import QRCode from 'react-native-qrcode-svg';
 import * as Brightness from 'expo-brightness';
+import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 
 const IdScreen = () => {
     const { user } = useContext(AuthContext);
@@ -11,6 +11,7 @@ const IdScreen = () => {
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
     const [previousBrightness, setPreviousBrightness] = useState();
+    const logoImage = require('../../assets/NUShopLah!.png');
   
     useEffect(() => {
       const fetchUserData = async () => {
@@ -86,11 +87,9 @@ const IdScreen = () => {
         <Text style={styles.text}>{user.uid}</Text>
         <Text style={styles.label}>Current Point Balance:</Text>
         <Text style={styles.text}>{currentPoint}</Text>
-        <QRCode
+        <QRCodeWithLogo
           value={generateQRCodeData()}
-          size={200}
-          color="black"
-          backgroundColor="white"
+          logo={logoImage}
         />
       </View>
     );
