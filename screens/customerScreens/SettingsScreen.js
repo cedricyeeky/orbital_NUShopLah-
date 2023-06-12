@@ -6,19 +6,7 @@ import { firebase } from '../../firebaseconfig';
 
 const SettingsScreen = () => {
     const {user, logout} = useContext(AuthContext)
-    const [name, setName] = useState('')
 
-    useEffect(() => {
-        firebase.firestore().collection('users')
-        .doc(firebase.auth().currentUser.uid).get()
-        .then((snapshot) => {
-            if (snapshot.exists) {
-                setName(snapshot.data())
-            } else {
-                console.log('User does not exist')
-            }
-        })
-    }, [])
 
     return (
         //Check how to render firstName of a customer
