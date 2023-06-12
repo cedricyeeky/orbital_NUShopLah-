@@ -11,7 +11,7 @@ import SettingsScreen from '../screens/customerScreens/SettingsScreen';
 //Screen Names
 const homeName = "Home";
 const idName = "Personal ID";
-const settingsName = "Settings";
+const settingsName = "Account";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +35,7 @@ const AppStack = () => {
               } else if (rn === idName) {
                 iconName = focused ? 'qr-code' : 'qr-code-outline';
               } else if (rn === settingsName) {
-                iconName = focused ? 'settings' : 'settings-outline';
+                iconName = focused ? 'person-circle' : 'person-circle-outline';
               }
   
               //Return any components that we like here
