@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
+import { Card } from 'react-native-paper';
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -41,12 +42,20 @@ const HomeScreen = () => {
 
 
     return (
-        //Check how to render firstName of a customer
         <View style={styles.container}>
+          <Card>
+          <Card.Content>
             <Text style={styles.text}>Welcome! {firstName}</Text>
-            <Text style={styles.text}>Your Current Point Balance: {currentPoint} </Text>
+            <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
             <FormButton buttonTitle='Logout' onPress={() => logout()} />
+          </Card.Content>
+          </Card>
         </View>
+        // <View style={styles.container}>
+        //     <Text style={styles.text}>Welcome! {firstName}</Text>
+        //     <Text style={styles.text}>Your Current Point Balance: {currentPoint} </Text>
+        //     <FormButton buttonTitle='Logout' onPress={() => logout()} />
+        // </View>
     );
 }
 
@@ -63,6 +72,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         color: '#333333',
+        
     }
 });
 
