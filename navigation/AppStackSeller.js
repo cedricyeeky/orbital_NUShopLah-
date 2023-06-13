@@ -5,11 +5,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //Screens for Customers to see
 import HomeScreen from '../screens/sellerScreens/HomeScreen';
+import ActivityScreen from '../screens/sellerScreens/Activity';
 import Scanner from '../screens/sellerScreens/Scanner';
 import SettingsScreen from '../screens/sellerScreens/SettingsScreen';
 
 //Screen Names
 const homeName = "Home";
+const activityName = "Activity";
 const scannerName = "Scan QR";
 const settingsName = "Account";
 
@@ -33,6 +35,8 @@ const AppStackSeller = () => {
 
             if (rn == homeName) {
               iconName = focused ? 'home' : 'home-outline';
+            } else if (rn === activityName) {
+              iconName = focused ? 'receipt' : 'receipt-outline';
             } else if (rn === scannerName) {
               iconName = focused ? 'scan' : 'scan-outline';
             } else if (rn === settingsName) {
@@ -54,6 +58,7 @@ const AppStackSeller = () => {
         }}>
 
         <Tab.Screen name={homeName} component={HomeScreen} />
+        <Tab.Screen name={activityName} component={ActivityScreen} />
         <Tab.Screen name={scannerName} component={Scanner} />
         <Tab.Screen name={settingsName} component={SettingsScreen} />
 

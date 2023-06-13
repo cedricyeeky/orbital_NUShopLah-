@@ -159,7 +159,7 @@ const SettingsScreen = () => {
       case 'Gold':
         return require('../../assets/goldCard.png');
       case 'Platinum':
-        return require('../../assets/platinumCard1.png');
+        return require('../../assets/platinumCard2.png');
       default:
         return require('../../assets/memberCard.png');
     }
@@ -182,17 +182,23 @@ const SettingsScreen = () => {
   // Calculate Progress used in renderProgressBar()
   const calculateProgress = () => {
     // Calculate the progress percentage based on the loyalty tier and current points
-    return totalPoint / (totalPoint + remainingPoints);
+    switch (loyaltyTier) {
+      case 'Silver':
+        return (totalPoint - 500) / (totalPoint + remainingPoints);
+      case 'Gold':
+        return (totalPoint - 5000) / (totalPoint + remainingPoints);
+      default:
+        return totalPoint / (totalPoint + remainingPoints);
+    }
   };
 
   return (
     <ScrollView>
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
       <Card>
-      <Card.Cover source={getImageSource()} 
-                  style={styles.cardCover}/> 
-      {/* error */}
-      {/* <Card.Content>
+      {/* <Card.Cover source={getImageSource()} 
+                  style={styles.cardCover}/>  
+       <Card.Content>
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <Text style={styles.text}>Total Points: {totalPoint}</Text>
           {renderProgressBar()}
@@ -202,11 +208,11 @@ const SettingsScreen = () => {
               </Text><Text style={styles.text}>
                   {remainingPoints}</Text></>
           )} 
-      </Card.Content> */}
-      </Card>
+      </Card.Content>
+      </Card> */}
 
 
-      {/* <View style={styles.container}>
+      <View style={styles.container}>
         <Text style={styles.name}>{firstName}'s Account</Text>
         <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
           
@@ -233,7 +239,7 @@ const SettingsScreen = () => {
           ))}
         </View>
 
-        <View style={styles.feedbackContainer}>
+        {/* <View style={styles.feedbackContainer}>
           <Text style={styles.label}>Share Feedback</Text>
           <TextInput
             style={styles.input}
@@ -264,8 +270,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   cardCover: {
-    width: 280, // Specify the desired width
-    height: 250, // Specify the desired height
+    
+    resizeMode: 'contain',
+    aspectRatio: 1,
   },
   name: {
     fontSize: 36,

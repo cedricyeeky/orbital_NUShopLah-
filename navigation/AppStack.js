@@ -5,11 +5,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //Screens for Customers to see
 import HomeScreen from '../screens/customerScreens/HomeScreen';
+import ActivityScreen from '../screens/customerScreens/Activity';
 import IdScreen from '../screens/customerScreens/IdScreen';
 import SettingsScreen from '../screens/customerScreens/SettingsScreen';
 
 //Screen Names
 const homeName = "Home";
+const activityName = "Activity";
 const idName = "Personal ID";
 const settingsName = "Account";
 
@@ -32,6 +34,8 @@ const AppStack = () => {
   
               if (rn == homeName) {
                 iconName = focused ? 'home' : 'home-outline';
+              } else if (rn === activityName) {
+                  iconName = focused ? 'receipt' : 'receipt-outline';
               } else if (rn === idName) {
                 iconName = focused ? 'qr-code' : 'qr-code-outline';
               } else if (rn === settingsName) {
@@ -53,6 +57,7 @@ const AppStack = () => {
           }}>
   
           <Tab.Screen name={homeName} component={HomeScreen} />
+          <Tab.Screen name={activityName} component={ActivityScreen} />
           <Tab.Screen name={idName} component={IdScreen} />
           <Tab.Screen name={settingsName} component={SettingsScreen} />
   

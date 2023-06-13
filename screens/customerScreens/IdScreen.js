@@ -74,6 +74,7 @@ const IdScreen = () => {
     const generateQRCodeData = () => {
       const qrCodeData = {
         uid: user.uid,
+        firstName,
         currentPoint,
         totalPoint,
         amountPaid: 0,
