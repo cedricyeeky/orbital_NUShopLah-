@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
+import { Card, ProgressBar } from 'react-native-paper';
 
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
@@ -150,9 +151,62 @@ const SettingsScreen = () => {
     setFeedback('');
   };
 
+  // Diff card cover image source for diff loyalty tiers
+  const getImageSource = () => {
+    switch (loyaltyTier) {
+      case 'Silver':
+        return require('../../assets/silverCard.png');
+      case 'Gold':
+        return require('../../assets/goldCard.png');
+      case 'Platinum':
+        return require('../../assets/platinumCard1.png');
+      default:
+        return require('../../assets/memberCard.png');
+    }
+  };
+
+  // Render Pogress Bar function
+  const renderProgressBar = () => {
+    if (loyaltyTier != 'Platinum') {
+      // Calculate the progress percentage based on the loyalty tier and current points
+      const progress = calculateProgress();
+
+      return (
+        <ProgressBar progress={progress} color="#6200EE" style={styles.progressBar} />
+      );
+    }
+
+    return null;
+  };
+
+  // Calculate Progress used in renderProgressBar()
+  const calculateProgress = () => {
+    // Calculate the progress percentage based on the loyalty tier and current points
+    return totalPoint / (totalPoint + remainingPoints);
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
+      <Card>
+      <Card.Cover source={getImageSource()} 
+                  style={styles.cardCover}/> 
+      {/* error */}
+      {/* <Card.Content>
+          <Text style={styles.text}>Welcome! {firstName}</Text>
+          <Text style={styles.text}>Total Points: {totalPoint}</Text>
+          {renderProgressBar()}
+          {loyaltyTier !== 'Platinum' && (
+              <><Text style={styles.label}>
+                Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
+              </Text><Text style={styles.text}>
+                  {remainingPoints}</Text></>
+          )} 
+      </Card.Content> */}
+      </Card>
+
+
+      {/* <View style={styles.container}>
         <Text style={styles.name}>{firstName}'s Account</Text>
         <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
           
@@ -191,7 +245,7 @@ const SettingsScreen = () => {
           <TouchableOpacity style={styles.feedbackButton} onPress={handleFeedbackSubmit}>
             <Text style={styles.buttonText}>Submit Feedback</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/**Log Out Button */}
         <View style={styles.container}>
@@ -208,6 +262,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  cardCover: {
+    width: 280, // Specify the desired width
+    height: 250, // Specify the desired height
   },
   name: {
     fontSize: 36,
