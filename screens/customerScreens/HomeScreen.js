@@ -95,6 +95,7 @@ const HomeScreen = () => {
 
 
     return (
+        <ScrollView>
         <View style={styles.container}>
           <Card>
           <Card.Content>
@@ -115,8 +116,10 @@ const HomeScreen = () => {
                     >
                     <Card.Content>
                         <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
+                        <Text>{console.log(voucher.voucherImage)}</Text>
                         <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                         <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                        <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
                         <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
                         <FormButton
                           buttonTitle="REDEEM"
@@ -128,17 +131,24 @@ const HomeScreen = () => {
 
                 {/* Render redeemed vouchers */}
                 {redeemedVouchers.map((voucher) => (
-                    <View key={voucher.voucherId} style={styles.voucherCardRedeemed}>
+                    <TouchableOpacity
+                    key={voucher.voucherId}
+                    style={styles.voucherCardRedeemed}
+                    onError={() => console.log("Failed to Load Image. But you don't need it anyways.")}
+                    >
                     <Card.Content>
-                        <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                        <Text style={styles.voucherTitle}>{voucher.voucherAmount}</Text>
-                        <Text style={styles.voucherSubtitle}>{voucher.pointsRequired} points</Text>
+                        {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
+                        <Text>{console.log(voucher.voucherImage)}</Text>
+                        <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                        <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                        <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
                         <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
                     </Card.Content>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </ScrollView>
         </View>
+        </ScrollView>
     );
 }
 
@@ -160,12 +170,14 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 16,
+        marginTop: 20,
     },
     voucherCard: {
         backgroundColor: '#003D7C',
         borderRadius: 8,
         marginRight: 8,
-        width: 200,
+        width: 400,
+        height: 350,
         padding: 16,
     },
     voucherImage: {
