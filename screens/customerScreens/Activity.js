@@ -104,13 +104,20 @@ const ActivityScreen = () => {
   }, [user]);
 
   const renderItem = ({ item }) => {
+    // Convert the Firestore Timestamp to a JavaScript Date object
+    const date = item.timeStamp.toDate();
 
+    // Format the timestamp as a string
+    const formattedTimestamp = date.toLocaleString();
+  
+    console.log(item);
     return (
       <View style={styles.transactionContainer}>
         <Text style={styles.transactionText}>Transaction ID: {item.id}</Text>
         <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
         <Text style={styles.transactionText}>Amount Paid: {item.amountPaid}</Text>
         <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded}</Text>
+        <Text style={styles.transactionText}>Date: {formattedTimestamp}</Text>
       </View>
     );
   };
