@@ -1,65 +1,3 @@
-// import { StyleSheet, Text, View, Button } from 'react-native'
-// import { useNavigation } from '@react-navigation/native'
-// import React, { useContext, useEffect, useState } from 'react';
-// import { firebase } from '../../firebaseconfig';
-// import { FAB } from 'react-native-paper';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// const HomeScreen = ({navigation}) => {
-//   //const navigation = useNavigation();
-//   const [firstName, setFirstName] = useState('')
-
-//   useEffect(() => {
-//     firebase.firestore().collection('users')
-//     .doc(firebase.auth().currentUser.uid).get()
-//     .then((snapshot) => {
-//       if (snapshot.exists) {
-//         setFirstName(snapshot.data().firstName)
-//       } else {
-//         console.log('User does not exist')
-//       }
-//     })
-//     .catch((error) => {
-//       console.log("Error getting user: ", error)
-//     })
-//   }, [])
-
-//   return (  
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Welcome! {firstName}</Text>
-//       <FAB
-//         icon="qrcode-scan"
-//         style={styles.fab}
-//         label= 'Scan QR'
-//         onPress={() => navigation.navigate('Scan QR')}
-//       />
-//       {/* <Button title='Scan' onPress={() => navigation.navigate('Scan QR')}/> */}
-//     </View>
-//   )
-// }
-
-// export default HomeScreen;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: '#f9fafd',
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: 20,
-//     },
-//     text: {
-//       fontSize: 20,
-//       fontWeight: 'bold',
-
-//     },
-//     fab: {
-//       marginTop: 20,
-//       padding: 2,
-//       backgroundColor: 'white'
-//     },
-// })
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -67,14 +5,16 @@ import { firebase } from '../../firebaseconfig';
 import { FAB, Card, TextInput } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
+import FormInput from '../../components/FormInput';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState('');
   const [voucherImage, setVoucherImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [voucherAmount, setVoucherAmount] = useState('');
-  const [pointsRequired, setPointsRequired] = useState('');
+  const [voucherAmount, setVoucherAmount] = useState(0);
+  const [pointsRequired, setPointsRequired] = useState(0);
+  const [voucherDescription, setVoucherDescription] = useState('');
 
   useEffect(() => {
     firebase
@@ -93,59 +33,6 @@ const HomeScreen = () => {
         console.log('Error getting user:', error);
       });
   }, []);
-
-  // const createVoucher = () => {
-  // WITHOUT XML AND BLOB
-    
-  //   // Generate a unique voucher ID
-  //   const voucherId = firebase.firestore().collection('vouchers').doc().id;
-  //   console.log("voucherId:", voucherId);
-  
-  //   // Get a reference to the Firebase Storage bucket
-  //   const storageRef = firebase.storage().ref();
-  //   console.log("storageRef:", storageRef);
-  
-  //   // Create a reference to the voucher image file in the Storage bucket
-  //   const imageRef = storageRef.child(`voucherImages/${voucherId}`);
-  //   console.log("imageRef:", imageRef);
-  
-  //   // Upload the image file to Firebase Storage
-  //   imageRef
-  //     .put(voucherImage) // `voucherImage` should be the file object of the selected image
-  //     .then((snapshot) => {
-  //       // Get the download URL of the uploaded image
-  //       return snapshot.ref.getDownloadURL();
-  //     })
-  //     .then((downloadURL) => {
-  //       // Create the voucher document in Firestore
-  //       firebase
-  //         .firestore()
-  //         .collection('vouchers')
-  //         .doc(voucherId)
-  //         .set({
-  //           voucherId,
-  //           voucherImage: downloadURL, // Use the download URL as the voucher image URL
-  //           voucherAmount,
-  //           pointsRequired,
-  //           usedBy: [], // Initialize the usedBy array as empty
-  //           sellerId: firebase.auth().currentUser.uid,
-  //         })
-  //         .then(() => {
-  //           console.log('Voucher created successfully!');
-  //           // Reset the input fields
-  //           setVoucherImage(null);
-  //           setVoucherAmount('');
-  //           setPointsRequired('');
-  //         })
-  //         .catch((error) => {
-  //           console.log('Error creating voucher:', error);
-  //           Alert.alert('Error! Please input only numerical values, without Dollar Sign. Error:', error)
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error uploading image:', error);
-  //     });
-  // };
 
   const createVoucher = () => {
     // Generate a unique voucher ID
@@ -180,9 +67,10 @@ const HomeScreen = () => {
         },
         () => {
           // Image upload complete, get the download URL
-          uploadTask.snapshot.ref
-            .getDownloadURL()
-            .then((downloadURL) => {
+          const imagePath = imageRef.fullPath;
+          // uploadTask.snapshot.ref
+          //   .getDownloadURL()
+          //   .then((downloadURL) => {
               // Create the voucher document in Firestore
               firebase
                 .firestore()
@@ -190,8 +78,9 @@ const HomeScreen = () => {
                 .doc(voucherId)
                 .set({
                   voucherId,
-                  voucherImage: downloadURL, // Use the download URL as the voucher image URL
+                  voucherImage: imagePath, 
                   voucherAmount,
+                  voucherDescription,
                   pointsRequired,
                   usedBy: [], // Initialize the usedBy array as empty
                   sellerId: firebase.auth().currentUser.uid,
@@ -202,16 +91,17 @@ const HomeScreen = () => {
                   setVoucherImage(null);
                   setVoucherAmount('');
                   setPointsRequired('');
+                  setVoucherDescription('');
                 })
                 .catch((error) => {
                   console.log('Error creating voucher:', error);
                   Alert.alert('Error!', 'Failed to create voucher.');
                 });
-            })
-            .catch((error) => {
-              console.log('Error getting image download URL:', error);
-              Alert.alert('Error!', 'Failed to create voucher.');
-            });
+            
+            // .catch((error) => {
+            //   console.log('Error getting image download URL:', error);
+            //   Alert.alert('Error!', 'Failed to create voucher.');
+            // });
         }
       );
     };
@@ -278,10 +168,19 @@ const HomeScreen = () => {
             value={voucherAmount}
             onChangeText={(text) => setVoucherAmount(text)}
           />
+          
           <TextInput
             label="Points Required"
             value={pointsRequired}
             onChangeText={(text) => setPointsRequired(text)}
+          />
+          
+          <FormInput
+            labelValue={voucherDescription}
+            onChangeText={(voucherDescription) => setVoucherDescription(voucherDescription)}
+            placeholderText="Voucher Description"
+            iconType="bars"
+            autoCorrect={false} 
           />
 
           {/* Upload voucher image */}
