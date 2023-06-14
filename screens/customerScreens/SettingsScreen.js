@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
@@ -194,14 +194,14 @@ const SettingsScreen = () => {
 
   return (
     <ScrollView>
-      {/* <View style={styles.container}>
-      <Card>
-      {/* <Card.Cover source={getImageSource()} 
-                  style={styles.cardCover}/>  
+      <View style={styles.container}>
+      <Card style={styles.cardContainer}>
+      <Image source={getImageSource()} 
+                  style={[styles.cardCover, { backgroundColor: getTierBackgroundColor() }]}/>  
        <Card.Content>
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <Text style={styles.text}>Total Points: {totalPoint}</Text>
-          {renderProgressBar()}
+          {/* {renderProgressBar()} */}
           {loyaltyTier !== 'Platinum' && (
               <><Text style={styles.label}>
                 Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
@@ -209,10 +209,10 @@ const SettingsScreen = () => {
                   {remainingPoints}</Text></>
           )} 
       </Card.Content>
-      </Card> */}
+      </Card>
 
 
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <Text style={styles.name}>{firstName}'s Account</Text>
         <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
           
@@ -237,7 +237,7 @@ const SettingsScreen = () => {
               <Text style={styles.bulletPointText}>{description}</Text>
             </View>
           ))}
-        </View>
+        </View> */}
 
         {/* <View style={styles.feedbackContainer}>
           <Text style={styles.label}>Share Feedback</Text>
@@ -270,9 +270,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   cardCover: {
-    
     resizeMode: 'contain',
-    aspectRatio: 1,
   },
   name: {
     fontSize: 36,
@@ -284,13 +282,13 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   cardContainer: {
-    width: '80%',
     padding: 20,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
     marginBottom: 30,
+    
   },
   title: {
     fontSize: 36,

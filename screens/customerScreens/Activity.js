@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
@@ -34,18 +34,24 @@ const ActivityScreen = () => {
     console.log(item);
     return (
       <View style={styles.transactionContainer}>
-        <Text style={styles.transactionText}>Transaction ID: {item.id}</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#001b3a'}}>Transaction ID: {item.id}</Text>
         <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
         <Text style={styles.transactionText}>Amount Paid: {item.amountPaid}</Text>
         <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded}</Text>
-        <Text style={styles.transactionText}>Date: {formattedTimestamp}</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 18, color: '#001b3a'}}>Date: {formattedTimestamp}</Text>
       </View>
     );
   };
+  
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
+      <Image 
+        source={require('../../assets/orangeg.jpg')}
+        style={StyleSheet.absoluteFillObject}
+        blurRadius={50}
+      />
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}
@@ -64,23 +70,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#fff',
+    shadowColor: "#000",
+    shadowOffset: {width: 0, height: 10},
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: 'white',
+    
   },
   listContainer: {
     flexGrow: 1,
+    
   },
   transactionContainer: {
-    backgroundColor: '#F0F0F0',
-    padding: 10,
-    marginBottom: 10,
+    padding: 20,
+    marginBottom: 20,
+    borderRadius: 20,
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    
+    
   },
   transactionText: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 5,
+    fontWeight: 'bold',
   },
   noTransactions: {
     fontSize: 16,
