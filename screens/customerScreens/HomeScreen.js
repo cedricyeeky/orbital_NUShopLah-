@@ -208,6 +208,7 @@ const HomeScreen = () => {
                         pointsRequired: redeemedVoucher.pointsRequired,
                         voucherDescription: redeemedVoucher.voucherDescription,
                         customerId: firebase.auth().currentUser.uid,
+                        customerName: firstName,
                         sellerId: redeemedVoucher.sellerId,
                         isVoucher: true,
                       })}

@@ -35,7 +35,7 @@ const ScannerScreen = () => {
 
       if (qrCodeData.isVoucher) {
         //VOUCHER QR CODE. Cannot Award Points.#000
-        const { voucherId, voucherAmount, pointsRequired, voucherDescription, customerId, sellerId, isVoucher} = qrCodeData;
+        const { voucherId, voucherAmount, pointsRequired, voucherDescription, customerId, customerName, sellerId, isVoucher} = qrCodeData;
         console.log("Seller ID from QR Code", qrCodeData.sellerId);
         console.log(qrCodeData);
         console.log("Seller ID from Auth Context:", user.uid);
@@ -43,6 +43,8 @@ const ScannerScreen = () => {
         if (qrCodeData.sellerId === user.uid) {
           // This Voucher is Indeed from the Seller who is creating it. And that the Cusstomer is using it at that Seller's store
           // Otherwise it will be like using Watson's voucher at Guardian.
+
+          console.log("Here we want to know Original Price")
           const inputResult = await new Promise((resolve) => {
             Alert.prompt('Original Price', 'Enter the original Price Payable by the customer:', (text) => {
               resolve(parseInt(text, 10) || 0);
@@ -50,10 +52,12 @@ const ScannerScreen = () => {
           });
   
           const originalPrice = inputResult || 0;
+          console.log(originalPrice);
   
           //Calculate Final Amount Payable by Customer AFTER Applying Voucher
           let finalAmount = originalPrice - qrCodeData.voucherAmount;
           finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
+          console.log(finalAmount);
 
           // Update the 'usedBy' array of the voucher document in Firestore
           firebase
@@ -72,8 +76,8 @@ const ScannerScreen = () => {
           const transactionsCollectionRef = firebase.firestore().collection('transactions');
           const transactionDocRef = await transactionsCollectionRef.add({
             amountPaid: finalAmount,
-            customerId: uid,
-            customerName: firstName,
+            customerId: customerId,
+            customerName: customerName,
             pointsAwarded: 0,
             sellerId: user.uid,
             sellerName: sellerName,
