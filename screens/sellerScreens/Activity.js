@@ -1,58 +1,3 @@
-// import { StyleSheet, Text, View, Button } from 'react-native'
-// import { useNavigation } from '@react-navigation/native'
-// import React, { useContext, useEffect, useState } from 'react';
-// import { firebase } from '../../firebaseconfig';
-// import { FAB } from 'react-native-paper';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// const ActivityScreen = ({navigation}) => {
-//   //const navigation = useNavigation();
-//   const [firstName, setFirstName] = useState('')
-
-//   useEffect(() => {
-//     firebase.firestore().collection('users')
-//     .doc(firebase.auth().currentUser.uid).get()
-//     .then((snapshot) => {
-//       if (snapshot.exists) {
-//         setFirstName(snapshot.data().firstName)
-//       } else {
-//         console.log('User does not exist')
-//       }
-//     })
-//     .catch((error) => {
-//       console.log("Error getting user: ", error)
-//     })
-//   }, [])
-
-//   return (  
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Welcome! {firstName} This is Activity Page. You can View your Transaction History here~</Text>
-//     </View>
-//   )
-// }
-
-// export default ActivityScreen;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: '#f9fafd',
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: 20,
-//     },
-//     text: {
-//       fontSize: 20,
-//       fontWeight: 'bold',
-
-//     },
-//     fab: {
-//       marginTop: 20,
-//       padding: 2,
-//       backgroundColor: 'white'
-//     },
-// })
-
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
@@ -84,20 +29,50 @@ const ActivityScreen = () => {
 
     // Format the timestamp as a string
     const formattedTimestamp = date.toLocaleString();
+    
+    //Render Accorsing to Transaction Type
+    if (item.pointsAwarded == 0) {
+      return (
+        <View style={styles.voucherTransactionContainer}>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    //points
+    } else {
+      return (
+      <View style={styles.pointTransactionContainer}>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    }
+  };
 
-    return (
-      <View style={styles.transactionContainer}>
-        <Text style={styles.transactionText}>Transaction ID: {item.id}</Text>
-        <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
-        <Text style={styles.transactionText}>Amount Received: {item.amountPaid}</Text>
-        <Text style={styles.transactionText}>Date: {formattedTimestamp}</Text>
-      </View>
-    );
+  const calculateTotalRevenue = () => {
+    let totalRevenue = 0;
+  
+    transactions.forEach((transaction) => {
+      totalRevenue += transaction.amountPaid;
+    });
+    console.log(totalRevenue);
+  
+    return totalRevenue;
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
+      <Text style={styles.header}>Total Revenue: ${calculateTotalRevenue()}</Text>
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}
@@ -116,23 +91,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: 'white',
+    shadowColor: "#000",
+    shadowOffset: {width: 0, height: 10},
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'black',
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    
   },
   listContainer: {
     flexGrow: 1,
+    
   },
-  transactionContainer: {
-    backgroundColor: '#F0F0F0',
-    padding: 10,
-    marginBottom: 10,
+  pointTransactionContainer: {
+    padding: 30,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: '#003D7C',
+    opacity: '0.9',
+    
+  },
+  voucherTransactionContainer: {
+    padding: 30,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: '#f07b10',
+    opacity: '0.9',
+    
   },
   transactionText: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 5,
+    fontWeight: 'bold',
+    color: 'white',
   },
   noTransactions: {
     fontSize: 16,

@@ -1,6 +1,3 @@
-
-
-// gpt 
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -73,6 +70,33 @@ const ScannerScreen = () => {
             console.log('Error redeeming voucher:', error);
           });
 
+          console.log("Now Deduct and Update Customer Current Point Balance")
+          
+          firebase.firestore().collection('users').doc(customerId).get()
+          .then((snapshot) => {
+            const customer = snapshot.data();
+            const customerCurrentPoint = customer.currentPoint;
+            const updatedCustomerCurrentPoint = customerCurrentPoint - qrCodeData.pointsRequired;
+        
+            firebase
+              .firestore()
+              .collection('users')
+              .doc(customerId)
+              .update({
+                currentPoint: updatedCustomerCurrentPoint,
+              })
+              .then(() => {
+                console.log('Customer Current Point Updated!');
+              })
+              .catch((error) => {
+                console.log('Error updating points:', error);
+              });
+          })
+          .catch((error) => {
+            console.log('Error getting customer data:', error);
+          });
+        
+          //Create a Transaction Log of type "Voucher Transaction"
           const transactionsCollectionRef = firebase.firestore().collection('transactions');
           const transactionDocRef = await transactionsCollectionRef.add({
             amountPaid: finalAmount,
@@ -84,8 +108,12 @@ const ScannerScreen = () => {
             timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
             transactionType: "Voucher Transaction",
             voucherAmount: qrCodeData.voucherAmount,
+            voucherId: qrCodeData.voucherId,
+            voucherDescription: qrCodeData.voucherDescription,
           });
-          
+
+          // Show success message
+          Alert.alert('Success', `${customerName} has successfully redeemed the Voucher and you will be paid $${finalAmount}`);
         } else {
           throw new Error("This QR Code is from other Sellers! Or it is not valid anymore!");
         }

@@ -31,22 +31,52 @@ const ActivityScreen = () => {
     // Format the timestamp as a string
     const formattedTimestamp = date.toLocaleString();
   
-    console.log(item);
-    return (
-      <View style={styles.transactionContainer}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
-        <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
-        <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
-        <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
-        <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
-      </View>
-    );
+    //console.log(item);
+
+    //There are 2 types of Transaction Log: Points and Voucher Transaction
+
+    if (item.pointsAwarded == 0) {
+      return (
+        <View style={styles.voucherTransactionContainer}>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    } else {
+      return (
+      <View style={styles.pointTransactionContainer}>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    }
+  };
+
+  const calculateTotalSpent = () => {
+    let totalSpent = 0;
+  
+    transactions.forEach((transaction) => {
+      totalSpent += transaction.amountPaid;
+    });
+    console.log(totalSpent);
+  
+    return totalSpent;
   };
   
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
+      <Text style={styles.header}>Total Spent: ${calculateTotalSpent()}</Text>
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}
@@ -74,19 +104,29 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     
   },
   listContainer: {
     flexGrow: 1,
     
   },
-  transactionContainer: {
+  pointTransactionContainer: {
     padding: 30,
     marginBottom: 30,
     borderRadius: 20,
     backgroundColor: '#003D7C',
+    opacity: '0.9',
+    
+  },
+  voucherTransactionContainer: {
+    padding: 30,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: '#f07b10',
     opacity: '0.9',
     
   },

@@ -85,54 +85,46 @@ const HomeScreen = () => {
 
       //Function to handle redeem vouchers for Customers
       const redeemVoucher = (voucher) => {
-        // Confirm with the user if they want to redeem the voucher
-        Alert.alert(
-          'Redeem Voucher',
-          'Are you sure you want to redeem this voucher?',
-          [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Confirm',
-              onPress: () => {
-                const currentUserUid = firebase.auth().currentUser.uid;
-                console.log("Voucher is:", voucher.voucherId);
-                setRedeemedVoucher(voucher);
-                setShowVoucherQRCodeModal(true);
-                setIsUseNowButtonClicked(true);
-
-                // Automatically hide the voucher QR code modal after 5 minutes
-                // setTimeout(() => {
-                //   setShowVoucherQRCodeModal(false);
-                //   setIsUseNowButtonClicked(false);
-                // }, 5 * 60 * 1000); // 5 minutes in milliseconds
-
-                // // Update the 'usedBy' array of the voucher document in Firestore
-                // firebase
-                //   .firestore()
-                //   .collection('vouchers')
-                //   .doc(voucherId)
-                //   .update({
-                //     usedBy: firebase.firestore.FieldValue.arrayUnion(currentUserUid),
-                //   })
-                //   .then(() => {
-                //     console.log('Voucher redeemed successfully!');
-                    
-                //     // Automatically hide the voucher QR code modal after 5 minutes
-                //     // setTimeout(() => {
-                //     //   setShowVoucherQRCodeModal(false);
-                //     //   setIsUseNowButtonClicked(false);
-                //     // }, 5 * 60 * 1000); // 5 minutes in milliseconds
-                //   })
-                //   .catch((error) => {
-                //     console.log('Error redeeming voucher:', error);
-                //   });
+        
+        if (voucher.pointsRequired > currentPoint) {
+          Alert.alert("Warning: Insufficient Point Balance!");
+        } else {
+          // Confirm with the user if they want to redeem the voucher
+          Alert.alert(
+            'Redeem Voucher',
+            'Are you sure you want to redeem this voucher?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
               },
-            },
-          ]
-        );
+              {
+                text: 'Confirm',
+                onPress: () => {
+                  const currentUserUid = firebase.auth().currentUser.uid;
+                  console.log("Voucher is:", voucher.voucherId);
+                  setRedeemedVoucher(voucher);
+                  setShowVoucherQRCodeModal(true);
+                  setIsUseNowButtonClicked(true);
+  
+                  Alert.alert("The QR Code will be valid for only 5 minutes!");
+  
+                  // DISPLAY TIMER IN FUTURE
+                  
+                  //Automatically hide the voucher QR code modal after 5 minutes
+                  setTimeout(() => {
+                    setShowVoucherQRCodeModal(false);
+                    setIsUseNowButtonClicked(false);
+                  }, 5 * 60 * 1000); // 5 minutes in milliseconds
+  
+                  
+                },
+              },
+            ]
+          );
+
+        }
+        
       };
 
 
@@ -157,8 +149,8 @@ const HomeScreen = () => {
                   // onPress={() => redeemVoucher(voucher.voucherId)}
                   >
                   <Card.Content>
-                    {/* <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
-                    <Text>{console.log(voucher.voucherImage)}</Text>
+                    {/* <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
+                    <Text>{console.log(voucher.voucherImage)}</Text> */}
                     <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                     <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
@@ -179,8 +171,8 @@ const HomeScreen = () => {
                   onError={() => console.log("Failed to Load Image. But you don't need it anyways.")}
                   >
                   <Card.Content>
-                    {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
-                    <Text>{console.log(voucher.voucherImage)}</Text>
+                    {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
+                    <Text>{console.log(voucher.voucherImage)}</Text> */}
                     <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                     <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
