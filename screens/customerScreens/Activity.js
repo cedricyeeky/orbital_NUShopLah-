@@ -34,11 +34,11 @@ const ActivityScreen = () => {
     console.log(item);
     return (
       <View style={styles.transactionContainer}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#001b3a'}}>Transaction ID: {item.id}</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
         <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
-        <Text style={styles.transactionText}>Amount Paid: {item.amountPaid}</Text>
-        <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded}</Text>
-        <Text style={{fontWeight: 'bold', fontSize: 18, color: '#001b3a'}}>Date: {formattedTimestamp}</Text>
+        <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+        <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
       </View>
     );
   };
@@ -47,11 +47,6 @@ const ActivityScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
-      <Image 
-        source={require('../../assets/orangeg.jpg')}
-        style={StyleSheet.absoluteFillObject}
-        blurRadius={50}
-      />
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}
@@ -70,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     shadowColor: "#000",
     shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.3,
@@ -80,6 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
+    marginBottom: 20,
     
   },
   listContainer: {
@@ -87,17 +83,18 @@ const styles = StyleSheet.create({
     
   },
   transactionContainer: {
-    padding: 20,
-    marginBottom: 20,
+    padding: 30,
+    marginBottom: 30,
     borderRadius: 20,
-    backgroundColor: 'rgba(52, 52, 52, 0.1)',
-    
+    backgroundColor: '#003D7C',
+    opacity: '0.9',
     
   },
   transactionText: {
-    fontSize: 15,
+    fontSize: 18,
     marginBottom: 5,
     fontWeight: 'bold',
+    color: 'white',
   },
   noTransactions: {
     fontSize: 16,

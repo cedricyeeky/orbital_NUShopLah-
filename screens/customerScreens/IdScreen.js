@@ -78,6 +78,7 @@ const IdScreen = () => {
         currentPoint,
         totalPoint,
         amountPaid: 0,
+        isVoucher: false,
       };
       return JSON.stringify(qrCodeData);
     };
@@ -116,6 +117,7 @@ const IdScreen = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: '#003d7c',
     },
     card: {
       //backgroundColor: '#ff914d',

@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, Button, Image, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
-import { Card } from 'react-native-paper';
+ import { Card, Modal, Portal, PaperProvider } from 'react-native-paper';
+import QRCode from 'react-native-qrcode-svg';
+// import { Modal } from 'react-native-modal';
 
 
 const HomeScreen = () => {
@@ -12,9 +14,18 @@ const HomeScreen = () => {
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
 
+    //Modal
+    const [showVoucherQRCodeModal, setShowVoucherQRCodeModal] = useState(false);
+
+    // const toggleModal = () => {
+    //   setShowVoucherQRCodeModal(!showVoucherQRCodeModal);
+    // };
+
     //Vouchers
     const [vouchers, setVouchers] = useState([]);
     const [redeemedVouchers, setRedeemedVouchers] = useState([]);
+    const [redeemedVoucher, setRedeemedVoucher] = useState(null);
+    const [isUseNowButtonClicked, setIsUseNowButtonClicked] = useState(false);
 
     //For Customer Details
     useEffect(() => {
@@ -73,82 +84,174 @@ const HomeScreen = () => {
       }, []);
 
       //Function to handle redeem vouchers for Customers
-      const redeemVoucher = (voucherId) => {
-        // Alert.alert('You are about to redeeem this voucher');
-        const currentUserUid = firebase.auth().currentUser.uid;
-    
-        // Update the 'usedBy' array of the voucher document in Firestore
-        firebase
-          .firestore()
-          .collection('vouchers')
-          .doc(voucherId)
-          .update({
-            usedBy: firebase.firestore.FieldValue.arrayUnion(currentUserUid),
-          })
-          .then(() => {
-            console.log('Voucher redeemed successfully!');
-          })
-          .catch((error) => {
-            console.log('Error redeeming voucher:', error);
-          });
+      const redeemVoucher = (voucher) => {
+        // Confirm with the user if they want to redeem the voucher
+        Alert.alert(
+          'Redeem Voucher',
+          'Are you sure you want to redeem this voucher?',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Confirm',
+              onPress: () => {
+                const currentUserUid = firebase.auth().currentUser.uid;
+                console.log("Voucher is:", voucher.voucherId);
+                setRedeemedVoucher(voucher);
+                setShowVoucherQRCodeModal(true);
+                setIsUseNowButtonClicked(true);
+
+                // Automatically hide the voucher QR code modal after 5 minutes
+                // setTimeout(() => {
+                //   setShowVoucherQRCodeModal(false);
+                //   setIsUseNowButtonClicked(false);
+                // }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+                // // Update the 'usedBy' array of the voucher document in Firestore
+                // firebase
+                //   .firestore()
+                //   .collection('vouchers')
+                //   .doc(voucherId)
+                //   .update({
+                //     usedBy: firebase.firestore.FieldValue.arrayUnion(currentUserUid),
+                //   })
+                //   .then(() => {
+                //     console.log('Voucher redeemed successfully!');
+                    
+                //     // Automatically hide the voucher QR code modal after 5 minutes
+                //     // setTimeout(() => {
+                //     //   setShowVoucherQRCodeModal(false);
+                //     //   setIsUseNowButtonClicked(false);
+                //     // }, 5 * 60 * 1000); // 5 minutes in milliseconds
+                //   })
+                //   .catch((error) => {
+                //     console.log('Error redeeming voucher:', error);
+                //   });
+              },
+            },
+          ]
+        );
       };
 
 
     return (
-        <ScrollView>
+      <ScrollView>
         <View style={styles.container}>
           <Card>
-          <Card.Content>
-            <Text style={styles.text}>Welcome! {firstName}</Text>
-            <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
-            <FormButton buttonTitle='Logout' onPress={() => logout()} />
-          </Card.Content>
+            <Card.Content>
+              <Text style={styles.text}>Welcome! {firstName}</Text>
+              <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
+              <FormButton buttonTitle='Logout' onPress={() => logout()} />
+            </Card.Content>
           </Card>
 
           <Text style={styles.heading}>Available Vouchers</Text>
-            <ScrollView horizontal>
-                {/* Render available vouchers */}
-                {vouchers.map((voucher) => (
-                    <TouchableOpacity
-                    key={voucher.voucherId}
-                    style={styles.voucherCard}
-                    // onPress={() => redeemVoucher(voucher.voucherId)}
-                    >
-                    <Card.Content>
-                        <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                        <Text>{console.log(voucher.voucherImage)}</Text>
-                        <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
-                        <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                        <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
-                        <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
-                        <FormButton
-                          buttonTitle="REDEEM"
-                          onPress={() => redeemVoucher(voucher.voucherId)}
-                        />
-                    </Card.Content>
-                    </TouchableOpacity>
-                ))}
+          <ScrollView horizontal>
+            {/* Render available vouchers */}
+            {vouchers.map((voucher) => (
+                <TouchableOpacity
+                  key={voucher.voucherId}
+                  style={styles.voucherCard}
+                  // onPress={() => redeemVoucher(voucher.voucherId)}
+                  >
+                  <Card.Content>
+                    {/* <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
+                    <Text>{console.log(voucher.voucherImage)}</Text>
+                    <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
+                    <FormButton
+                      buttonTitle="REDEEM"
+                      onPress={() => redeemVoucher(voucher)}
+                    />
+                  </Card.Content>
+                </TouchableOpacity>
+            ))}
 
-                {/* Render redeemed vouchers */}
-                {redeemedVouchers.map((voucher) => (
-                    <TouchableOpacity
-                    key={voucher.voucherId}
-                    style={styles.voucherCardRedeemed}
-                    onError={() => console.log("Failed to Load Image. But you don't need it anyways.")}
-                    >
-                    <Card.Content>
-                        {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
-                        <Text>{console.log(voucher.voucherImage)}</Text>
-                        <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
-                        <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                        <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
-                        <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
-                    </Card.Content>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+            {/* Render redeemed vouchers */}
+            {redeemedVouchers.map((voucher) => (
+                <TouchableOpacity
+                  key={voucher.voucherId}
+                  style={styles.voucherCardRedeemed}
+                  onError={() => console.log("Failed to Load Image. But you don't need it anyways.")}
+                  >
+                  <Card.Content>
+                    {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> */}
+                    <Text>{console.log(voucher.voucherImage)}</Text>
+                    <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
+                  </Card.Content>
+                </TouchableOpacity>
+            ))}
+
+          </ScrollView>
+          {/* Modal for Voucher QR Code */}
+          
+            {isUseNowButtonClicked && (
+              <PaperProvider>
+                <Portal>
+                  <Modal
+                    visible={showVoucherQRCodeModal}
+                    onDismiss={() => setShowVoucherQRCodeModal(false)}
+                    contentContainerStyle={styles.modalContainer}
+                  >
+                    <Text style={styles.qrCodeText}>Scan QR Code to Redeem</Text>
+                    <QRCode
+                      value={JSON.stringify({
+                        voucherId: redeemedVoucher.voucherId,
+                        voucherAmount: redeemedVoucher.voucherAmount,
+                        pointsRequired: redeemedVoucher.pointsRequired,
+                        voucherDescription: redeemedVoucher.voucherDescription,
+                        customerId: firebase.auth().currentUser.uid,
+                        sellerId: redeemedVoucher.sellerId,
+                        isVoucher: true,
+                      })}
+                      size={200}
+                    />
+                  </Modal>
+                </Portal>
+              </PaperProvider> 
+              )}
+              
+             
+
+
+
+          {/* {isUseNowButtonClicked && (
+                 
+            <Modal
+              isVisible={showVoucherQRCodeModal}
+              onBackdropPress={() => setShowVoucherQRCodeModal(false)}
+              contentContainerStyle={styles.modalContainer}
+            >
+              <View>
+                <Text style={styles.qrCodeText}>Scan QR Code to Redeem</Text>
+                <QRCode
+                  value={JSON.stringify({
+                    voucherId: redeemedVoucher.voucherId,
+                    voucherAmount: redeemedVoucher.voucherAmount,
+                    pointsRequired: redeemedVoucher.pointsRequired,
+                    voucherDescription: redeemedVoucher.voucherDescription,
+                    customerId: firebase.auth().currentUser.uid,
+                    sellerId: redeemedVouchers.sellerId,
+                  })}
+                  size={200}
+                />
+                <Button title="Cancel (Voucher will be voided upon doing so)" onPress={toggleModal} />
+              </View>
+            </Modal>
+                  
+              )} */}
         </View>
-        </ScrollView>
+        
+        
+
+      </ScrollView>
     );
 }
 
@@ -171,6 +274,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 16,
         marginTop: 20,
+    },
+    modalContainer: {
+      backgroundColor: 'blue',
+      padding: 16,
+      alignItems: 'center',
+      marginTop: 50,
+      
+    },
+    qrCodeText: {
+      fontSize: 60,
+      marginBottom: 60,
+      color: 'white',
+      
     },
     voucherCard: {
         backgroundColor: '#003D7C',
