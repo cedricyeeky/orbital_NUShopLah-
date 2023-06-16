@@ -192,6 +192,15 @@ const SettingsScreen = () => {
     }
   };
 
+  const handleLogout = () => {
+    if (user && user.uid) {
+      logout();
+    } else {
+      // Handle the case when the user object is null or uid is not available
+      console.log('User object is null or uid is not available');
+    }
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -255,7 +264,7 @@ const SettingsScreen = () => {
 
         {/**Log Out Button */}
         <View style={styles.container}>
-          <FormButton buttonTitle='Logout' onPress={() => logout()} />
+          <FormButton buttonTitle='Logout' onPress={handleLogout} />
         </View>
       </View>
     </ScrollView>

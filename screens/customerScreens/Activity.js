@@ -12,6 +12,7 @@ const ActivityScreen = () => {
       .firestore()
       .collection('transactions')
       .where('customerId', '==', user.uid)
+      .orderBy('timeStamp', 'desc')
       .onSnapshot((snapshot) => {
         const data = [];
         snapshot.forEach((doc) => {
@@ -76,7 +77,7 @@ const ActivityScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
-      <Text style={styles.header}>Total Spent: ${calculateTotalSpent()}</Text>
+      <Text style={styles.header2}>Total Spent: ${calculateTotalSpent()}</Text>
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}
@@ -108,7 +109,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    
+  },
+  header2: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   listContainer: {
     flexGrow: 1,

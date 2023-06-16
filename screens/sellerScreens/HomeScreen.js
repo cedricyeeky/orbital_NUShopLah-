@@ -84,6 +84,7 @@ const HomeScreen = () => {
                   pointsRequired,
                   usedBy: [], // Initialize the usedBy array as empty
                   sellerId: firebase.auth().currentUser.uid,
+                  timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
                 })
                 .then(() => {
                   console.log('Voucher created successfully!');

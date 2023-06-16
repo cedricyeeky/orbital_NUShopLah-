@@ -147,7 +147,7 @@ const HomeScreen = () => {
             <Card.Content>
               <Text style={styles.text}>Welcome! {firstName}</Text>
               <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
-              <FormButton buttonTitle='Logout' onPress={() => logout()} />
+              <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
             </Card.Content>
           </Card>
 
@@ -229,6 +229,7 @@ const HomeScreen = () => {
             <Modal
               visible={showVoucherQRCodeModal}
               animationType = "slide"
+              transparent={true}
             >
               <View style={styles.modalContent}>
                 <View style={styles.titleContainer}>
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     modalContent: {
-      height: '50%',
+      height: '60%',
       width: '100%',
       backgroundColor: '#f07b10',
       borderTopRightRadius: 18,
