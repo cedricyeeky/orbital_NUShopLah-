@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Button, Image, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, Button, Image, Modal, Pressable, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
- import { Card, Modal, Portal, PaperProvider } from 'react-native-paper';
+ import { Card, Portal, PaperProvider } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
-// import { Modal } from 'react-native-modal';
+import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 
 
 const HomeScreen = () => {
@@ -13,13 +13,14 @@ const HomeScreen = () => {
     const [currentPoint, setCurrentPoint] = useState(0);
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
+    const logoImage = require('../../assets/NUShopLah!.png');
 
     //Modal
     const [showVoucherQRCodeModal, setShowVoucherQRCodeModal] = useState(false);
 
-    // const toggleModal = () => {
-    //   setShowVoucherQRCodeModal(!showVoucherQRCodeModal);
-    // };
+    const toggleModal = () => {
+      setShowVoucherQRCodeModal(!showVoucherQRCodeModal);
+    };
 
     //Vouchers
     const [vouchers, setVouchers] = useState([]);
@@ -126,7 +127,18 @@ const HomeScreen = () => {
         }
         
       };
-
+    
+    const generateQRCodeData = () => {
+      const qrCodeData = {
+        voucherId: redeemedVoucher.voucherId,
+                   voucherAmount: redeemedVoucher.voucherAmount,
+                   pointsRequired: redeemedVoucher.pointsRequired,
+                   voucherDescription: redeemedVoucher.voucherDescription,
+                   customerId: firebase.auth().currentUser.uid,
+                   sellerId: redeemedVouchers.sellerId,
+      };
+      return JSON.stringify(qrCodeData);
+    };
 
     return (
       <ScrollView>
@@ -184,7 +196,7 @@ const HomeScreen = () => {
           </ScrollView>
           {/* Modal for Voucher QR Code */}
           
-            {isUseNowButtonClicked && (
+            {/* {isUseNowButtonClicked && (
               <PaperProvider>
                 <Portal>
                   <Modal
@@ -209,37 +221,27 @@ const HomeScreen = () => {
                   </Modal>
                 </Portal>
               </PaperProvider> 
-              )}
+              )} */}
               
-             
 
-
-
-          {/* {isUseNowButtonClicked && (
+          {isUseNowButtonClicked && (
                  
             <Modal
-              isVisible={showVoucherQRCodeModal}
-              onBackdropPress={() => setShowVoucherQRCodeModal(false)}
-              contentContainerStyle={styles.modalContainer}
+              visible={showVoucherQRCodeModal}
+              animationType = "slide"
             >
-              <View>
-                <Text style={styles.qrCodeText}>Scan QR Code to Redeem</Text>
-                <QRCode
-                  value={JSON.stringify({
-                    voucherId: redeemedVoucher.voucherId,
-                    voucherAmount: redeemedVoucher.voucherAmount,
-                    pointsRequired: redeemedVoucher.pointsRequired,
-                    voucherDescription: redeemedVoucher.voucherDescription,
-                    customerId: firebase.auth().currentUser.uid,
-                    sellerId: redeemedVouchers.sellerId,
-                  })}
-                  size={200}
-                />
-                <Button title="Cancel (Voucher will be voided upon doing so)" onPress={toggleModal} />
+              <View style={styles.modalContent}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>Scan the QR code below to redeem</Text>
+                </View>
+                <QRCodeWithLogo value={generateQRCodeData()} logo={logoImage} />
+                <Pressable onPress={() => setShowVoucherQRCodeModal(false)}>
+                  <Text style={styles.closeButtonText}>Cancel (Voucher will be voided upon doing so)</Text>
+                </Pressable>
               </View>
             </Modal>
                   
-              )} */}
+              )} 
         </View>
         
         
@@ -258,21 +260,40 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    modalContent: {
+      height: '50%',
+      width: '100%',
+      backgroundColor: '#f07b10',
+      borderTopRightRadius: 18,
+      borderTopLeftRadius: 18,
+      position: 'absolute',
+      bottom: 0,
+      alignItems: 'center', 
+    },
     text: {
         fontSize: 20,
         color: '#333333',
     },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        marginTop: 20,
-    },
-    modalContainer: {
-      backgroundColor: 'blue',
-      padding: 16,
+    titleContainer: {
+      height: '16%',
+      backgroundColor: '#f07b10',
+      borderTopRightRadius: 10,
+      borderTopLeftRadius: 10,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
       alignItems: 'center',
-      marginTop: 50,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: 'white',
+    },
+    closeButtonText: {
+      color: 'white',
+      marginTop: 20,
+      fontWeight: 'bold',
+      padding: 15,
+      backgroundColor: '#003d7c',
       
     },
     qrCodeText: {
