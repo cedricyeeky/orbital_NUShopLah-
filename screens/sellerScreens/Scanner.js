@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Dimensions } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { firebase } from '../../firebaseconfig';
 import { AuthContext } from '../../navigation/AuthProvider';
@@ -195,7 +195,17 @@ const ScannerScreen = () => {
         <BarCodeScanner
           onBarCodeScanned={handleQRCodeScan}
           style={StyleSheet.absoluteFillObject}
-        />
+        >
+        <View style={styles.mask}>
+            <View style={styles.squareContainer}>
+              <View style={styles.square} />
+              <View style={[styles.corner, styles.cornerTopLeft]} />
+              <View style={[styles.corner, styles.cornerTopRight]} />
+              <View style={[styles.corner, styles.cornerBottomLeft]} />
+              <View style={[styles.corner, styles.cornerBottomRight]} />
+            </View>
+        </View>
+        </BarCodeScanner>
       ) : (
         <View>
           <TouchableOpacity style={styles.scanAgainButton} onPress={handleScanAgain}>
@@ -206,6 +216,7 @@ const ScannerScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -234,6 +245,63 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  mask: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  squareContainer: {
+    position: 'relative',
+    width: 280,
+    height: 280,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  square: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderColor: '#fff',
+  },
+  corner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderWidth: 10,
+    borderColor: '#f07b10',
+    transform: [{ rotate: '180deg' }],
+    fontWeight: 'bold',
+    borderRadius: 3,
+  },
+  cornerTopLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+  },
+  cornerTopRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+  },
+  cornerBottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
+  },
+  cornerBottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
   },
 });
 
