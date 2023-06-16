@@ -4,6 +4,39 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { firebase } from '../../firebaseconfig';
 import { AuthContext } from '../../navigation/AuthProvider';
 
+const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
+const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
+
+const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
+  let newCurrentPoint = 0;
+  //Member
+  if (currentPoint < TIER_STATUS_LIMIT[0]) {
+    newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[0]);
+  } else if (currentPoint >= TIER_STATUS_LIMIT[0] && currentPoint < TIER_STATUS_LIMIT[1]) {
+    newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[1]) ;
+  } else if (currentPoint >= TIER_STATUS_LIMIT[1] && currentPoint < TIER_STATUS_LIMIT[2]) {
+    newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[2]);
+  } else {
+    newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[3]);
+  return newCurrentPoint;
+  }
+}
+
+const calculateNewTotalPoint = (totalPoint, amountPaid) => {
+  let newTotalPoint = 0;
+  //Member
+  if (totalPoint < TIER_STATUS_LIMIT[0]) {
+    newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[0]);
+  } else if (totalPoint >= TIER_STATUS_LIMIT[0] && totalPoint < TIER_STATUS_LIMIT[1]) {
+    newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[1]) ;
+  } else if (totalPoint >= TIER_STATUS_LIMIT[1] && totalPoint < TIER_STATUS_LIMIT[2]) {
+    newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[2]);
+  } else {
+    newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[3]);
+  return newTotalPoint;
+  }
+}
+
 const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
   const [scanning, setScanning] = useState(true);
@@ -131,8 +164,8 @@ const ScannerScreen = () => {
         const amountPaid = inputResult || 0;
     
         // Calculate new points
-        const newCurrentPoint = currentPoint + amountPaid * 2;
-        const newTotalPoint = totalPoint + amountPaid * 2;
+        const newCurrentPoint = calculateNewCurrentPoint(currentPoint, amountPaid);
+        const newTotalPoint = calculateNewTotalPoint(totalPoint, amountPaid);
     
         // Check if points are negative
         if (newCurrentPoint < 0 || newTotalPoint < 0) {

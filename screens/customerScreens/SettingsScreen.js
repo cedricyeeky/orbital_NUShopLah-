@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
@@ -90,11 +90,11 @@ const SettingsScreen = () => {
   const getTierBackgroundColor = () => {
     switch (loyaltyTier) {
       case 'Silver':
-        return 'silver';
+        return '#c0c0c0';
       case 'Gold':
-        return 'gold';
+        return '#ffd51e';
       case 'Platinum':
-        return 'purple';
+        return '#800080';
       default:
         return 'black';
     }
@@ -109,15 +109,15 @@ const SettingsScreen = () => {
     switch (loyaltyTier) {
       case 'Silver':
         benefitDescriptions = [
-          'Benefit 1',
-          'Benefit 2',
+          'Earn Points at 1.25X Speed! For every $1 spent, you earn 1.25 NUShopLah Point!',
+          'Gain more NUShopLah! Points to level up to higher Tiers!',
           'Benefit 3',
           // Add more benefit descriptions as needed
         ];
         break;
       case 'Gold':
         benefitDescriptions = [
-          'Benefit 1',
+          'Earn Points at 1.5X Speed! For every $1 spent, you earn 1.5 NUShopLah Point! ',
           'Benefit 2',
           'Benefit 3',
           // Add more benefit descriptions as needed
@@ -125,7 +125,7 @@ const SettingsScreen = () => {
         break;
       case 'Platinum':
         benefitDescriptions = [
-          'Benefit 1',
+          'Earn Points at 2X Speed! For every $1 spent, you earn 2 NUShopLah Point!',
           'Benefit 2',
           'Benefit 3',
           // Add more benefit descriptions as needed
@@ -159,7 +159,7 @@ const SettingsScreen = () => {
       case 'Gold':
         return require('../../assets/goldCard.png');
       case 'Platinum':
-        return require('../../assets/platinumCard2.png');
+        return require('../../assets/platinumCard.png');
       default:
         return require('../../assets/memberCard.png');
     }
@@ -204,20 +204,21 @@ const SettingsScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-      <Card style={styles.cardContainer}>
-      <Image source={getImageSource()} 
-                  style={[styles.cardCover, { backgroundColor: getTierBackgroundColor() }]}/>  
-       <Card.Content>
-          <Text style={styles.text}>Welcome! {firstName}</Text>
-          <Text style={styles.text}>Total Points: {totalPoint}</Text>
-          {/* {renderProgressBar()} */}
-          {loyaltyTier !== 'Platinum' && (
+        <Text style={[styles.textWelcome, { fontSize: 20 }]}>Welcome! {firstName}</Text>
+        <Text style={[styles.textWelcome, { fontSize: 16 }]}>Here is your NUShopLah! Loyalty Card!</Text>
+        <Card style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
+          <Image source={getImageSource()} 
+                  style={styles.cardCover}/>  
+          <Card.Content style={styles.cardContent}>
+            <Text style={styles.text}>Total Points: {totalPoint}</Text>
+            {/* {renderProgressBar()} */}
+            {loyaltyTier !== 'Platinum' && (
               <><Text style={styles.label}>
                 Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
               </Text><Text style={styles.text}>
                   {remainingPoints}</Text></>
           )} 
-      </Card.Content>
+          </Card.Content>
       </Card>
 
 
@@ -271,75 +272,16 @@ const SettingsScreen = () => {
   );
 };
 
+const deviceWidth = Math.round(Dimensions.get('window').width);
+const offset = 40;
+const radius = 20;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-  },
-  cardCover: {
-    resizeMode: 'contain',
-  },
-  name: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#fff',
-    backgroundColor: 'blue',
-    borderRadius: 25,
-    padding: 50,
-    margin: 20,
-  },
-  cardContainer: {
-    padding: 20,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    marginBottom: 30,
-    
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#fff',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: '#fff',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#fff',
-  },
-  tierDescription: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  feedbackContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  input: {
-    width: '100%',
-    height: 100,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    textAlignVertical: 'top',
-  },
-  feedbackButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 5,
   },
   buttonText: {
     color: 'white',
@@ -364,6 +306,82 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'grey',
   },
+  cardCover: {
+    resizeMode: 'contain',
+    width: deviceWidth - 80,
+  },
+  cardContainer: {
+    padding: 20,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    marginBottom: 30,
+    width: deviceWidth - 30,
+  },
+  cardContent: {
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  feedbackButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 5,
+  },
+  feedbackContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  input: {
+    width: '100%',
+    height: 100,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    textAlignVertical: 'top',
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: '#fff',
+  },
+  name: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+    backgroundColor: 'blue',
+    borderRadius: 25,
+    padding: 50,
+    margin: 20,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#fff',
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  textWelcome: {
+    margin: 20,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  tierDescription: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  
 });
 
 export default SettingsScreen;
