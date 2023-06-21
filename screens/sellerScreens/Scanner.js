@@ -104,6 +104,9 @@ const ScannerScreen = () => {
           });
 
           console.log("Now Deduct and Update Customer Current Point Balance")
+        // console.log("Customer UID", uid)
+        // console.log("Current Point Balance:", currentPoint);
+        // console.log("Total Point Balance:", totalPoint);
           
           firebase.firestore().collection('users').doc(customerId).get()
           .then((snapshot) => {
@@ -153,9 +156,9 @@ const ScannerScreen = () => {
       } else {
         //PERSONAL ID. Can Award Points.
         const { uid, firstName, currentPoint, totalPoint } = qrCodeData;
-        console.log("Customer UID", uid)
-        console.log("Current Point Balance:", currentPoint);
-        console.log("Total Point Balance:", totalPoint);
+        // console.log("Customer UID", uid)
+        // console.log("Current Point Balance:", currentPoint);
+        // console.log("Total Point Balance:", totalPoint);
 
         // Prompt for amountPaid input
         const inputResult = await new Promise((resolve) => {

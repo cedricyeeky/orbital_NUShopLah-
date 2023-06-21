@@ -130,12 +130,13 @@ const HomeScreen = () => {
     
     const generateQRCodeData = () => {
       const qrCodeData = {
-        voucherId: redeemedVoucher.voucherId,
+                   voucherId: redeemedVoucher.voucherId,
                    voucherAmount: redeemedVoucher.voucherAmount,
                    pointsRequired: redeemedVoucher.pointsRequired,
                    voucherDescription: redeemedVoucher.voucherDescription,
                    customerId: firebase.auth().currentUser.uid,
-                   sellerId: redeemedVouchers.sellerId,
+                   sellerId: redeemedVoucher.sellerId,
+                   isVoucher: true,
       };
       return JSON.stringify(qrCodeData);
     };

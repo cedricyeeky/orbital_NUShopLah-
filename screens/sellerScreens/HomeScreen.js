@@ -85,6 +85,7 @@ const HomeScreen = () => {
                   usedBy: [], // Initialize the usedBy array as empty
                   sellerId: firebase.auth().currentUser.uid,
                   timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  isVoucher: true,
                 })
                 .then(() => {
                   console.log('Voucher created successfully!');
@@ -202,6 +203,7 @@ const HomeScreen = () => {
         <Card.Actions>
           <Pressable style={styles.button2} onPress={createVoucher}>
             <Text style={styles.text}>Create</Text>
+
           </Pressable>
           {/* <
             style={styles.button}
