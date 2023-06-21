@@ -88,7 +88,7 @@ const HomeScreen = () => {
       const redeemVoucher = (voucher) => {
         
         if (voucher.pointsRequired > currentPoint) {
-          Alert.alert("Warning: Insufficient Point Balance!");
+          Alert.alert("Warning", "Insufficient Point Balance!");
         } else {
           // Confirm with the user if they want to redeem the voucher
           Alert.alert(
@@ -108,7 +108,7 @@ const HomeScreen = () => {
                   setShowVoucherQRCodeModal(true);
                   setIsUseNowButtonClicked(true);
   
-                  Alert.alert("The QR Code will be valid for only 5 minutes!");
+                  Alert.alert("Alert", "The QR Code will be valid for only 5 minutes!");
   
                   // DISPLAY TIMER IN FUTURE
                   
@@ -168,7 +168,7 @@ const HomeScreen = () => {
                     <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
                     <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
                     <FormButton
-                      buttonTitle="REDEEM"
+                      buttonTitle="USE NOW"
                       onPress={() => redeemVoucher(voucher)}
                     />
                   </Card.Content>
@@ -180,7 +180,7 @@ const HomeScreen = () => {
                 <TouchableOpacity
                   key={voucher.voucherId}
                   style={styles.voucherCardRedeemed}
-                  onError={() => console.log("Failed to Load Image. But you don't need it anyways.")}
+                  onError={() => console.log("Failed to Load Image. But you don't need it now anyways.")}
                   >
                   <Card.Content>
                     {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 

@@ -52,7 +52,7 @@ const AppStackSeller = () => {
 
         tabBarOptions={{
           activeTintColor: '#f07b10',
-          inactiveTintColor: 'white',
+          inactiveTintColor: '#003d7c',
           labelStyle: { fontSize: 12 },
           style: { 
             showLabel: 'false',

@@ -109,34 +109,31 @@ const SettingsScreen = () => {
     switch (loyaltyTier) {
       case 'Silver':
         benefitDescriptions = [
-          'Earn Points at 1.25X Speed! For every $1 spent, you earn 1.25 NUShopLah Point!',
+          'Earn Points at 1.25X Speed! For every $1 spent, you earn 1.25 NUShopLah! Point!',
           'Gain more NUShopLah! Points to level up to higher Tiers!',
-          'Benefit 3',
+          'More privileges coming your way! Stay Updated!',
           // Add more benefit descriptions as needed
         ];
         break;
       case 'Gold':
         benefitDescriptions = [
-          'Earn Points at 1.5X Speed! For every $1 spent, you earn 1.5 NUShopLah Point! ',
-          'Benefit 2',
-          'Benefit 3',
+          'Earn Points at 1.5X Speed! For every $1 spent, you earn 1.5 NUShopLah! Point! ',
+          'Gain more NUShopLah! Points to level up to higher Tiers!',
+          'More privileges coming your way! Stay Updated!',
           // Add more benefit descriptions as needed
         ];
         break;
       case 'Platinum':
         benefitDescriptions = [
-          'Earn Points at 2X Speed! For every $1 spent, you earn 2 NUShopLah Point!',
-          'Benefit 2',
-          'Benefit 3',
+          'Earn Points at 2X Speed! For every $1 spent, you earn 2 NUShopLah! Point!',
+          'More privileges coming your way! Stay Updated!',
           // Add more benefit descriptions as needed
         ];
         break;
       default:
         benefitDescriptions = [
           //Member
-          'Benefit 1',
-          'Benefit 2',
-          'Benefit 3',
+          'Gain more NUShopLah! Points to level up to higher Tiers!',
           // Add more benefit descriptions as needed
         ];
         break;
@@ -220,6 +217,14 @@ const SettingsScreen = () => {
           )} 
           </Card.Content>
       </Card>
+      <View >
+          {benefitDescriptions.map((description, index) => (
+            <View key={index} style={styles.bulletPointContainer}>
+              <Text style={styles.bulletPoint}>{bullet}</Text>
+              <Text style={styles.bulletPointText}>{description}</Text>
+            </View>
+          ))}
+      </View>
 
 
       {/* <View style={styles.container}>
@@ -296,6 +301,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginHorizontal: 30,
   },
   bulletPoint: {
     marginRight: 10,

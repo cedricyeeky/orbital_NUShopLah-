@@ -168,6 +168,7 @@ const HomeScreen = () => {
             style={styles.textInput}
             label="Voucher Amount"
             value={voucherAmount}
+            keyboardType='number-pad'
             onChangeText={(text) => setVoucherAmount(text)}
           />
           
@@ -175,6 +176,7 @@ const HomeScreen = () => {
             style={styles.textInput}
             label="Points Required"
             value={pointsRequired}
+            keyboardType='number-pad'
             onChangeText={(text) => setPointsRequired(text)}
           />
           
@@ -198,10 +200,13 @@ const HomeScreen = () => {
 
         </Card.Content>
         <Card.Actions>
-          <Button 
+          <Pressable style={styles.button2} onPress={createVoucher}>
+            <Text style={styles.text}>Create</Text>
+          </Pressable>
+          {/* <
             style={styles.button}
             title="Create" 
-            onPress={createVoucher} />
+            onPress={createVoucher} /> */}
         </Card.Actions>
       </Card>
 
@@ -224,6 +229,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginHorizontal: 40,
+  },
+  button2: {
+    margin: 10,
+    backgroundColor: "#003D7C",
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
   },
   container: {
     backgroundColor: '#f9fafd',

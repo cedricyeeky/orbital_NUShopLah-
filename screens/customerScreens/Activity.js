@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     shadowColor: "#000",
     shadowOffset: {width: 0, height: 10},
-    shadowOpacity: 0.3,
     shadowRadius: 30,
   },
   header: {
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     borderRadius: 20,
     backgroundColor: '#003D7C',
-    opacity: '0.9',
+
     
   },
   voucherTransactionContainer: {
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     borderRadius: 20,
     backgroundColor: '#f07b10',
-    opacity: '0.9',
+
     
   },
   transactionText: {
