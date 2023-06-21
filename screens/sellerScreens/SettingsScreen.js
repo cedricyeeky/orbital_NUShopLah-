@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#f9fafd',
-    flex: 1,
+    flex: 0.9,
     padding: 20,
   },
   text: {

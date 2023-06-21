@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dimensions } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -18,6 +19,9 @@ const accountName = "Account";
 //const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const deviceWidth = Math.round(Dimensions.get('window').width);
+const deviceHeight = Math.round(Dimensions.get('window').height);
+
 const AppStackSeller = () => {
     return (
     
@@ -26,9 +30,10 @@ const AppStackSeller = () => {
         screenOptions={{
           tabBarActiveTintColor: '#f07b10',
           tabBarInactiveTintColor: 'white',
-          labelStyle: { fontSize: 14 },
+          tabBarLabelStyle: { fontSize: 14},
           tabBarStyle: { 
-            paddingTop: 23,
+            padding: 10,
+            paddingBottom: 20,
             position: 'absolute',
             bottom: 30,
             left: 20,
@@ -36,7 +41,7 @@ const AppStackSeller = () => {
             elevation: 0,
             backgroundColor: '#003d7c',
             borderRadius: 15,
-            height: 90
+            height: deviceHeight * 0.1,
           }
 
         }}

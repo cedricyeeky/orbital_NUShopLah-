@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Card, ProgressBar } from 'react-native-paper';
 
 const SettingsScreen = () => {
@@ -199,7 +200,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{flexGrow: 1, flex: 1}}>
       <View style={styles.container}>
         <Text style={[styles.textWelcome, { fontSize: 20 }]}>Welcome! {firstName}</Text>
         <Text style={[styles.textWelcome, { fontSize: 16 }]}>Here is your NUShopLah! Loyalty Card!</Text>
@@ -226,48 +227,6 @@ const SettingsScreen = () => {
           ))}
       </View>
 
-
-      {/* <View style={styles.container}>
-        <Text style={styles.name}>{firstName}'s Account</Text>
-        <View style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
-          
-          <Text style={styles.label}>NUShopLah! Loyalty Tier:</Text>
-          <Text style={styles.title}>{loyaltyTier}</Text>
-          <Text style={styles.label}>Total NUShopLah! Points:</Text>
-          <Text style={styles.text}>{totalPoint}</Text>
-          {loyaltyTier !== 'Platinum' && (
-            <View>
-              <Text style={styles.label}>
-                Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
-              </Text>
-              <Text style={styles.text}>{remainingPoints}</Text>
-            </View>
-          )}
-        </View>
-
-        <View>
-          {benefitDescriptions.map((description, index) => (
-            <View key={index} style={styles.bulletPointContainer}>
-              <Text style={styles.bulletPoint}>{bullet}</Text>
-              <Text style={styles.bulletPointText}>{description}</Text>
-            </View>
-          ))}
-        </View> */}
-
-        {/* <View style={styles.feedbackContainer}>
-          <Text style={styles.label}>Share Feedback</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Share your feedback with us! We would love to serve you better!"
-            value={feedback}
-            onChangeText={setFeedback}
-            multiline
-          />
-          <TouchableOpacity style={styles.feedbackButton} onPress={handleFeedbackSubmit}>
-            <Text style={styles.buttonText}>Submit Feedback</Text>
-          </TouchableOpacity>
-        </View> */}
-
         {/**Log Out Button */}
         <View style={styles.container}>
           <FormButton buttonTitle='Logout' onPress={handleLogout} />
@@ -283,7 +242,12 @@ const radius = 20;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  container2: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -317,12 +281,11 @@ const styles = StyleSheet.create({
     width: deviceWidth - 80,
   },
   cardContainer: {
-    padding: 20,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
-    marginBottom: 30,
+    marginBottom: 20,
     width: deviceWidth - 30,
   },
   cardContent: {
@@ -373,7 +336,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 0,
     color: '#fff',
     fontWeight: 'bold',
   },
