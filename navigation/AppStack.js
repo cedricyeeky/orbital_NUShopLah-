@@ -18,51 +18,82 @@ const accountName = "Account";
 const Tab = createBottomTabNavigator();
 
 const AppStack = () => {
-    // return (
-    //     <Stack.Navigator>
-    //         <Stack.Screen name='Home' component={HomeScreen} />
-    //     </Stack.Navigator>
-    // );
     return (
-    
-        <Tab.Navigator 
-          initialRouteName={homeName}
-          screenOptions={({ route }) => ({
+
+      <Tab.Navigator 
+        initialRouteName={homeName}
+        screenOptions={{
+          tabBarActiveTintColor: '#f07b10',
+          tabBarInactiveTintColor: 'white',
+          labelStyle: { fontSize: 14 },
+          tabBarStyle: { 
+            paddingTop: 23,
+            position: 'absolute',
+            bottom: 30,
+            left: 20,
+            right: 20,
+            elevation: 0,
+            backgroundColor: '#003d7c',
+            borderRadius: 15,
+            height: 90
+          }
+
+        }}
+          
+        >
+
+        <Tab.Screen 
+          name={homeName} 
+          component={HomeScreen} 
+          options={{
+            tabBarActiveTintColor: '#f07b10',
+            tabBarInactiveTintColor: 'white',
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
-              let rn = route.name;
-  
-              if (rn == homeName) {
-                iconName = focused ? 'home' : 'home-outline';
-              } else if (rn === activityName) {
-                  iconName = focused ? 'receipt' : 'receipt-outline';
-              } else if (rn === idName) {
-                iconName = focused ? 'qr-code' : 'qr-code-outline';
-              } else if (rn === accountName) {
-                iconName = focused ? 'person-circle' : 'person-circle-outline';
-              }
-  
-              //Return any components that we like here
-  
+              iconName = focused ? 'home' : 'home-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            },
-  
-          })}
-          
-          tabBarOptions={{
-            activeTintColor: '#f07b10',
-            inactiveTintColor: '#003d7c',
-            labelStyle: { fontSize: 12 },
-            style: { padding: 10, height: 80}
-          }}>
-  
-          <Tab.Screen name={homeName} component={HomeScreen} />
-          <Tab.Screen name={activityName} component={ActivityScreen} />
-          <Tab.Screen name={idName} component={IdScreen} />
-          <Tab.Screen name={accountName} component={SettingsScreen} />
-  
+            }
+            
+          }}/>
+        <Tab.Screen 
+          name={activityName}
+          component={ActivityScreen}
+          options={{
+            tabBarActiveTintColor: '#f07b10',
+            tabBarInactiveTintColor: 'white',
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              iconName = focused ? 'receipt' : 'receipt-outline';
+              return <Ionicons name={iconName} size={size} color={color} />;
+            }
+          }} />
+        <Tab.Screen 
+          name={idName} 
+          component={IdScreen}
+          options={{
+            tabBarActiveTintColor: '#f07b10',
+            tabBarInactiveTintColor: 'white',
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              iconName = focused ? 'qr-code' : 'qr-code-outline';
+              return <Ionicons name={iconName} size={size} color={color} />;
+            }
+          }} />
+        <Tab.Screen 
+          name={accountName} 
+          component={SettingsScreen}
+          options={{
+            tabBarActiveTintColor: '#f07b10',
+            tabBarInactiveTintColor: 'white',
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              iconName = focused ? 'person-circle' : 'person-circle-outline';
+              return <Ionicons name={iconName} size={size} color={color} />;
+            }
+          }} />
+
         </Tab.Navigator>
-    );
+    )
 }
 
 export default AppStack;
