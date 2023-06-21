@@ -237,7 +237,7 @@ const HomeScreen = () => {
                 </View>
                 <QRCodeWithLogo value={generateQRCodeData()} logo={logoImage} />
                 <Pressable onPress={() => setShowVoucherQRCodeModal(false)}>
-                  <Text style={styles.closeButtonText}>Cancel (Voucher will be voided upon doing so)</Text>
+                  <Text style={styles.closeButtonText}>Cancel (Voucher will not be voided)</Text>
                 </Pressable>
               </View>
             </Modal>
@@ -261,8 +261,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    heading: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginVertical: 20,
+    },
     modalContent: {
-      height: '40%',
+      height: '50%',
       width: '100%',
       backgroundColor: '#f07b10',
       borderTopRightRadius: 18,

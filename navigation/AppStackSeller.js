@@ -13,7 +13,7 @@ import SettingsScreen from '../screens/sellerScreens/SettingsScreen';
 const homeName = "Home";
 const activityName = "Activity";
 const scannerName = "Scan QR";
-const settingsName = "Account";
+const accountName = "Account";
 
 //const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,7 +39,7 @@ const AppStackSeller = () => {
               iconName = focused ? 'receipt' : 'receipt-outline';
             } else if (rn === scannerName) {
               iconName = focused ? 'scan' : 'scan-outline';
-            } else if (rn === settingsName) {
+            } else if (rn === accountName) {
               iconName = focused ? 'person-circle' : 'person-circle-outline';
             }
 
@@ -51,16 +51,25 @@ const AppStackSeller = () => {
         })}
 
         tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'grey',
+          activeTintColor: '#f07b10',
+          inactiveTintColor: 'white',
           labelStyle: { fontSize: 12 },
-          style: { padding: 10, height: 80}
+          style: { 
+            showLabel: 'false',
+            position: 'absolute',
+            bottom: 25,
+            left: 20,
+            right: 20,
+            elevation: 0,
+            backgroundColor: '#003d7c',
+            borderRadius: 15,
+            height: 90}
         }}>
 
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen name={activityName} component={ActivityScreen} />
         <Tab.Screen name={scannerName} component={Scanner} />
-        <Tab.Screen name={settingsName} component={SettingsScreen} />
+        <Tab.Screen name={accountName} component={SettingsScreen} />
 
         </Tab.Navigator>
     

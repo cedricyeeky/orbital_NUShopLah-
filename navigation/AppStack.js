@@ -13,7 +13,7 @@ import SettingsScreen from '../screens/customerScreens/SettingsScreen';
 const homeName = "Home";
 const activityName = "Activity";
 const idName = "Personal ID";
-const settingsName = "Account";
+const accountName = "Account";
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +38,7 @@ const AppStack = () => {
                   iconName = focused ? 'receipt' : 'receipt-outline';
               } else if (rn === idName) {
                 iconName = focused ? 'qr-code' : 'qr-code-outline';
-              } else if (rn === settingsName) {
+              } else if (rn === accountName) {
                 iconName = focused ? 'person-circle' : 'person-circle-outline';
               }
   
@@ -50,8 +50,8 @@ const AppStack = () => {
           })}
           
           tabBarOptions={{
-            activeTintColor: 'tomato',
-            inactiveTintColor: 'grey',
+            activeTintColor: '#f07b10',
+            inactiveTintColor: '#003d7c',
             labelStyle: { fontSize: 12 },
             style: { padding: 10, height: 80}
           }}>
@@ -59,7 +59,7 @@ const AppStack = () => {
           <Tab.Screen name={homeName} component={HomeScreen} />
           <Tab.Screen name={activityName} component={ActivityScreen} />
           <Tab.Screen name={idName} component={IdScreen} />
-          <Tab.Screen name={settingsName} component={SettingsScreen} />
+          <Tab.Screen name={accountName} component={SettingsScreen} />
   
         </Tab.Navigator>
     );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View, Button, Pressable} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
 import { FAB, Card, TextInput } from 'react-native-paper';
@@ -161,31 +161,35 @@ const HomeScreen = () => {
 
       {/* Create Voucher */}
       <Card style={styles.card}>
-        <Card.Title title="Create Voucher" />
+        <Card.Title title="Create Voucher" styles={fontSize=20}/>
         <Card.Content>
           {/* Input fields */}
           <TextInput
+            style={styles.textInput}
             label="Voucher Amount"
             value={voucherAmount}
             onChangeText={(text) => setVoucherAmount(text)}
           />
           
           <TextInput
+            style={styles.textInput}
             label="Points Required"
             value={pointsRequired}
             onChangeText={(text) => setPointsRequired(text)}
           />
           
-          <FormInput
-            labelValue={voucherDescription}
-            onChangeText={(voucherDescription) => setVoucherDescription(voucherDescription)}
-            placeholderText="Voucher Description"
-            iconType="bars"
-            autoCorrect={false} 
+          <TextInput
+            style={styles.textInput}
+            label="Voucher Description"
+            value={voucherDescription}
+            onChangeText={(text) => setVoucherDescription(text)}
           />
 
+
           {/* Upload voucher image */}
-          <Button title="Choose Image from Library" onPress={selectImage} />
+          <Pressable style={styles.button} onPress={selectImage}>
+            <Text style={styles.text}>Choose Image From Library</Text>
+          </Pressable>
 
           {/* Display selected image */}
           {voucherImage && (
@@ -194,7 +198,10 @@ const HomeScreen = () => {
 
         </Card.Content>
         <Card.Actions>
-          <Button title="Create" onPress={createVoucher} />
+          <Button 
+            style={styles.button}
+            title="Create" 
+            onPress={createVoucher} />
         </Card.Actions>
       </Card>
 
@@ -210,6 +217,14 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
+  button: {
+    marginTop: 20,
+    backgroundColor: "#f07b10",
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 40,
+  },
   container: {
     backgroundColor: '#f9fafd',
     flex: 1,
@@ -218,23 +233,28 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: 'white',
   },
   fab: {
-    marginTop: 20,
+    marginTop: 40,
     padding: 2,
     backgroundColor: 'white',
   },
   card: {
     width: '100%',
     marginTop: 20,
+    backgroundColor: 'white',
   },
   selectedImage: {
     width: 200,
     height: 200,
     marginTop: 10,
     resizeMode: 'cover',
+  },
+  textInput: {
+    backgroundColor: 'white',
   },
 });
 

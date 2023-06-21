@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
@@ -65,17 +65,21 @@ const SettingsScreen = () => {
         {vouchers.length > 0 ? (
             vouchers.map((voucher) => (
                 <View
-                    style={styles.voucherContainer}
-                    
+                    style={styles.voucherContainer}    
                 >
                   <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
                   <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
                   <Text style={styles.voucherText}>Value: {voucher.voucherAmount}</Text>
                   <Text style={styles.voucherText}>Created On: {voucher.timeStamp.toDate().toLocaleString()}</Text>
                     {/* <Text style={styles.cancelText} onPress={() => handleCancelVoucher(voucher.id)}> Cancel Voucher</Text> */}
-                  <TouchableOpacity onPress={() => handleCancelVoucher(voucher.id)}>
+                  <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
                     <Text style={styles.cancelText}>Cancel Voucher</Text>
-                  </TouchableOpacity>
+                  </Pressable>
+                  
+                  {/* <TouchableOpacity 
+                    onPress={() => handleCancelVoucher(voucher.id)}>
+                    <Text style={styles.cancelText}>Cancel Voucher</Text>
+                  </TouchableOpacity> */}
                 </View>
             ))
         ) : (
@@ -89,6 +93,10 @@ const SettingsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    marginHorizontal: 50,
+    borderRadius: 10,
+  },
   container: {
     backgroundColor: '#f9fafd',
     flex: 1,
@@ -102,7 +110,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   voucherContainer: {
-    backgroundColor: '#00B14F',
+    backgroundColor: '#003d7c', //'#00B14F',
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
@@ -121,9 +129,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
-    textDecorationLine: 'underline',
     backgroundColor: 'red',
-    padding: 15,
+    padding: 10,
     borderRadius: 20,
     textAlign: 'center',
   },
