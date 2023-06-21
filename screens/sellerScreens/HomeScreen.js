@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, Button, Pressable} from 'react-native';
+import { Image, StyleSheet, Text, View, Alert, Button, Pressable} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
 import { FAB, Card, TextInput } from 'react-native-paper';
@@ -113,6 +113,8 @@ const HomeScreen = () => {
     xhr.responseType = 'blob';
     xhr.open('GET', voucherImage.uri, true);
     xhr.send();
+
+    Alert.alert('Voucher Created', 'Your voucher has been successfully created!')
   };
   
 
