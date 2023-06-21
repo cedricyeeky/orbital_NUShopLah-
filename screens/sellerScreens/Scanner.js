@@ -18,8 +18,8 @@ const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
     newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[2]);
   } else {
     newCurrentPoint = Math.round(currentPoint + amountPaid * POINT_MULTIPLIER[3]);
-  return newCurrentPoint;
   }
+  return newCurrentPoint;
 }
 
 const calculateNewTotalPoint = (totalPoint, amountPaid) => {
@@ -33,8 +33,8 @@ const calculateNewTotalPoint = (totalPoint, amountPaid) => {
     newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[2]);
   } else {
     newTotalPoint = Math.round(totalPoint + amountPaid * POINT_MULTIPLIER[3]);
-  return newTotalPoint;
   }
+  return newTotalPoint;
 }
 
 const ScannerScreen = () => {
@@ -153,6 +153,9 @@ const ScannerScreen = () => {
       } else {
         //PERSONAL ID. Can Award Points.
         const { uid, firstName, currentPoint, totalPoint } = qrCodeData;
+        console.log("Customer UID", uid)
+        console.log("Current Point Balance:", currentPoint);
+        console.log("Total Point Balance:", totalPoint);
 
         // Prompt for amountPaid input
         const inputResult = await new Promise((resolve) => {
@@ -165,7 +168,9 @@ const ScannerScreen = () => {
     
         // Calculate new points
         const newCurrentPoint = calculateNewCurrentPoint(currentPoint, amountPaid);
+        //console.log("Updated Current Point:" , newCurrentPoint);
         const newTotalPoint = calculateNewTotalPoint(totalPoint, amountPaid);
+        //console.log("Updated Total Point:" , newTotalPoint);
     
         // Check if points are negative
         if (newCurrentPoint < 0 || newTotalPoint < 0) {
