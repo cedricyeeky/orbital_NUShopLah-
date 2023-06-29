@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Alert, TouchableOpacity, Dimensions } from 'rea
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { firebase } from '../../firebaseconfig';
 import { AuthContext } from '../../navigation/AuthProvider';
-import * as Permissions from 'expo-permissions';
 
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
@@ -46,7 +45,7 @@ const ScannerScreen = () => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasCameraPermission(status === 'granted');
     })();
   }, []);
