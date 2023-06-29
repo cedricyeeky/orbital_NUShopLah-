@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert, TouchableOpacity, Dimensions } from 'rea
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { firebase } from '../../firebaseconfig';
 import { AuthContext } from '../../navigation/AuthProvider';
+import * as Permissions from 'expo-permissions';
 
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
@@ -41,21 +42,37 @@ const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
   const [scanning, setScanning] = useState(true);
   const [sellerName, setSellerName] = useState('');
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
   useEffect(() => {
-    firebase.firestore().collection('users')
-    .doc(firebase.auth().currentUser.uid).get()
-    .then((snapshot) => {
-      if (snapshot.exists) {
-        setSellerName(snapshot.data().firstName)
-      } else {
-        console.log('User does not exist')
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting user: ", error)
-    })
-  }, [])
+    (async () => {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      setHasCameraPermission(status === 'granted');
+    })();
+  }, []);
+
+  if (hasCameraPermission === null) {
+    return <Text>Requesting camera permission...</Text>;
+  }
+
+  if (hasCameraPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  // useEffect(() => {
+  //   firebase.firestore().collection('users')
+  //   .doc(firebase.auth().currentUser.uid).get()
+  //   .then((snapshot) => {
+  //     if (snapshot.exists) {
+  //       setSellerName(snapshot.data().firstName)
+  //     } else {
+  //       console.log('User does not exist')
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.log("Error getting user: ", error)
+  //   })
+  // }, [])
 
   const handleQRCodeScan = async ({ data }) => {
     setScanning(false);
