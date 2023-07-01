@@ -11,7 +11,7 @@ const IdScreen = () => {
     const [currentPoint, setCurrentPoint] = useState(0);
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
-    const [previousBrightness, setPreviousBrightness] = useState();
+    const [previousBrightness, setPreviousBrightness] = useState(0);
     const logoImage = require('../../assets/NUShopLah!.png');
   
     useEffect(() => {

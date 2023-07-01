@@ -65,7 +65,8 @@ const SettingsScreen = () => {
         {vouchers.length > 0 ? (
             vouchers.map((voucher) => (
                 <View
-                    style={styles.voucherContainer}    
+                    style={styles.voucherContainer}  
+                    key={voucher.id}  
                 >
                   <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
                   <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>

@@ -1,13 +1,17 @@
 {
   "expo": {
-    "name": "orbital",
-    "slug": "orbital",
+    "name": "NUShopLah! App",
+    "slug": "nushoplah-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/NUShopLah!-logo.png",
+    "permissions": [
+      "CAMERA",
+      "SYSTEM_ALERT_WINDOW"
+    ],
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/NUShopLah!-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,17 +19,29 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Using Camera to scan QR Code"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.orbital"
+      
+      "permissions": [
+        "CAMERA",
+        "SYSTEM_ALERT_WINDOW"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "abc4d008-5483-4177-a9da-29dc53ad4a0d"
+      }
     }
   }
 }

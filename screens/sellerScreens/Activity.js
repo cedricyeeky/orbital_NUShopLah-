@@ -78,7 +78,7 @@ const ActivityScreen = () => {
         <FlatList
           data={transactions}
           renderItem={renderItem}
-          keyExtractor={(item) => item.transactionId}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
       ) : (
