@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
@@ -14,6 +14,16 @@ const SettingsScreen = () => {
   const [remainingPoints, setRemainingPoints] = useState(0);
   const [firstName, setFirstName] = useState('');
   const [feedback, setFeedback] = useState('');
+
+  // Change the password
+  const changePassword = () => {
+    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+    .then(() => {
+      alert("Password Reset Email Sent!")
+    }).catch((error) => {
+      alert(error)
+    })
+  }
 
   useEffect(() => {
     
@@ -227,6 +237,11 @@ const SettingsScreen = () => {
           ))}
       </View>
 
+        {/**Change Password Button */}
+        <Pressable style={styles.button1} onPress={() => {changePassword()}}>
+            <Text style={styles.buttonText}>Change Password</Text>
+        </Pressable>
+
         {/**Log Out Button */}
         <View style={styles.container}>
           <FormButton buttonTitle='Logout' onPress={handleLogout} />
@@ -242,7 +257,7 @@ const radius = 20;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.9,
+    flex: 0.85,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -251,6 +266,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  button1: {
+    marginTop: 20,
+    backgroundColor: "#f07b10",
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 10,
   },
   buttonText: {
     color: 'white',

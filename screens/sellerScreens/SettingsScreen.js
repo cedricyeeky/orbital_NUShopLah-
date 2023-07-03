@@ -8,6 +8,16 @@ const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [vouchers, setVouchers] = useState([]);
 
+  // Change the password
+  const changePassword = () => {
+    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+    .then(() => {
+      alert("Password Reset Email Sent!")
+    }).catch((error) => {
+      alert(error)
+    })
+  }
+
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
@@ -77,16 +87,21 @@ const SettingsScreen = () => {
                     <Text style={styles.cancelText}>Cancel Voucher</Text>
                   </Pressable>
                   
-                  {/* <TouchableOpacity 
-                    onPress={() => handleCancelVoucher(voucher.id)}>
-                    <Text style={styles.cancelText}>Cancel Voucher</Text>
-                  </TouchableOpacity> */}
                 </View>
             ))
         ) : (
             <Text style={styles.noVouchers}>No vouchers found.</Text>
         )}
-        <FormButton buttonTitle="Logout" onPress={() => user?.uid && logout()} />
+        {/**Change Password Button */}
+        <Pressable style={styles.button1} onPress={() => {changePassword()}}>
+            <Text style={styles.buttonText}>Change Password</Text>
+        </Pressable>
+
+        {/**Log Out Button */}
+        <View style={styles.container1}>
+          <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+        </View>
+
       </View>
     </ScrollView>
     
@@ -98,9 +113,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     borderRadius: 10,
   },
+  button1: {
+    marginTop: 10,
+    backgroundColor: "#f07b10",
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 10,
+    marginHorizontal: 32,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   container: {
     backgroundColor: '#f9fafd',
     padding: 20,
+    flex: 0.9,
+    justifyContent: 'center',
+  },
+  container1: {
+    backgroundColor: '#f9fafd',
+    padding: 20,
+    flex: 0.9,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     fontSize: 24,
@@ -110,13 +148,12 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   voucherContainer: {
-    backgroundColor: '#003d7c', //'#00B14F',
+    backgroundColor: '#003d7c',
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
     elevation: 2,
     padding: 20,
-    flex: 0.9,
   },
   voucherText: {
     fontSize: 16,

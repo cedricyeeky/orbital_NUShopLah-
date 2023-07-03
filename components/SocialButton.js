@@ -31,7 +31,7 @@ export default SocialButton;
 const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
-    width: '90%',
+    width: '95%',
     height: windowHeight / 15,
     padding: 10,
     flexDirection: 'row',

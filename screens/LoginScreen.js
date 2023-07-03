@@ -10,12 +10,24 @@ import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
+import { firebase } from '../firebaseconfig';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
 
   const {login} = useContext(AuthContext)
+
+  // Forget Password
+  const forgetPassword = () => {
+    firebase.auth().sendPasswordResetEmail(email) //this email is from the email input bar. check if it is correct
+    .then(() => {
+      alert("Password Reset Email Sent!")
+      console.log("Password Reset Email Sent!")
+    }).catch((error) => {
+      alert(error)
+    })
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -48,7 +60,7 @@ const LoginScreen = ({navigation}) => {
         onPress={() => login(email, password)}
       />
 
-      <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
+      <TouchableOpacity style={styles.forgotButton} onPress={() => {forgetPassword()}}>
         <Text style={styles.navButtonText}>Forgot Password?</Text>
       </TouchableOpacity>
 
