@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#f9fafd',
-    flex: 0.9,
     padding: 20,
   },
   text: {
@@ -117,6 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     elevation: 2,
     padding: 20,
+    flex: 0.9,
   },
   voucherText: {
     fontSize: 16,

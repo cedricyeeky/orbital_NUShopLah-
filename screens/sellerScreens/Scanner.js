@@ -497,7 +497,7 @@ const ScannerScreen = () => {
           </View>
 
           <FormInput
-            labelValue={originalPrice}
+            labelValue={String(originalPrice)}
             onChangeText={(price) => setOriginalPrice(price)}
             placeholderText="Enter Original Price"
             iconType="creditcard"
@@ -511,7 +511,7 @@ const ScannerScreen = () => {
             onPress={() => handleTransaction(originalPrice)}
           />
           
-          <Pressable onPress={() => setShowPromptModal(false)}>
+          <Pressable style={styles.button1} onPress={() => setShowPromptModal(false)}>
             <Text style={styles.closeButtonText}>Cancel</Text>
           </Pressable>
         </View>
@@ -529,13 +529,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  button1: {
+    marginTop: 20,
+    backgroundColor: "red",
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 10,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   scanAgainButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#fo7b10',
     padding: 10,
     marginTop: 20,
     borderRadius: 5,
@@ -626,6 +633,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 50,
   },
   title: {
     fontSize: 20,
@@ -634,10 +642,8 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: 'white',
-    marginTop: 20,
     fontWeight: 'bold',
-    padding: 15,
-    backgroundColor: '#003d7c',
+    fontSize: 16,
   },
 });
 

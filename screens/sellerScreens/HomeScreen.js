@@ -133,7 +133,7 @@ const HomeScreen = () => {
       quality: 1,
     });
   
-    if (!pickerResult.cancelled) {
+    if (!pickerResult.canceled) {
       console.log(pickerResult.uri);
       setVoucherImage({ uri: pickerResult.uri });
     }
@@ -170,7 +170,7 @@ const HomeScreen = () => {
           <TextInput
             style={styles.textInput}
             label="Voucher Amount"
-            value={voucherAmount}
+            value={String(voucherAmount)}
             keyboardType='number-pad'
             onChangeText={(text) => setVoucherAmount(text)}
           />
@@ -178,7 +178,7 @@ const HomeScreen = () => {
           <TextInput
             style={styles.textInput}
             label="Points Required"
-            value={pointsRequired}
+            value={String(pointsRequired)}
             keyboardType='number-pad'
             onChangeText={(text) => setPointsRequired(text)}
           />
@@ -193,7 +193,7 @@ const HomeScreen = () => {
 
           {/* Upload voucher image */}
           <Pressable style={styles.button} onPress={selectImage}>
-            <Text style={styles.text}>Choose Image From Library</Text>
+            <Text style={styles.text1}>Choose Image From Library</Text>
           </Pressable>
 
           {/* Display selected image */}
@@ -204,7 +204,7 @@ const HomeScreen = () => {
         </Card.Content>
         <Card.Actions>
           <Pressable style={styles.button2} onPress={createVoucher}>
-            <Text style={styles.text}>Create</Text>
+            <Text style={styles.text1}>Create</Text>
 
           </Pressable>
           {/* <
@@ -249,6 +249,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  text1: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
