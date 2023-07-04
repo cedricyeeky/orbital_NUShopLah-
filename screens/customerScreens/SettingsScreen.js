@@ -5,6 +5,7 @@ import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card, ProgressBar } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
@@ -14,6 +15,25 @@ const SettingsScreen = () => {
   const [remainingPoints, setRemainingPoints] = useState(0);
   const [firstName, setFirstName] = useState('');
   const [feedback, setFeedback] = useState('');
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          setFirstName(snapshot.data().firstName);
+          console.log(firstName);
+        } else {
+          console.log('User does not exist');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting user:', error);
+      });
+  }, []);
 
   // Change the password
   const changePassword = () => {
@@ -210,44 +230,63 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1, flex: 1}}>
-      <View style={styles.container}>
-        <Text style={[styles.textWelcome, { fontSize: 20 }]}>Welcome! {firstName}</Text>
-        <Text style={[styles.textWelcome, { fontSize: 16 }]}>Here is your NUShopLah! Loyalty Card!</Text>
-        <Card style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
-          <Image source={getImageSource()} 
-                  style={styles.cardCover}/>  
-          <Card.Content style={styles.cardContent}>
-            <Text style={styles.text}>Total Points: {totalPoint}</Text>
-            {/* {renderProgressBar()} */}
-            {loyaltyTier !== 'Platinum' && (
-              <><Text style={styles.label}>
-                Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
-              </Text><Text style={styles.text}>
-                  {remainingPoints}</Text></>
-          )} 
-          </Card.Content>
-      </Card>
-      <View >
-          {benefitDescriptions.map((description, index) => (
-            <View key={index} style={styles.bulletPointContainer}>
-              <Text style={styles.bulletPoint}>{bullet}</Text>
-              <Text style={styles.bulletPointText}>{description}</Text>
-            </View>
-          ))}
-      </View>
-
-        {/**Change Password Button */}
-        <Pressable style={styles.button1} onPress={() => {changePassword()}}>
-            <Text style={styles.buttonText}>Change Password</Text>
-        </Pressable>
-
-        {/**Log Out Button */}
+    //<SafeAreaView style={{ flex: 1 }}> 
+      <ScrollView>
         <View style={styles.container}>
-          <FormButton buttonTitle='Logout' onPress={handleLogout} />
+          <Text style={[styles.textWelcome, { fontSize: 20 }]}>Welcome! {firstName}</Text>
+          <Text style={[styles.textWelcome, { fontSize: 16 }]}>Here is your NUShopLah! Loyalty Card!</Text>
+          <Card style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
+            <Image source={getImageSource()} 
+                    style={styles.cardCover}/>  
+            <Card.Content style={styles.cardContent}>
+              <Text style={styles.text}>Total Points: {totalPoint}</Text>
+              {/* {renderProgressBar()} */}
+              {loyaltyTier !== 'Platinum' && (
+                <><Text style={styles.label}>
+                  Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
+                </Text><Text style={styles.text}>
+                    {remainingPoints}</Text></>
+            )} 
+            </Card.Content>
+        </Card>
+        <View >
+            {benefitDescriptions.map((description, index) => (
+              <View key={index} style={styles.bulletPointContainer}>
+                <Text style={styles.bulletPoint}>{bullet}</Text>
+                <Text style={styles.bulletPointText}>{description}</Text>
+              </View>
+            ))}
         </View>
-      </View>
-    </ScrollView>
+
+          {/**Change Password Button */}
+          <Pressable style={styles.button1} onPress={() => {changePassword()}}>
+              <Text style={styles.buttonText}>Change Password</Text>
+          </Pressable>
+
+          {/**Log Out Button */}
+          {/* <View style={styles.container}>
+            <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+          </View> */}
+
+          {/* <Card>
+            <Card.Content>
+              <Text style={styles.text}>Welcome! {firstName}</Text>
+              <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+            </Card.Content>
+          </Card> */}
+
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+
+          
+
+        </View>
+      </ScrollView>
+    //</SafeAreaView>
+    
   );
 };
 
@@ -261,6 +300,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+    padding: 20,
   },
   container2: {
     justifyContent: 'center',
@@ -300,7 +340,9 @@ const styles = StyleSheet.create({
   },
   cardCover: {
     resizeMode: 'contain',
-    width: deviceWidth - 80,
+    width: deviceWidth * 0.9,
+    paddingHorizontal: 20,
+    flex: 1,
   },
   cardContainer: {
     borderRadius: 20,
@@ -308,32 +350,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
     marginBottom: 20,
-    width: deviceWidth - 30,
+    //width: deviceWidth - 30,
+    flex: 1,
   },
   cardContent: {
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  feedbackButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 5,
-  },
-  feedbackContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  input: {
-    width: '100%',
-    height: 100,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    textAlignVertical: 'top',
   },
   label: {
     fontSize: 18,
@@ -372,6 +395,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
   },
+  whiteSpaceText: {
+    
+    fontSize: 16,
+    marginBottom: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  }
   
 });
 

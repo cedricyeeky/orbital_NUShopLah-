@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Button, Image, Modal, Pressable, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
- import { Card, Portal, PaperProvider } from 'react-native-paper';
+ import { Card, Portal, PaperProvider, Searchbar } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
-
+// import { SearchBar } from '@rneui/themed';
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -27,6 +27,9 @@ const HomeScreen = () => {
     const [redeemedVouchers, setRedeemedVouchers] = useState([]);
     const [redeemedVoucher, setRedeemedVoucher] = useState(null);
     const [isUseNowButtonClicked, setIsUseNowButtonClicked] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const onChangeSearch = query => setSearchQuery(query);
 
     //For Customer Details
     useEffect(() => {
@@ -64,6 +67,7 @@ const HomeScreen = () => {
         firebase
           .firestore()
           .collection('vouchers')
+          .orderBy('sellerName', 'asc')
           .onSnapshot((snapshot) => {
             const vouchersData = [];
             const redeemedVouchersData = [];
@@ -141,10 +145,20 @@ const HomeScreen = () => {
       };
       return JSON.stringify(qrCodeData);
     };
+    
+    const filteredVouchers = vouchers.filter(voucher =>
+      voucher.sellerName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
       <ScrollView>
         <View style={styles.container}>
+          <Searchbar
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Card>
             <Card.Content>
               <Text style={styles.text}>Welcome! {firstName}</Text>
@@ -154,17 +168,20 @@ const HomeScreen = () => {
           </Card>
 
           <Text style={styles.heading}>Available Vouchers</Text>
-          <ScrollView horizontal>
+          <ScrollView>
             {/* Render available vouchers */}
-            {vouchers.map((voucher) => (
+            {filteredVouchers.map((voucher) => (
                 <TouchableOpacity
                   key={voucher.voucherId}
                   style={styles.voucherCard}
                   // onPress={() => redeemVoucher(voucher.voucherId)}
                   >
                   <Card.Content>
-                    {/* <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
-                    <Text>{console.log(voucher.voucherImage)}</Text> */}
+                    {/* <Image src={voucher.voucherImage} style={styles.voucherImage} />
+                    <Text>{console.log(voucher.voucherImage)}</Text>  */}
+                    <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
+                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                    <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
                     <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                     <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
@@ -187,6 +204,9 @@ const HomeScreen = () => {
                   <Card.Content>
                     {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                     <Text>{console.log(voucher.voucherImage)}</Text> */}
+                    <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
+                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                    <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
                     <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                     <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
@@ -255,10 +275,12 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
+const deviceWidth = Math.round(Dimensions.get('window').width);
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f9fafd',
-        flex: 1,
+        flex: 0.9,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
@@ -314,9 +336,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#003D7C',
         borderRadius: 8,
         marginRight: 8,
-        width: 400,
+        width: deviceWidth * 0.9,
         height: 350,
         padding: 16,
+        marginVertical: 10,
+    },
+    voucherSubtitle1: {
+      color: '#003d7c',
+    },
+    voucherSubtitle2: {
+      color: '#828282',
     },
     voucherImage: {
         width: '100%',
@@ -326,8 +355,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#828282',
         borderRadius: 8,
         marginRight: 8,
-        width: 200,
+        width: deviceWidth * 0.9,
         padding: 16,
+        marginVertical: 10,
     },
     voucherTitle: {
         color: '#FFF',
@@ -345,6 +375,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 8,
+      },
+      whiteSpaceText: {
+    
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
       },
 });
 

@@ -11,7 +11,7 @@ const SignupScreen = ({navigation}) => {
   const [password, setPassword] = useState()
   const [confirmPassword, setConfirmPassword] = useState()
   const [firstName, setFirstName] = useState()
-  const [lastName, setLastName] = useState() 
+  // const [lastName, setLastName] = useState() 
   const [userType, setUserType] = useState('Customer'); // Default user type is 'Customer'
   const [currentPoint, setCurrentPoint] = useState(0);
   const [totalPoint, setTotalPoint] = useState(0);
@@ -43,13 +43,13 @@ const SignupScreen = ({navigation}) => {
         autoCorrect={false}
       />
 
-      <FormInput
+      {/* <FormInput
         labelValue={lastName}
         onChangeText={(lastName) => setLastName(lastName)}
         placeholderText="Last Name"
         iconType="user"
         autoCorrect={false}
-      />
+      /> */}
 
       <FormInput
         labelValue={password}

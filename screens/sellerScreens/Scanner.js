@@ -63,6 +63,7 @@ const ScannerScreen = () => {
           setSellerName(snapshot.data().firstName);
         } else {
           console.log('User does not exist');
+          Alert.alert('User does not exist');
         }
       } catch (err) {
         console.log('Error getting user:', err);

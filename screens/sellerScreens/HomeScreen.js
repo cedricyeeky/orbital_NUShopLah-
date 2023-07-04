@@ -6,9 +6,12 @@ import { FAB, Card, TextInput } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import FormInput from '../../components/FormInput';
+import FormButton from '../../components/FormButton';
+import { AuthContext } from '../../navigation/AuthProvider';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const {user, logout} = useContext(AuthContext)
   const [firstName, setFirstName] = useState('');
   const [voucherImage, setVoucherImage] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -83,12 +86,14 @@ const HomeScreen = () => {
                   voucherDescription,
                   pointsRequired,
                   usedBy: [], // Initialize the usedBy array as empty
+                  sellerName: firstName,
                   sellerId: firebase.auth().currentUser.uid,
                   timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
                   isVoucher: true,
                 })
                 .then(() => {
                   console.log('Voucher created successfully!');
+                  Alert.alert('Success! Voucher created successfully!');
                   // Reset the input fields
                   setVoucherImage(null);
                   setVoucherAmount('');
@@ -160,7 +165,12 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome! {firstName}</Text>
+      <Card>
+        <Card.Content>
+          <Text style={styles.text}>Welcome! {firstName}</Text>
+          <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+        </Card.Content>
+      </Card>
 
       {/* Create Voucher */}
       <Card style={styles.card}>

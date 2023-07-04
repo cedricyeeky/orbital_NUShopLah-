@@ -3,9 +3,11 @@ import { View, Text, StyleSheet, Pressable, TouchableOpacity, Alert, ScrollView 
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
+import { Card } from 'react-native-paper';
 
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
+  const [firstName, setFirstName] = useState('');
   const [vouchers, setVouchers] = useState([]);
 
   // Change the password
@@ -17,6 +19,25 @@ const SettingsScreen = () => {
       alert(error)
     })
   }
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          setFirstName(snapshot.data().firstName);
+          console.log(firstName);
+        } else {
+          console.log('User does not exist');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting user:', error);
+      });
+  }, []);
 
   useEffect(() => {
     const unsubscribe = firebase
@@ -98,9 +119,22 @@ const SettingsScreen = () => {
         </Pressable>
 
         {/**Log Out Button */}
-        <View style={styles.container1}>
+        {/* <View style={styles.container1}>
           <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
-        </View>
+        </View> */}
+
+        {/* <Card>
+          <Card.Content>
+            <Text style={styles.text}>Welcome! {firstName}</Text>
+            <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+          </Card.Content>
+        </Card> */}
+
+        <Text style={styles.whiteSpaceText}>White Space.</Text>
+        <Text style={styles.whiteSpaceText}>White Space.</Text>
+        <Text style={styles.whiteSpaceText}>White Space.</Text>
+        <Text style={styles.whiteSpaceText}>White Space.</Text>
+        <Text style={styles.whiteSpaceText}>White Space.</Text>
 
       </View>
     </ScrollView>
@@ -128,7 +162,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   container: {
-    backgroundColor: '#f9fafd',
+    backgroundColor: '#fff',
     padding: 20,
     flex: 0.9,
     justifyContent: 'center',
@@ -177,6 +211,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
   },
+  whiteSpaceText: {
+    
+    fontSize: 16,
+    marginBottom: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  }
 });
 
 export default SettingsScreen;

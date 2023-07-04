@@ -21,7 +21,7 @@ export const AuthProvider = ({children}) => {
                     alert(e);
                 }
             },
-            register: async (email, password, firstName, lastName, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
+            register: async (email, password, firstName, {/** lastName */}, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
                 try {
                     console.log('Registered User Type:', userType);
                     await firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -39,7 +39,7 @@ export const AuthProvider = ({children}) => {
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
                                     firstName,
-                                    lastName,
+                                    // lastName,
                                     email,
                                     userType,
                                     currentPoint,

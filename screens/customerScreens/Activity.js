@@ -137,8 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     borderRadius: 20,
     backgroundColor: '#f07b10',
-
-    
   },
   transactionText: {
     fontSize: 18,
