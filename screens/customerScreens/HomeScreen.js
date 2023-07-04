@@ -177,8 +177,8 @@ const HomeScreen = () => {
                   // onPress={() => redeemVoucher(voucher.voucherId)}
                   >
                   <Card.Content>
-                    {/* <Image src={voucher.voucherImage} style={styles.voucherImage} />
-                    <Text>{console.log(voucher.voucherImage)}</Text>  */}
+                    <Image src={voucher.voucherImage} style={styles.voucherImage} />
+
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
@@ -202,8 +202,7 @@ const HomeScreen = () => {
                   onError={() => console.log("Failed to Load Image. But you don't need it now anyways.")}
                   >
                   <Card.Content>
-                    {/* TO BE SOLVED LATER. IT CANNOT RENDER. <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
-                    <Text>{console.log(voucher.voucherImage)}</Text> */}
+                    <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
@@ -265,6 +264,12 @@ const HomeScreen = () => {
             </Modal>
                   
               )} 
+
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
         </View>
         
         
@@ -279,7 +284,7 @@ const deviceWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f9fafd',
+        backgroundColor: '#fff',
         flex: 0.9,
         justifyContent: 'center',
         alignItems: 'center',
@@ -337,7 +342,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginRight: 8,
         width: deviceWidth * 0.9,
-        height: 350,
+        height: 600,
         padding: 16,
         marginVertical: 10,
     },
@@ -349,7 +354,8 @@ const styles = StyleSheet.create({
     },
     voucherImage: {
         width: '100%',
-        height: 120,
+        height: 250,
+        marginBottom: 10,
     },
     voucherCardRedeemed: {
         backgroundColor: '#828282',
@@ -358,6 +364,7 @@ const styles = StyleSheet.create({
         width: deviceWidth * 0.9,
         padding: 16,
         marginVertical: 10,
+        height: 600,
     },
     voucherTitle: {
         color: '#FFF',

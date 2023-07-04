@@ -35,13 +35,13 @@ const AppStackSeller = () => {
             padding: 10,
             paddingBottom: 20,
             position: 'absolute',
-            bottom: 30,
-            left: 20,
-            right: 20,
+            bottom: 0,
+            left: 0,
+            right: 0,
             elevation: 0,
             backgroundColor: '#003d7c',
-            borderRadius: 15,
-            height: deviceHeight * 0.1,
+            borderRadius: 0,
+            height: deviceHeight * 0.10,
           }
 
         }}

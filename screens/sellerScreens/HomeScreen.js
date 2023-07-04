@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -15,8 +16,8 @@ const HomeScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [voucherImage, setVoucherImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [voucherAmount, setVoucherAmount] = useState(0);
-  const [pointsRequired, setPointsRequired] = useState(0);
+  const [voucherAmount, setVoucherAmount] = useState(''); //Code somehow reads this as a String. We then TypeCast into Integer
+  const [pointsRequired, setPointsRequired] = useState(''); //Code somehow reads this as a String. We then TypeCast into Integer
   const [voucherDescription, setVoucherDescription] = useState('');
 
   useEffect(() => {
@@ -38,6 +39,9 @@ const HomeScreen = () => {
   }, []);
 
   const createVoucher = () => {
+    if(voucherAmount < 0) {
+      throw new Error('Error!, voucher Amount cannot be Negative!')
+    }
     // Generate a unique voucher ID
     const voucherId = firebase.firestore().collection('vouchers').doc().id;
     console.log("voucherId:", voucherId);
@@ -68,9 +72,12 @@ const HomeScreen = () => {
         (error) => {
           console.log('Error uploading image:', error);
         },
-        () => {
+        async () => {
           // Image upload complete, get the download URL
-          const imagePath = imageRef.fullPath;
+          // const imagePath = imageRef.fullPath;
+
+          const downloadURL = await imageRef.getDownloadURL();
+          console.log('Image download URL:', downloadURL);
           // uploadTask.snapshot.ref
           //   .getDownloadURL()
           //   .then((downloadURL) => {
@@ -81,7 +88,7 @@ const HomeScreen = () => {
                 .doc(voucherId)
                 .set({
                   voucherId,
-                  voucherImage: imagePath, 
+                  voucherImage: downloadURL, 
                   voucherAmount,
                   voucherDescription,
                   pointsRequired,
@@ -164,8 +171,9 @@ const HomeScreen = () => {
   
 
   return (
-    <View style={styles.container}>
-      <Card>
+    <ScrollView>
+      <View style={styles.container}>
+      <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
@@ -231,6 +239,7 @@ const HomeScreen = () => {
         onPress={() => navigation.navigate('Scan QR')}
       />
     </View>
+    </ScrollView>
   );
 };
 
@@ -252,7 +261,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   container: {
-    backgroundColor: '#f9fafd',
+    backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
