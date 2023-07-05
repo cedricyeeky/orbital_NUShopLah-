@@ -17,7 +17,10 @@ const SettingsScreen = () => {
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
-    firebase
+    console.log("SettingsScreen useEffect running...");
+
+    if (user && user.uid) {
+      firebase
       .firestore()
       .collection('users')
       .doc(firebase.auth().currentUser.uid)
@@ -33,7 +36,11 @@ const SettingsScreen = () => {
       .catch((error) => {
         console.log('Error getting user:', error);
       });
-  }, []);
+    } else {
+      console.log("User has logged out! Stop fetching UID (Settings Screen)");
+    }
+    
+  }, [user]);
 
   // Change the password
   const changePassword = () => {
@@ -46,77 +53,83 @@ const SettingsScreen = () => {
   }
 
   useEffect(() => {
-    
-    const fetchUserData = async () => {
-      try {
-        const userCollectionRef = firebase.firestore().collection('users');
-        const userData = await userCollectionRef.doc(user.uid).get();
-        if (userData.exists) {
-          const { totalPoint } = userData.data();
-          setTotalPoint(totalPoint);
-          setLoyaltyTier(calculateLoyaltyTier(totalPoint));
-          setRemainingPoints(calculateRemainingPoints(totalPoint));
+    if (user && user.uid) {
+      const fetchUserData = async () => {
+        try {
+          const userCollectionRef = firebase.firestore().collection('users');
+          const userData = await userCollectionRef.doc(user.uid).get();
+          if (userData.exists) {
+            const { totalPoint } = userData.data();
+            setTotalPoint(totalPoint);
+            setLoyaltyTier(calculateLoyaltyTier(totalPoint));
+            setRemainingPoints(calculateRemainingPoints(totalPoint));
+          }
+        } catch (error) {
+          console.log('Error fetching user data:', error);
         }
-      } catch (error) {
-        console.log('Error fetching user data:', error);
-      }
-    };
-
-    const calculateLoyaltyTier = (points) => {
-      if (points >= 5000) {
-        return 'Platinum';
-      } else if (points >= 1500) {
-        return 'Gold';
-      } else if (points >= 500) {
-        return 'Silver';
-      } else {
-        return 'Member';
-      }
-    };
-
-    const calculateRemainingPoints = (points) => {
-      if (points >= 5000) {
-        return 0;
-      } else if (points >= 1500) {
-        return 5000 - points;
-      } else if (points >= 500) {
-        return 1500 - points;
-      } else {
-        return 500 - points;
-      }
-    };
-
-    // Create a Firestore listener for the user's document
-    const userCollectionRef = firebase.firestore().collection('users');
-    const userDocRef = userCollectionRef.doc(user.uid);
-    const unsubscribe = userDocRef.onSnapshot((snapshot) => {
-    const userData = snapshot.data();
-    if (userData) {
-      const { currentPoint: updatedCurrentPoint, totalPoint: updatedTotalPoint } = userData;
-      setCurrentPoint(updatedCurrentPoint);
-      setTotalPoint(updatedTotalPoint);
-      fetchUserData();
-      }
-    });
-
-    fetchUserData();
-
-    firebase
-      .firestore()
-      .collection('users')
-      .doc(firebase.auth().currentUser.uid)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists) {
-          setFirstName(snapshot.data().firstName);
+      };
+  
+      const calculateLoyaltyTier = (points) => {
+        if (points >= 5000) {
+          return 'Platinum';
+        } else if (points >= 1500) {
+          return 'Gold';
+        } else if (points >= 500) {
+          return 'Silver';
         } else {
-          console.log('User does not exist');
+          return 'Member';
         }
-      })
-      .catch((error) => {
-        console.log('Error getting user:', error);
-      });
+      };
+  
+      const calculateRemainingPoints = (points) => {
+        if (points >= 5000) {
+          return 0;
+        } else if (points >= 1500) {
+          return 5000 - points;
+        } else if (points >= 500) {
+          return 1500 - points;
+        } else {
+          return 500 - points;
+        }
+      };
+  
+        // Create a Firestore listener for the user's document
+        const userCollectionRef = firebase.firestore().collection('users');
+        const userDocRef = userCollectionRef.doc(user.uid);
+        const unsubscribe = userDocRef.onSnapshot((snapshot) => {
+        const userData = snapshot.data();
+        if (userData) {
+          const { currentPoint: updatedCurrentPoint, totalPoint: updatedTotalPoint } = userData;
+          setCurrentPoint(updatedCurrentPoint);
+          setTotalPoint(updatedTotalPoint);
+          fetchUserData();
+          }
+        });
+    
+        fetchUserData();
+    
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(firebase.auth().currentUser.uid)
+          .get()
+          .then((snapshot) => {
+            if (snapshot.exists) {
+              setFirstName(snapshot.data().firstName);
+            } else {
+              console.log('User does not exist');
+            }
+          })
+          .catch((error) => {
+            console.log('Error getting user:', error);
+          });
+    } else {
+      console.log("User logged out already. No need to fetch data (Settings Screen 2)");
+    }
+
   }, [user]);
+
+    
 
   const getTierBackgroundColor = () => {
     switch (loyaltyTier) {
@@ -396,7 +409,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   whiteSpaceText: {
-    
     fontSize: 16,
     marginBottom: 20,
     color: '#fff',

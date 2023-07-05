@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
@@ -21,7 +21,9 @@ const SettingsScreen = () => {
   }
 
   useEffect(() => {
-    firebase
+    console.log("(Seller Accounts) useEffect1 running...");
+    if (user && user.uid) {
+      firebase
       .firestore()
       .collection('users')
       .doc(firebase.auth().currentUser.uid)
@@ -37,10 +39,15 @@ const SettingsScreen = () => {
       .catch((error) => {
         console.log('Error getting user:', error);
       });
-  }, []);
+    } else {
+      console.log("Seller has logged out. (Activity Screen)");
+    }
+  }, [user]);
 
   useEffect(() => {
-    const unsubscribe = firebase
+    console.log("(Seller Account) sorting vouchers useEffect running...");
+    if (user && user.uid) {
+      const unsubscribe = firebase
       .firestore()
       .collection('vouchers')
       .where('sellerId', '==', user.uid)
@@ -53,7 +60,10 @@ const SettingsScreen = () => {
         setVouchers(data);
       });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } else {
+      console.log("Seller has logged out. No need to load vouchers (Activity Screen)")
+    }
   }, [user]);
 
   const handleCancelVoucher = (voucherId) => {
@@ -89,6 +99,16 @@ const SettingsScreen = () => {
       });
   };
 
+  const getDateOfVoucher = (timestamp) => {
+    console.log(timestamp);
+    if (timestamp) {
+      return timestamp.toDate().toLocaleString();
+    } else {
+      console.log("timestamp does not exist for this voucher YET. Might be due to lagging. Try again a few seconds later")
+    }
+    
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -99,10 +119,11 @@ const SettingsScreen = () => {
                     style={styles.voucherContainer}  
                     key={voucher.id}  
                 >
+                  <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
                   <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
                   <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
                   <Text style={styles.voucherText}>Value: {voucher.voucherAmount}</Text>
-                  <Text style={styles.voucherText}>Created On: {voucher.timeStamp.toDate().toLocaleString()}</Text>
+                  <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
                     {/* <Text style={styles.cancelText} onPress={() => handleCancelVoucher(voucher.id)}> Cancel Voucher</Text> */}
                   <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
                     <Text style={styles.cancelText}>Cancel Voucher</Text>
@@ -187,7 +208,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     elevation: 2,
-    padding: 20,
+    padding: 30,
   },
   voucherText: {
     fontSize: 16,
@@ -217,7 +238,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#fff',
     fontWeight: 'bold',
-  }
+  },
+  voucherImage: {
+    width: '100%',
+    height: 250,
+    marginBottom: 10,
+  },
 });
 
 export default SettingsScreen;

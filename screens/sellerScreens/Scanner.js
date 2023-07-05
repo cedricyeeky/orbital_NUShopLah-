@@ -43,41 +43,53 @@ const calculateNewTotalPoint = (totalPoint, amountPaid) => {
 
 const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
-  const [scanning, setScanning] = useState(true);
+  const [scanning, setScanning] = useState(false);
   const [sellerName, setSellerName] = useState('');
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(true);
   const [showPromptModal, setShowPromptModal] = useState(false);
   const [data, setData] = useState(null); //QR Code Data
   const [originalPrice, setOriginalPrice] = useState(0);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const snapshot = await firebase
-          .firestore()
-          .collection('users')
-          .doc(firebase.auth().currentUser.uid)
-          .get();
-  
-        if (snapshot.exists) {
-          setSellerName(snapshot.data().firstName);
-        } else {
-          console.log('User does not exist');
-          Alert.alert('User does not exist');
+    console.log("(Seller Scan QR) useEffect running...")
+    if (user && user.uid) {
+      const fetchUserData = async () => {
+        try {
+          const snapshot = await firebase
+            .firestore()
+            .collection('users')
+            .doc(firebase.auth().currentUser.uid)
+            .get();
+    
+          if (snapshot.exists) {
+            setSellerName(snapshot.data().firstName);
+          } else {
+            console.log('User does not exist');
+            Alert.alert('User does not exist');
+          }
+        } catch (err) {
+          console.log('Error getting user:', err);
         }
-      } catch (err) {
-        console.log('Error getting user:', err);
-      }
-    };
-  
-    const requestCameraPermission = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(status === 'granted');
-    };
-  
-    fetchUserData();
-    requestCameraPermission();
-  }, []);
+      };
+    
+      const requestCameraPermission = async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasCameraPermission(status === 'granted');
+        setScanning(true);
+        if (status !== 'granted') {
+          // Prompt the user to enable camera permission
+          await Camera.requestCameraPermissionsAsync();
+        }
+      };
+    
+      fetchUserData();
+      requestCameraPermission();
+      
+    } else {
+      console.log("Seller has logged out (Scan QR Screen)");
+    }
+    
+  }, [user]);
 
   // useEffect(() => {
   //   (async () => {
@@ -239,7 +251,6 @@ const ScannerScreen = () => {
       
   }
   
-
   const handleQRCodeScan = async ({ data }) => {
     setScanning(false);
     
@@ -454,15 +465,24 @@ const ScannerScreen = () => {
       }
     }
   };
+  
+  const handleRequestPermissionAgain = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasCameraPermission(status === 'granted');
+    if (status !== 'granted') {
+      // Display a prompt or handle the scenario as needed
+      console.log('Camera permission denied');
+    }
+  };
 
   const handleScanAgain = async () => {
-    setScanning(true);
+      setScanning(true);
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scanner</Text>
-      {scanning ? (
+      {(scanning)  ? (
         <Camera
           onBarCodeScanned={handleQRCodeScan}
           style={StyleSheet.absoluteFillObject}
@@ -480,7 +500,7 @@ const ScannerScreen = () => {
       ) : (
         <View>
           <TouchableOpacity style={styles.scanAgainButton} onPress={handleScanAgain}>
-            <Text style={styles.buttonText}>Scan Again?</Text>
+            <Text style={styles.buttonText}>Scan?</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -543,7 +563,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scanAgainButton: {
-    backgroundColor: '#fo7b10',
+    backgroundColor: '#f07b10',
     padding: 10,
     marginTop: 20,
     borderRadius: 5,

@@ -11,21 +11,27 @@ const ActivityScreen = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection('transactions')
-      .where('customerId', '==', user.uid)
-      .orderBy('timeStamp', 'desc')
-      .onSnapshot((snapshot) => {
-        const data = [];
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-          
-        });
-        setTransactions(data);
-      });
+    console.log("Activity Screen useEffect running...");
 
-    return () => unsubscribe();
+    if (user && user.uid) {
+      const unsubscribe = firebase
+        .firestore()
+        .collection('transactions')
+        .where('customerId', '==', user.uid)
+        .orderBy('timeStamp', 'desc')
+        .onSnapshot((snapshot) => {
+          const data = [];
+          snapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+            
+          });
+          setTransactions(data);
+        });
+
+      return () => unsubscribe();
+    } else {
+      console.log("User has logged out! Stop fetching UID (Activity Screen)");
+    }
   }, [user]);
 
   const renderItem = ({ item }) => {

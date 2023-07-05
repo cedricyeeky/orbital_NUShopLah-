@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, Alert, Button, Pressable} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
-import { FAB, Card, TextInput } from 'react-native-paper';
+import { FAB, Card, TextInput, RadioButton } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import FormInput from '../../components/FormInput';
@@ -12,16 +12,20 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const {user, logout} = useContext(AuthContext)
+  const { user, logout } = useContext(AuthContext)
   const [firstName, setFirstName] = useState('');
   const [voucherImage, setVoucherImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [voucherAmount, setVoucherAmount] = useState(''); //Code somehow reads this as a String. We then TypeCast into Integer
   const [pointsRequired, setPointsRequired] = useState(''); //Code somehow reads this as a String. We then TypeCast into Integer
   const [voucherDescription, setVoucherDescription] = useState('');
+  const [checked, setChecked] = React.useState('first');
 
   useEffect(() => {
-    firebase
+    console.log("(Seller Home) useEffect running...");
+
+    if (user && user.uid) {
+      firebase
       .firestore()
       .collection('users')
       .doc(firebase.auth().currentUser.uid)
@@ -36,97 +40,116 @@ const HomeScreen = () => {
       .catch((error) => {
         console.log('Error getting user:', error);
       });
-  }, []);
+    } else {
+      console.log("Seller has logged out! (Homescreen)");
+    }
+    
+  }, [user]);
 
   const createVoucher = () => {
-    if(voucherAmount < 0) {
-      throw new Error('Error!, voucher Amount cannot be Negative!')
+    //Added try-catch to handle negative voucherAmount input
+    try {
+      if (voucherAmount < 0) {
+        Alert.alert('Error!', 'Voucher Amount cannot be Negative!');
+        throw new Error('Error!, Voucher Amount cannot be Negative!');
+      } else if (pointsRequired < 0) {
+        Alert.alert('Error!', 'Points Required cannot be Negative!');
+        throw new Error('Error!, Points Required cannot be Negative!');
+      } else if (voucherImage == null) {
+        Alert.alert('Error! Please Upload a valid Voucher Image', "WARNING: All Customers can see your uploaded image. The developers will not condone inappropriate images.");
+        throw new Error('Error!, Please Upload a valid Voucher Image');
+      } else {
+        // Generate a unique voucher ID
+        const voucherId = firebase.firestore().collection('vouchers').doc().id;
+        console.log("voucherId:", voucherId);
+      
+        // Get a reference to the Firebase Storage bucket
+        const storageRef = firebase.storage().ref();
+        console.log('storageRef:', storageRef);
+      
+        // Create a reference to the voucher image file in the Storage bucket
+        const imageRef = storageRef.child(`voucherImages/${voucherId}`);
+        console.log('imageRef:', imageRef);
+      
+        // Convert the voucher image URI to a Blob object
+        const xhr = new XMLHttpRequest();
+        xhr.onload = async () => {
+          const blob = xhr.response;
+      
+          // Upload the image file to Firebase Storage
+          const uploadTask = imageRef.put(blob);
+      
+          // Listen for upload progress or completion
+          uploadTask.on(
+            firebase.storage.TaskEvent.STATE_CHANGED,
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload progress: ${progress}%`);
+            },
+            (error) => {
+              console.log('Error uploading image:', error);
+            },
+            async () => {
+              // Image upload complete, get the download URL
+              // const imagePath = imageRef.fullPath;
+
+              const downloadURL = await imageRef.getDownloadURL();
+              console.log('Image download URL:', downloadURL);
+              // uploadTask.snapshot.ref
+              //   .getDownloadURL()
+              //   .then((downloadURL) => {
+                  // Create the voucher document in Firestore
+                  firebase
+                    .firestore()
+                    .collection('vouchers')
+                    .doc(voucherId)
+                    .set({
+                      voucherId,
+                      voucherImage: downloadURL, 
+                      voucherAmount,
+                      voucherDescription,
+                      pointsRequired,
+                      usedBy: [], // Initialize the usedBy array as empty
+                      sellerName: firstName,
+                      sellerId: firebase.auth().currentUser.uid,
+                      timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                      isVoucher: true,
+                    })
+                    .then(() => {
+                      console.log('Voucher created successfully!');
+                      Alert.alert('Success! Voucher created successfully!');
+                      // Reset the input fields
+                      setVoucherImage(null);
+                      setVoucherAmount('');
+                      setPointsRequired('');
+                      setVoucherDescription('');
+                    })
+                    .catch((error) => {
+                      console.log('Error creating voucher:', error);
+                      Alert.alert('Error!', 'Failed to create voucher.');
+                    });
+                
+                // .catch((error) => {
+                //   console.log('Error getting image download URL:', error);
+                //   Alert.alert('Error!', 'Failed to create voucher.');
+                // });
+            }
+          );
+        };
+        xhr.onerror = (error) => {
+          console.log('Error creating Blob:', error);
+        };
+        xhr.responseType = 'blob';
+        xhr.open('GET', voucherImage.uri, true);
+        xhr.send();
+
+        Alert.alert('Voucher Created', 'Your voucher has been successfully created!')
+      }
+
+    } catch (err) {
+      console.log(err);
     }
-    // Generate a unique voucher ID
-    const voucherId = firebase.firestore().collection('vouchers').doc().id;
-    console.log("voucherId:", voucherId);
-  
-    // Get a reference to the Firebase Storage bucket
-    const storageRef = firebase.storage().ref();
-    console.log('storageRef:', storageRef);
-  
-    // Create a reference to the voucher image file in the Storage bucket
-    const imageRef = storageRef.child(`voucherImages/${voucherId}`);
-    console.log('imageRef:', imageRef);
-  
-    // Convert the voucher image URI to a Blob object
-    const xhr = new XMLHttpRequest();
-    xhr.onload = async () => {
-      const blob = xhr.response;
-  
-      // Upload the image file to Firebase Storage
-      const uploadTask = imageRef.put(blob);
-  
-      // Listen for upload progress or completion
-      uploadTask.on(
-        firebase.storage.TaskEvent.STATE_CHANGED,
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload progress: ${progress}%`);
-        },
-        (error) => {
-          console.log('Error uploading image:', error);
-        },
-        async () => {
-          // Image upload complete, get the download URL
-          // const imagePath = imageRef.fullPath;
-
-          const downloadURL = await imageRef.getDownloadURL();
-          console.log('Image download URL:', downloadURL);
-          // uploadTask.snapshot.ref
-          //   .getDownloadURL()
-          //   .then((downloadURL) => {
-              // Create the voucher document in Firestore
-              firebase
-                .firestore()
-                .collection('vouchers')
-                .doc(voucherId)
-                .set({
-                  voucherId,
-                  voucherImage: downloadURL, 
-                  voucherAmount,
-                  voucherDescription,
-                  pointsRequired,
-                  usedBy: [], // Initialize the usedBy array as empty
-                  sellerName: firstName,
-                  sellerId: firebase.auth().currentUser.uid,
-                  timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  isVoucher: true,
-                })
-                .then(() => {
-                  console.log('Voucher created successfully!');
-                  Alert.alert('Success! Voucher created successfully!');
-                  // Reset the input fields
-                  setVoucherImage(null);
-                  setVoucherAmount('');
-                  setPointsRequired('');
-                  setVoucherDescription('');
-                })
-                .catch((error) => {
-                  console.log('Error creating voucher:', error);
-                  Alert.alert('Error!', 'Failed to create voucher.');
-                });
-            
-            // .catch((error) => {
-            //   console.log('Error getting image download URL:', error);
-            //   Alert.alert('Error!', 'Failed to create voucher.');
-            // });
-        }
-      );
-    };
-    xhr.onerror = (error) => {
-      console.log('Error creating Blob:', error);
-    };
-    xhr.responseType = 'blob';
-    xhr.open('GET', voucherImage.uri, true);
-    xhr.send();
-
-    Alert.alert('Voucher Created', 'Your voucher has been successfully created!')
+    
   };
   
 
@@ -173,10 +196,21 @@ const HomeScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
+      <RadioButton
+        value="first"
+        status={ checked === 'first' ? 'checked' : 'unchecked' }
+        onPress={() => setChecked('first')}
+      />
+      <RadioButton
+        value="second"
+        status={ checked === 'second' ? 'checked' : 'unchecked' }
+        onPress={() => setChecked('second')}
+      />
       <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.text}>Welcome! {firstName}</Text>
-          <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+          <FormButton buttonTitle='Logout' onPress={logout} />
+          {/* <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} /> */}
         </Card.Content>
       </Card>
 

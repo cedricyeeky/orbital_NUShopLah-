@@ -8,7 +8,10 @@ const ActivityScreen = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firebase
+    console.log("(Seller Activity) useEffect running...");
+
+    if (user && user.uid) {
+      const unsubscribe = firebase
       .firestore()
       .collection('transactions')
       .where('sellerId', '==', user.uid)
@@ -21,7 +24,10 @@ const ActivityScreen = () => {
         setTransactions(data);
       });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } else {
+      console.log("Seller has logged out!(Activity Screen)");
+    }
   }, [user]);
 
   const renderItem = ({ item }) => {
@@ -90,7 +96,7 @@ const ActivityScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.95,
     padding: 20,
     backgroundColor: 'white',
     shadowColor: "#000",

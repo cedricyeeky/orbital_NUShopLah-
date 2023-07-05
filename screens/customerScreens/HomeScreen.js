@@ -33,6 +33,9 @@ const HomeScreen = () => {
 
     //For Customer Details
     useEffect(() => {
+      console.log("Homescreen useEffect running...");
+
+      if (user && user.uid) {
         firebase.firestore().collection('users')
         .doc(firebase.auth().currentUser.uid).get()
         .then((snapshot) => {
@@ -58,8 +61,10 @@ const HomeScreen = () => {
           }
         });
 
-
-    }, [])
+      } else {
+        console.log("User has logged out! Stop fetching UID (Homescreen)");
+      }
+    }, [user])
 
     //For Vouchers
     useEffect(() => {
@@ -90,6 +95,13 @@ const HomeScreen = () => {
 
       //Function to handle redeem vouchers for Customers
       const redeemVoucher = (voucher) => {
+
+        //Checks if user is logged in.
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+          console.log("User is not logged in!");
+          return;
+        }
         
         if (voucher.pointsRequired > currentPoint) {
           Alert.alert("Warning", "Insufficient Point Balance!");
@@ -134,14 +146,14 @@ const HomeScreen = () => {
     
     const generateQRCodeData = () => {
       const qrCodeData = {
-                   voucherId: redeemedVoucher.voucherId,
-                   voucherAmount: redeemedVoucher.voucherAmount,
-                   pointsRequired: redeemedVoucher.pointsRequired,
-                   voucherDescription: redeemedVoucher.voucherDescription,
-                   customerId: firebase.auth().currentUser.uid,
-                   customerName: firstName,
-                   sellerId: redeemedVoucher.sellerId,
-                   isVoucher: true,
+          voucherId: redeemedVoucher.voucherId,
+          voucherAmount: redeemedVoucher.voucherAmount,
+          pointsRequired: redeemedVoucher.pointsRequired,
+          voucherDescription: redeemedVoucher.voucherDescription,
+          customerId: firebase.auth().currentUser.uid,
+          customerName: firstName,
+          sellerId: redeemedVoucher.sellerId,
+          isVoucher: true,
       };
       return JSON.stringify(qrCodeData);
     };
@@ -163,7 +175,8 @@ const HomeScreen = () => {
             <Card.Content>
               <Text style={styles.text}>Welcome! {firstName}</Text>
               <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
-              <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
+              <FormButton buttonTitle='Logout' onPress={logout} />
+              {/* <FormButton buttonTitle='Logout' onPress={() => firebase.auth().signOut()} /> */}
             </Card.Content>
           </Card>
 
@@ -199,7 +212,7 @@ const HomeScreen = () => {
                 <TouchableOpacity
                   key={voucher.voucherId}
                   style={styles.voucherCardRedeemed}
-                  onError={() => console.log("Failed to Load Image. But you don't need it now anyways.")}
+                  onError={() => console.log("Failed to Load Image.")}
                   >
                   <Card.Content>
                     <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
@@ -377,13 +390,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginBottom: 8,
       },
-      voucherStatus: {
+    voucherStatus: {
         color: '#FFF',
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 8,
       },
-      whiteSpaceText: {
+    whiteSpaceText: {
     
         fontSize: 16,
         color: '#fff',

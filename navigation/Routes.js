@@ -18,9 +18,13 @@ const Routes = () => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         setUserType(userData.userType);
+      } else {
+        console.log('User document does not exist');
+        setUserType('');
       }
     } catch (error) {
       console.log('Error getting user type:', error);
+      setUserType('');
     }
   };
 
@@ -29,19 +33,28 @@ const Routes = () => {
     if (user) {
       try {
         await getUserType(user.uid);
+        console.log("(Route.js) User Type Set, User Type is:", userType);
+        //console.log("User Set, User is:", user);
+        console.log("(Route.js) User UID:", user.uid);
       } catch (error) {
         console.log('Error getting user type:', error);
       }
     } else {
       setUserType('');
+      console.log("User Type Reset, User Type is:", userType);
     }
     if (initializing) setInitializing(false);
   };
 
   useEffect(() => {
     const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    console.log("Subscriber:", subscriber);
+    return () => subscriber(); // unsubscribe on unmount
   }, []);
+
+  useEffect(() => {
+    console.log("User Type has changed:", userType);
+  }, [userType]); // Add userType as a dependency
 
   if (initializing) return null;
 

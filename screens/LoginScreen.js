@@ -64,13 +64,13 @@ const LoginScreen = ({navigation}) => {
         <Text style={styles.navButtonText}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <SocialButton
+      {/* <SocialButton
         buttonTitle="Sign In with Google"
         btnType="google"
         color="#de4d41"
         backgroundColor="#f5e7ea"
         onPress={() => {}}
-      /> 
+      />  */}
 
       <TouchableOpacity style={styles.forgotButton} onPress={() => navigation.navigate('Signup')}> 
         <Text style={styles.navButtonText}>Don't have an account? Create here</Text>
