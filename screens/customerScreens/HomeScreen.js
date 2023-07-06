@@ -188,10 +188,12 @@ const HomeScreen = () => {
                   key={voucher.voucherId}
                   style={styles.voucherCard}
                   // onPress={() => redeemVoucher(voucher.voucherId)}
-                  >
+                >
+
+                {voucher.voucherType === 'dollar' && (
+                <View>
                   <Card.Content>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
-
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
@@ -204,6 +206,30 @@ const HomeScreen = () => {
                       onPress={() => redeemVoucher(voucher)}
                     />
                   </Card.Content>
+                </View>
+                
+                )}
+
+                {voucher.voucherType === 'percentage' && (
+                <View>
+                  <Card.Content>
+                    <Image src={voucher.voucherImage} style={styles.voucherImage} />
+                    <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
+                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                    <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
+                    <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
+                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
+                    <FormButton
+                      buttonTitle="USE NOW"
+                      onPress={() => redeemVoucher(voucher)}
+                    />
+                  </Card.Content>
+                </View>
+                
+                )}
+                  
                 </TouchableOpacity>
             ))}
 
@@ -213,17 +239,38 @@ const HomeScreen = () => {
                   key={voucher.voucherId}
                   style={styles.voucherCardRedeemed}
                   onError={() => console.log("Failed to Load Image.")}
-                  >
-                  <Card.Content>
-                    <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
-                    <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
-                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
-                    <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
-                    <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
-                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
-                    <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
-                  </Card.Content>
+                >
+
+                {voucher.voucherType === 'dollar' && (
+                  <View>
+                    <Card.Content>
+                      <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
+                      <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
+                      <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                      <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
+                      <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                      <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                      <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
+                    </Card.Content>
+                  </View>
+                )}
+                
+                {voucher.voucherType === 'percentage' && (
+                  <View>
+                    <Card.Content>
+                      <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
+                      <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
+                      <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                      <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
+                      <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
+                      <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
+                      <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
+                    </Card.Content>
+                  </View>
+                )}
+
                 </TouchableOpacity>
             ))}
 
@@ -395,6 +442,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 8,
+        marginBottom: 8,
       },
     whiteSpaceText: {
     

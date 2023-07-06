@@ -20,6 +20,8 @@ const HomeScreen = () => {
   const [pointsRequired, setPointsRequired] = useState(''); //Code somehow reads this as a String. We then TypeCast into Integer
   const [voucherDescription, setVoucherDescription] = useState('');
   const [checked, setChecked] = React.useState('first');
+  const [voucherType, setVoucherType] = useState('dollar');
+  const [voucherPercentage, setVoucherPercentage] = useState('');
 
   useEffect(() => {
     console.log("(Seller Home) useEffect running...");
@@ -106,7 +108,7 @@ const HomeScreen = () => {
                     .set({
                       voucherId,
                       voucherImage: downloadURL, 
-                      voucherAmount,
+                      voucherAmount: voucherType === 'percentage' ? 0 : voucherAmount,
                       voucherDescription,
                       pointsRequired,
                       usedBy: [], // Initialize the usedBy array as empty
@@ -114,6 +116,8 @@ const HomeScreen = () => {
                       sellerId: firebase.auth().currentUser.uid,
                       timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
                       isVoucher: true,
+                      voucherType,
+                      voucherPercentage: voucherType === 'percentage' ? voucherPercentage : 0,
                     })
                     .then(() => {
                       console.log('Voucher created successfully!');
@@ -123,6 +127,8 @@ const HomeScreen = () => {
                       setVoucherAmount('');
                       setPointsRequired('');
                       setVoucherDescription('');
+                      setVoucherType('dollar');
+                      setVoucherPercentage('');
                     })
                     .catch((error) => {
                       console.log('Error creating voucher:', error);
@@ -196,16 +202,6 @@ const HomeScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-      <RadioButton
-        value="first"
-        status={ checked === 'first' ? 'checked' : 'unchecked' }
-        onPress={() => setChecked('first')}
-      />
-      <RadioButton
-        value="second"
-        status={ checked === 'second' ? 'checked' : 'unchecked' }
-        onPress={() => setChecked('second')}
-      />
       <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.text}>Welcome! {firstName}</Text>
@@ -214,9 +210,30 @@ const HomeScreen = () => {
         </Card.Content>
       </Card>
 
-      {/* Create Voucher */}
+      {/* Radio Buttons */}
+      <View style={styles.radioContainer}>
+        <View style={styles.radioButton}>
+          <RadioButton
+            value="dollar"
+            status={voucherType === 'dollar' ? 'checked' : 'unchecked'}
+            onPress={() => setVoucherType('dollar')}
+          />
+          <Text style={styles.radioLabel}>Dollar Voucher</Text>
+        </View>
+        <View style={styles.radioButton}>
+          <RadioButton
+            value="percentage"
+            status={voucherType === 'percentage' ? 'checked' : 'unchecked'}
+            onPress={() => setVoucherType('percentage')}
+          />
+          <Text style={styles.radioLabel}>Percentage Voucher</Text>
+        </View>
+      </View>
+
+      {/* Render the selected card */}
+      {voucherType === 'dollar' && (
       <Card style={styles.card}>
-        <Card.Title title="Create Voucher" styles={fontSize=20}/>
+        <Card.Title title="Create Dollar Voucher" styles={fontSize=20}/>
         <Card.Content>
           {/* Input fields */}
           <TextInput
@@ -259,12 +276,60 @@ const HomeScreen = () => {
             <Text style={styles.text1}>Create</Text>
 
           </Pressable>
-          {/* <
-            style={styles.button}
-            title="Create" 
-            onPress={createVoucher} /> */}
         </Card.Actions>
       </Card>
+
+      )}
+
+      {voucherType === 'percentage' && (
+      <Card style={styles.card}>
+        <Card.Title title="Create Percentage Voucher" styles={fontSize=20}/>
+        <Card.Content>
+          {/* Input fields */}
+          <TextInput
+            style={styles.textInput}
+            label="Voucher Percentage"
+            value={String(voucherPercentage)}
+            keyboardType='number-pad'
+            onChangeText={(text) => setVoucherPercentage(text)}
+          />
+          
+          <TextInput
+            style={styles.textInput}
+            label="Points Required"
+            value={String(pointsRequired)}
+            keyboardType='number-pad'
+            onChangeText={(text) => setPointsRequired(text)}
+          />
+          
+          <TextInput
+            style={styles.textInput}
+            label="Voucher Description"
+            value={voucherDescription}
+            onChangeText={(text) => setVoucherDescription(text)}
+          />
+
+
+          {/* Upload voucher image */}
+          <Pressable style={styles.button} onPress={selectImage}>
+            <Text style={styles.text1}>Choose Image From Library</Text>
+          </Pressable>
+
+          {/* Display selected image */}
+          {voucherImage && (
+            <Image source={{ uri: voucherImage.uri }} style={styles.selectedImage} />
+          )}
+
+        </Card.Content>
+        <Card.Actions>
+          <Pressable style={styles.button2} onPress={createVoucher}>
+            <Text style={styles.text1}>Create</Text>
+
+          </Pressable>
+        </Card.Actions>
+      </Card>
+
+      )}
 
       <FAB
         icon="qrcode-scan"
@@ -279,6 +344,20 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 15,
+  },
+  radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  radioLabel: {
+    marginLeft: 8,
+  },
   button: {
     marginTop: 20,
     backgroundColor: "#f07b10",
@@ -317,7 +396,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '100%',
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor: 'white',
   },
   selectedImage: {

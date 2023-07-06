@@ -115,21 +115,42 @@ const SettingsScreen = () => {
         <Text style={styles.text}>My Vouchers</Text>
         {vouchers.length > 0 ? (
             vouchers.map((voucher) => (
-                <View
-                    style={styles.voucherContainer}  
-                    key={voucher.id}  
-                >
-                  <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                  <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
-                  <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
-                  <Text style={styles.voucherText}>Value: {voucher.voucherAmount}</Text>
-                  <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
-                    {/* <Text style={styles.cancelText} onPress={() => handleCancelVoucher(voucher.id)}> Cancel Voucher</Text> */}
-                  <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
-                    <Text style={styles.cancelText}>Cancel Voucher</Text>
-                  </Pressable>
+              <View
+                style={styles.voucherContainer}  
+                key={voucher.id}  
+              >
+
+              {voucher.voucherType === 'dollar' && (
+              <View>
+                {/* Render dollar voucher */}
+                <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
+                <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
+                <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
+                <Text style={styles.voucherText}>Value: {voucher.voucherAmount}</Text>
+                <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
+                <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
+                <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
+                  <Text style={styles.cancelText}>Cancel Voucher</Text>
+                </Pressable>
+              </View>
+              )}
+            
+              {voucher.voucherType === 'percentage' && (
+              <View>
+                {/* Render percentage voucher */}
+                <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
+                <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
+                <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
+                <Text style={styles.voucherText}>Percentage: {voucher.voucherPercentage}</Text>
+                <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
+                <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
+                <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
+                  <Text style={styles.cancelText}>Cancel Voucher</Text>
+                </Pressable>
+              </View>
+              )}
                   
-                </View>
+              </View>    
             ))
         ) : (
             <Text style={styles.noVouchers}>No vouchers found.</Text>
@@ -138,18 +159,6 @@ const SettingsScreen = () => {
         <Pressable style={styles.button1} onPress={() => {changePassword()}}>
             <Text style={styles.buttonText}>Change Password</Text>
         </Pressable>
-
-        {/**Log Out Button */}
-        {/* <View style={styles.container1}>
-          <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
-        </View> */}
-
-        {/* <Card>
-          <Card.Content>
-            <Text style={styles.text}>Welcome! {firstName}</Text>
-            <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
-          </Card.Content>
-        </Card> */}
 
         <Text style={styles.whiteSpaceText}>White Space.</Text>
         <Text style={styles.whiteSpaceText}>White Space.</Text>
