@@ -7,6 +7,8 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import prompt from 'react-native-prompt-android';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
+// import { globalState } from '../globalState';
+import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
 
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
@@ -41,7 +43,7 @@ const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   return newTotalPoint;
 }
 
-const ScannerScreen = () => {
+const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
   const { user } = useContext(AuthContext);
   const [scanning, setScanning] = useState(false);
   const [sellerName, setSellerName] = useState('');
@@ -91,49 +93,107 @@ const ScannerScreen = () => {
     
   }, [user]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await BarCodeScanner.requestPermissionsAsync();
-  //     setHasCameraPermission(status === 'granted');
-  //   })();
-  // }, []);
-
-  // if (hasCameraPermission === null) {
-  //   return <Text>Requesting camera permission...</Text>;
-  // }
-
-  // if (hasCameraPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
-
-  // useEffect(() => {
-  //   firebase.firestore().collection('users')
-  //   .doc(firebase.auth().currentUser.uid).get()
-  //   .then((snapshot) => {
-  //     if (snapshot.exists) {
-  //       setSellerName(snapshot.data().firstName)
-  //     } else {
-  //       console.log('User does not exist')
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.log("Error getting user: ", error)
-  //   })
-  // }, [])
-
-  const updateOriginalPrice = (price) => {
-    originalPrice = price;
-    console.log("Update Price:", originalPrice);
-    handleTransaction(originalPrice);
-  }
-
   const handleTransaction = async (originalPrice) => {
     if (data.isVoucher) {
-      console.log("original price is: ", originalPrice);
-      const { voucherId, voucherAmount, pointsRequired, voucherDescription, customerId, customerName, sellerId, isVoucher} = data;
-      let finalAmount = originalPrice - data.voucherAmount;
-      finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
-      console.log(finalAmount);
+      if (data.voucherType === 'dollar') {
+        console.log("original price is: ", originalPrice);
+        const { 
+          customerId, 
+          customerName,
+          isVoucher,
+          voucherId, 
+          voucherAmount,
+          voucherDescription, 
+          voucherType, 
+          pointsRequired, 
+          sellerId, 
+          showVoucherQRCodeModal, //Modal in Customer Screen must be tracked
+              } = data;
+        
+        let customerModal = Boolean(data.showVoucherQRCodeModal);
+
+        let finalAmount = Number((originalPrice - data.voucherAmount).toFixed(2));
+        
+        finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
+        console.log("Absolute Voucher Final Amount:", finalAmount);
+
+        console.log("Now Deduct and Update Customer Current Point Balance")
+      
+        firebase.firestore().collection('users').doc(customerId).get()
+        .then((snapshot) => {
+          const customer = snapshot.data();
+          const customerCurrentPoint = customer.currentPoint;
+          const updatedCustomerCurrentPoint = customerCurrentPoint - data.pointsRequired;
+      
+        firebase
+            .firestore()
+            .collection('users')
+            .doc(customerId)
+            .update({
+              currentPoint: updatedCustomerCurrentPoint,
+            })
+            .then(() => {
+              console.log('Customer Current Point Updated!');
+            })
+            .catch((error) => {
+              console.log('Error updating points:', error);
+            });
+        })
+        .catch((error) => {
+          console.log('Error getting customer data:', error);
+        });
+        
+        //Create a Transaction Log of type "Voucher Transaction"
+        const transactionsCollectionRef = firebase.firestore().collection('transactions');
+        const transactionDocRef = await transactionsCollectionRef.add({
+          amountPaid: finalAmount,
+          customerId: customerId,
+          customerName: customerName,
+          pointsAwarded: 0,
+          sellerId: user.uid,
+          sellerName: sellerName,
+          timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+          transactionType: "Voucher Transaction",
+          voucherAmount: data.voucherAmount,
+          voucherId: data.voucherId,
+          voucherDescription: data.voucherDescription,
+          voucherType: data.voucherType,
+        });
+
+        // Show success message
+        Alert.alert('Success', `${customerName} has successfully redeemed the Voucher and you will be paid $${finalAmount}`);
+
+        // Update the 'usedBy' array of the voucher document in Firestore
+        firebase
+        .firestore()
+        .collection('vouchers')
+        .doc(voucherId)
+        .update({
+          usedBy: firebase.firestore.FieldValue.arrayUnion(customerId),
+        }).then(() => {
+          console.log('Voucher redeemed successfully!');
+        })
+        .catch((error) => {
+          console.log('Error redeeming voucher:', error);
+        });
+
+        //Reset state variables
+        toggleModal(); // Customer Side Voucher QR Should disappear
+        console.log("Customer Modal:", showVoucherQRCodeModal);
+        setShowPromptModal(false);
+        setOriginalPrice(0);
+      } else {
+        console.log("Using a Percentage Voucher");
+        console.log("original price is: ", originalPrice);
+        const { voucherId, voucherAmount, pointsRequired, voucherDescription, customerId, customerName, sellerId, isVoucher, voucherPercentage} = data;
+        
+        let voucherPercentageTrimmed = data.voucherPercentage;
+        console.log("voucher percentage:", voucherPercentageTrimmed);
+        let finalAmount = originalPrice * ( (100 - parseFloat(voucherPercentageTrimmed, 10)) / 100); //GOT NAN for finalAmount
+        console.log("After parsing, finalAmount:", finalAmount);
+        finalAmount = Number(finalAmount.toFixed(2));
+        finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
+        console.log("After rounding to 2dp, finalAmount:", finalAmount);
 
       console.log("Now Deduct and Update Customer Current Point Balance")
       
@@ -175,6 +235,7 @@ const ScannerScreen = () => {
         voucherAmount: data.voucherAmount,
         voucherId: data.voucherId,
         voucherDescription: data.voucherDescription,
+        voucherType: data.voucherType,
       });
 
       // Show success message
@@ -194,12 +255,17 @@ const ScannerScreen = () => {
         console.log('Error redeeming voucher:', error);
       });
 
+      //Reset state variables
+      toggleModal(); // Customer Side Voucher QR Should disappear
+      console.log("Customer Modal:", showVoucherQRCodeModal);
       setShowPromptModal(false);
       setOriginalPrice(0);
+      }
+      
       
     } else {
         const { uid, firstName, currentPoint, totalPoint } = data;
-        const amountPaid = parseInt(originalPrice, 10);
+        let amountPaid = parseFloat(originalPrice, 10);
         console.log(amountPaid);
     
         // Calculate new points
@@ -207,7 +273,10 @@ const ScannerScreen = () => {
         //console.log("Updated Current Point:" , newCurrentPoint);
         const newTotalPoint = calculateNewTotalPoint(totalPoint, amountPaid);
         //console.log("Updated Total Point:" , newTotalPoint);
-    
+
+        //Round Amount Paid to 2dp to for the creation of Transaction Log
+        amountPaid = Number(amountPaid.toFixed(2));
+        
         // Check if points are negative
         if (newCurrentPoint < 0 || newTotalPoint < 0) {
           throw new Error('Points cannot be negative!');
@@ -241,6 +310,7 @@ const ScannerScreen = () => {
           // Show success message
           Alert.alert('Success Points Transaction', `Customer's current point: ${newCurrentPoint}\nTotal point: ${newTotalPoint}`);
 
+          //Reset State Variable
           setShowPromptModal(false);
           setOriginalPrice(0);
 
@@ -269,123 +339,7 @@ const ScannerScreen = () => {
           // Otherwise it will be like using Watson's voucher at Guardian.
           
           setData(qrCodeData);
-          setShowPromptModal(true);
-          //Move the codes below to a Calculating Function
-          // console.log("Here we want to know Original Price")
-          
-          // let inputResult = 0;
-
-
-          // if (Platform.OS === "android") {
-            // console.log("Platform:", Platform.OS);
-            // inputResult = prompt(
-            //   'Original Price',
-            //   'Enter the original Price Payable by the customer:',
-            //   [
-            //   {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-            //   {text: 'OK', onPress: result => console.log('OK Pressed, result: ' + result)},
-            //   ],
-            //   {
-            //       type: 'numeric',
-            //       cancelable: false,
-            //       placeholder: 'placeholder'
-            //   }
-            // )
-
-          //   inputResult = await new Promise((resolve) => {
-          //     prompt(
-          //       'Original Price',
-          //       'Enter the original Price Payable by the customer:',
-          //       [
-          //         { text: 'Cancel', onPress: () => resolve(null), style: 'cancel' },
-          //         { text: 'OK', onPress: (result) => resolve(result) },
-          //       ],
-          //       {
-          //         type: 'numeric',
-          //         cancelable: false,
-          //         placeholder: 'placeholder',
-          //       }
-          //     );
-          //   });
-          // } else {
-          //   //Platform.OS === iOS
-          //   console.log("Platform:", Platform.OS);
-          //   inputResult = await new Promise((resolve) => {
-          //   Alert.prompt('Original Price', 'Enter the original Price Payable by the customer:', (text) => {
-          //     resolve(parseInt(text, 10) || 0);
-          //   });
-          // });
-          // }
-  
-          // const originalPrice = inputResult || 0;
-          // console.log(originalPrice);
-  
-          //Calculate Final Amount Payable by Customer AFTER Applying Voucher
-        //   let finalAmount = originalPrice - qrCodeData.voucherAmount;
-        //   finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
-        //   console.log(finalAmount);
-
-        //   // Update the 'usedBy' array of the voucher document in Firestore
-        //   firebase
-        //   .firestore()
-        //   .collection('vouchers')
-        //   .doc(voucherId)
-        //   .update({
-        //     usedBy: firebase.firestore.FieldValue.arrayUnion(customerId),
-        //   }).then(() => {
-        //     console.log('Voucher redeemed successfully!');
-        //   })
-        //   .catch((error) => {
-        //     console.log('Error redeeming voucher:', error);
-        //   });
-
-        //   console.log("Now Deduct and Update Customer Current Point Balance")
-        // // console.log("Customer UID", uid)
-        // // console.log("Current Point Balance:", currentPoint);
-        // // console.log("Total Point Balance:", totalPoint);
-          
-        //   firebase.firestore().collection('users').doc(customerId).get()
-        //   .then((snapshot) => {
-        //     const customer = snapshot.data();
-        //     const customerCurrentPoint = customer.currentPoint;
-        //     const updatedCustomerCurrentPoint = customerCurrentPoint - qrCodeData.pointsRequired;
-        
-        //     firebase
-        //       .firestore()
-        //       .collection('users')
-        //       .doc(customerId)
-        //       .update({
-        //         currentPoint: updatedCustomerCurrentPoint,
-        //       })
-        //       .then(() => {
-        //         console.log('Customer Current Point Updated!');
-        //       })
-        //       .catch((error) => {
-        //         console.log('Error updating points:', error);
-        //       });
-        //   })
-        //   .catch((error) => {
-        //     console.log('Error getting customer data:', error);
-        //   });
-        
-        //   //Create a Transaction Log of type "Voucher Transaction"
-        //   const transactionsCollectionRef = firebase.firestore().collection('transactions');
-        //   const transactionDocRef = await transactionsCollectionRef.add({
-        //     amountPaid: finalAmount,
-        //     customerId: customerId,
-        //     customerName: customerName,
-        //     pointsAwarded: 0,
-        //     sellerId: user.uid,
-        //     sellerName: sellerName,
-        //     timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-        //     transactionType: "Voucher Transaction",
-        //     voucherAmount: qrCodeData.voucherAmount,
-        //     voucherId: qrCodeData.voucherId,
-        //     voucherDescription: qrCodeData.voucherDescription,
-        //   });
-
-        //   // Show success message
-        //   Alert.alert('Success', `${customerName} has successfully redeemed the Voucher and you will be paid $${finalAmount}`);
+          setShowPromptModal(true);  
         } else {
           throw new Error("This QR Code is from other Sellers! Or it is not valid anymore!");
         }
@@ -394,63 +348,6 @@ const ScannerScreen = () => {
         setData(qrCodeData); //Parsed version
         setShowPromptModal(true);
         
-        //Move the codes below to a Calculating Function
-
-        // const { uid, firstName, currentPoint, totalPoint } = qrCodeData;
-        // console.log("Customer UID", uid)
-        // console.log("Current Point Balance:", currentPoint);
-        // console.log("Total Point Balance:", totalPoint);
-
-        // // Prompt for amountPaid input
-        // const inputResult = await new Promise((resolve) => {
-        //   Alert.prompt('Amount Paid', 'Enter the amount paid by the customer:', (text) => {
-        //     resolve(parseInt(text, 10) || 0);
-        //   });
-        // });
-    
-        // const amountPaid = inputResult || 0;
-    
-        // // Calculate new points
-        // const newCurrentPoint = calculateNewCurrentPoint(currentPoint, amountPaid);
-        // //console.log("Updated Current Point:" , newCurrentPoint);
-        // const newTotalPoint = calculateNewTotalPoint(totalPoint, amountPaid);
-        // //console.log("Updated Total Point:" , newTotalPoint);
-    
-        // // Check if points are negative
-        // if (newCurrentPoint < 0 || newTotalPoint < 0) {
-        //   throw new Error('Points cannot be negative!');
-        // }
-    
-        // // Update customer's data in Firestore
-        // const userCollectionRef = firebase.firestore().collection('users');
-        // const userDocRef = userCollectionRef.doc(uid);
-        // const userData = await userDocRef.get();
-        
-        // if (userData.exists) {
-        //   // Create a new transaction document in the "Transactions" collection
-        //   await userDocRef.update({
-        //     currentPoint: newCurrentPoint,
-        //     totalPoint: newTotalPoint,
-        //   });
-  
-        //   const transactionsCollectionRef = firebase.firestore().collection('transactions');
-        //   const transactionDocRef = await transactionsCollectionRef.add({
-        //     amountPaid,
-        //     customerId: uid,
-        //     customerName: firstName,
-        //     pointsAwarded: newCurrentPoint - currentPoint,
-        //     sellerId: user.uid,
-        //     sellerName: sellerName,
-        //     timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-        //     transactionType: "Points Transaction",
-        //     voucherAmount: 0,
-        //   });
-    
-        //   // Show success message
-        //   Alert.alert('Success', `Customer's current point: ${newCurrentPoint}\nTotal point: ${newTotalPoint}`);
-        // } else {
-        //   Alert.alert('Error', 'User data not found');
-        // }
       }
       
     } catch (err) {

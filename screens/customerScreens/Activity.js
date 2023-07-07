@@ -34,14 +34,23 @@ const ActivityScreen = () => {
     }
   }, [user]);
 
+  //Handle if timestamp from Firestore is lagging
+  const getDateOfTransaction = (timestamp) => {
+    if (timestamp) {
+      return timestamp.toDate().toLocaleString();
+    } else {
+      console.log("timestamp does not exist for this transaction YET. Might be due to lagging. Try again a few seconds later")
+    }
+  }
+
   const renderItem = ({ item }) => {
     // Convert the Firestore Timestamp to a JavaScript Date object
-    const date = item.timeStamp.toDate();
-
     // Format the timestamp as a string
-    const formattedTimestamp = date.toLocaleString();
+    const formattedTimestamp = getDateOfTransaction(item.timeStamp);
   
     //console.log(item);
+
+    const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
 
     //There are 2 types of Transaction Log: Points and Voucher Transaction
 
@@ -50,7 +59,7 @@ const ActivityScreen = () => {
         <View style={styles.voucherTransactionContainer}>
           <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
           <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
-          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
           <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
@@ -62,7 +71,7 @@ const ActivityScreen = () => {
       <View style={styles.pointTransactionContainer}>
           <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
           <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
-          <Text style={styles.transactionText}>Amount Paid: ${item.amountPaid}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
           <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
@@ -78,6 +87,8 @@ const ActivityScreen = () => {
       totalSpent += transaction.amountPaid;
     });
     console.log(totalSpent);
+
+    totalSpent = Number(totalSpent.toFixed(2));
   
     return totalSpent;
   };

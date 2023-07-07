@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, Alert, Button, Pressable} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
-import { FAB, Card, TextInput, RadioButton } from 'react-native-paper';
+import { FAB, Card, TextInput, RadioButton, PaperProvider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import FormInput from '../../components/FormInput';
@@ -197,18 +197,19 @@ const HomeScreen = () => {
       setVoucherImage(null);
     }
   // };
-  
+
 
   return (
     <ScrollView>
       <View style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
+          <Image
+            source={require('../../assets/NUShopLah!-logo.png')}
+            style={styles.logo}
+          />
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
           {/* <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} /> */}
-        </Card.Content>
-      </Card>
+
 
       {/* Radio Buttons */}
       <View style={styles.radioContainer}>
@@ -232,86 +233,124 @@ const HomeScreen = () => {
 
       {/* Render the selected card */}
       {voucherType === 'dollar' && (
-      <Card style={styles.card}>
-        <Card.Title title="Create Dollar Voucher" styles={fontSize=20}/>
-        <Card.Content>
-          {/* Input fields */}
-          <TextInput
-            style={styles.textInput}
-            label="Voucher Amount"
-            value={String(voucherAmount)}
-            keyboardType='number-pad'
-            onChangeText={(text) => setVoucherAmount(text)}
-          />
-          
-          <TextInput
-            style={styles.textInput}
-            label="Points Required"
-            value={String(pointsRequired)}
-            keyboardType='number-pad'
-            onChangeText={(text) => setPointsRequired(text)}
-          />
-          
-          <TextInput
-            style={styles.textInput}
-            label="Voucher Description"
-            value={voucherDescription}
-            onChangeText={(text) => setVoucherDescription(text)}
-          />
+        <Card style={styles.card1}>
+          <Card.Title title="Create Dollar Voucher" titleStyle={styles.titleVoucher}/>
+          <Card.Content>
+            {/* Input fields */}
+            <TextInput
+              style={styles.textInput1}
+              label="Voucher Amount ($)"
+              value={String(voucherAmount)}
+              keyboardType='number-pad'
+              onChangeText={(text) => setVoucherAmount(text)}
+              selectionColor='white'
+              cursorColor='white'
+              activeUnderlineColor='white'
+              outlineColor='white'
+              activeOutlineColor='white'
+              textColor='white'
+
+            />
+            
+            <TextInput
+              style={styles.textInput1}
+              label="Points Required"
+              value={String(pointsRequired)}
+              keyboardType='number-pad'
+              onChangeText={(text) => setPointsRequired(text)}
+              selectionColor='white'
+              cursorColor='white'
+              activeUnderlineColor='white'
+              outlineColor='white'
+              activeOutlineColor='white'
+              textColor='white'
+            />
+            
+            <TextInput
+              style={styles.textInput1}
+              label="Voucher Description"
+              value={voucherDescription}
+              onChangeText={(text) => setVoucherDescription(text)}
+              selectionColor='white'
+              cursorColor='white'
+              activeUnderlineColor='white'
+              outlineColor='white'
+              activeOutlineColor='white'
+              textColor='white'
+            />
 
 
-          {/* Upload voucher image */}
-          <Pressable style={styles.button} onPress={selectImage}>
-            <Text style={styles.text1}>Choose Image From Library</Text>
-          </Pressable>
+            {/* Upload voucher image */}
+            <Pressable style={styles.button2} onPress={selectImage}>
+              <Text style={styles.text1}>Choose Image From Library</Text>
+            </Pressable>
 
-          {/* Display selected image */}
-          {voucherImage && (
-            <Image source={{ uri: voucherImage.uri }} style={styles.selectedImage} />
-          )}
+            {/* Display selected image */}
+            {voucherImage && (
+              <Image source={{ uri: voucherImage.uri }} style={styles.selectedImage} />
+            )}
 
-        </Card.Content>
-        <Card.Actions>
-          <Pressable style={styles.button2} onPress={createVoucher}>
-            <Text style={styles.text1}>Create</Text>
+          </Card.Content>
+          <Card.Actions>
+            <Pressable style={styles.button2} onPress={createVoucher}>
+              <Text style={styles.text1}>Create</Text>
 
-          </Pressable>
-        </Card.Actions>
-      </Card>
+            </Pressable>
+          </Card.Actions>
+        </Card>
+      
 
       )}
 
       {voucherType === 'percentage' && (
-      <Card style={styles.card}>
-        <Card.Title title="Create Percentage Voucher" styles={fontSize=20}/>
+      <Card style={styles.card2}>
+        <Card.Title title="Create Percentage Voucher" titleStyle={styles.titleVoucher}/>
         <Card.Content>
           {/* Input fields */}
           <TextInput
-            style={styles.textInput}
-            label="Voucher Percentage"
+            contentStyle={styles.textInput2}
+            label="Voucher Percentage (%)"
             value={String(voucherPercentage)}
             keyboardType='number-pad'
             onChangeText={(text) => setVoucherPercentage(text)}
+            selectionColor='white'
+            cursorColor='white'
+            activeUnderlineColor='white'
+            outlineColor='white'
+            activeOutlineColor='white'
+            textColor='white'
           />
           
           <TextInput
-            style={styles.textInput}
+            contentStyle={styles.textInput2}
             label="Points Required"
             value={String(pointsRequired)}
             keyboardType='number-pad'
             onChangeText={(text) => setPointsRequired(text)}
+            selectionColor='white'
+            cursorColor='white'
+            activeUnderlineColor='white'
+            outlineColor='white'
+            activeOutlineColor='white'
+            textColor='white'
           />
           
           <TextInput
-            style={styles.textInput}
+            contentStyle={styles.textInput2}
             label="Voucher Description"
             value={voucherDescription}
             onChangeText={(text) => setVoucherDescription(text)}
+            selectionColor='white'
+            cursorColor='white'
+            activeUnderlineColor='white'
+            outlineColor='white'
+            activeOutlineColor='white'
+            textColor='white'
           />
 
 
           {/* Upload voucher image */}
-          <Pressable style={styles.button} onPress={selectImage}>
+          <Pressable style={styles.button2} onPress={selectImage}>
             <Text style={styles.text1}>Choose Image From Library</Text>
           </Pressable>
 
@@ -337,6 +376,15 @@ const HomeScreen = () => {
         label="Scan QR"
         onPress={() => navigation.navigate('Scan QR')}
       />
+
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
     </View>
     </ScrollView>
   );
@@ -344,6 +392,10 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
+  titleVoucher: {
+    fontSize: 20,
+    color: 'white'
+  },
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -367,7 +419,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   button2: {
-    margin: 10,
+    marginTop: 30,
     backgroundColor: "#003D7C",
     alignItems: 'center',
     padding: 10,
@@ -398,6 +450,21 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     backgroundColor: 'white',
+    color: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card1: {
+    width: '100%',
+    marginTop: 10,
+    backgroundColor: '#f07b10',
+    color: 'white',
+  },
+  card2: {
+    width: '100%',
+    marginTop: 10,
+    backgroundColor: '#db7b98',
+    color: 'white',
   },
   selectedImage: {
     width: 200,
@@ -405,8 +472,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
     resizeMode: 'cover',
   },
-  textInput: {
-    backgroundColor: 'white',
+  textInput1: {
+    backgroundColor: '#f07b10',  
+  },
+  textInput2: {
+    backgroundColor: '#db7b98',
+  },
+  whiteSpaceText: {
+    fontSize: 16,
+    marginVertical: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  logo: {
+    height: 150,
+    width: '100%',
+    resizeMode: 'contain',
   },
 });
 

@@ -106,7 +106,6 @@ const SettingsScreen = () => {
     } else {
       console.log("timestamp does not exist for this voucher YET. Might be due to lagging. Try again a few seconds later")
     }
-    
   }
 
   return (
@@ -115,9 +114,9 @@ const SettingsScreen = () => {
         <Text style={styles.text}>My Vouchers</Text>
         {vouchers.length > 0 ? (
             vouchers.map((voucher) => (
-              <View
-                style={styles.voucherContainer}  
+              <View 
                 key={voucher.id}  
+                style={voucher.voucherType === 'dollar' ? styles.dollarVoucherContainer : styles.percentageVoucherContainer}
               >
 
               {voucher.voucherType === 'dollar' && (
@@ -126,7 +125,7 @@ const SettingsScreen = () => {
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
                 <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
-                <Text style={styles.voucherText}>Value: {voucher.voucherAmount}</Text>
+                <Text style={styles.voucherText}>Value: ${voucher.voucherAmount}</Text>
                 <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
                 <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
                 <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
@@ -141,7 +140,7 @@ const SettingsScreen = () => {
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
                 <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
-                <Text style={styles.voucherText}>Percentage: {voucher.voucherPercentage}</Text>
+                <Text style={styles.voucherText}>Percentage: {voucher.voucherPercentage}%</Text>
                 <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
                 <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
                 <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
   },
   button1: {
     marginTop: 10,
-    backgroundColor: "#f07b10",
+    backgroundColor: "#003d7c",
     alignItems: 'center',
     padding: 15,
     borderRadius: 10,
@@ -211,8 +210,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginLeft: 16,
   },
-  voucherContainer: {
-    backgroundColor: '#003d7c',
+  dollarVoucherContainer: {
+    backgroundColor: '#f07b10',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    padding: 30,
+  },
+  percentageVoucherContainer: {
+    backgroundColor: '#db7b98',
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
@@ -242,7 +249,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   whiteSpaceText: {
-    
     fontSize: 16,
     marginBottom: 20,
     color: '#fff',
