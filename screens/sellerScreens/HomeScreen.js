@@ -106,18 +106,18 @@ const HomeScreen = () => {
                     .collection('vouchers')
                     .doc(voucherId)
                     .set({
-                      voucherId,
-                      voucherImage: downloadURL, 
-                      voucherAmount: voucherType === 'percentage' ? 0 : voucherAmount,
-                      voucherDescription,
+                      isVoucher: true,
                       pointsRequired,
-                      usedBy: [], // Initialize the usedBy array as empty
                       sellerName: firstName,
                       sellerId: firebase.auth().currentUser.uid,
                       timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                      isVoucher: true,
+                      usedBy: [], // Initialize the usedBy array as empty
+                      voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
+                      voucherDescription,
+                      voucherId,
+                      voucherImage: downloadURL, 
+                      voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
                       voucherType,
-                      voucherPercentage: voucherType === 'percentage' ? voucherPercentage : 0,
                     })
                     .then(() => {
                       console.log('Voucher created successfully!');

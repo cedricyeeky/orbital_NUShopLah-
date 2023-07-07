@@ -52,6 +52,15 @@ const ActivityScreen = () => {
 
     const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
 
+    const capitalizeFirstLetter = (string) => {
+      if (!string) {
+        return ''; // Return an empty string if the input is empty or undefined
+      }
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+    
+    const capitalizedString = capitalizeFirstLetter(item.voucherType);
+
     //There are 2 types of Transaction Log: Points and Voucher Transaction
 
     if (item.pointsAwarded == 0) {
@@ -62,6 +71,7 @@ const ActivityScreen = () => {
           <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
           <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
           <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
         </View>
@@ -86,9 +96,9 @@ const ActivityScreen = () => {
     transactions.forEach((transaction) => {
       totalSpent += transaction.amountPaid;
     });
-    console.log(totalSpent);
 
     totalSpent = Number(totalSpent.toFixed(2));
+    console.log(totalSpent);
   
     return totalSpent;
   };

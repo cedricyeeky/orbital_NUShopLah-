@@ -45,8 +45,17 @@ const ActivityScreen = () => {
     const formattedTimestamp = getDateOfTransaction(item.timeStamp);
 
     const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
+
+    const capitalizeFirstLetter = (string) => {
+      if (!string) {
+        return ''; // Return an empty string if the input is empty or undefined
+      }
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    };
     
-    //Render Accorsing to Transaction Type
+    const capitalizedString = capitalizeFirstLetter(item.voucherType);
+
+    //Render According to Transaction Type
     if (item.pointsAwarded == 0) {
       return (
         <View style={styles.voucherTransactionContainer}>
@@ -55,6 +64,7 @@ const ActivityScreen = () => {
           <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
           <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
           <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
         </View>
@@ -80,9 +90,9 @@ const ActivityScreen = () => {
     transactions.forEach((transaction) => {
       totalRevenue += transaction.amountPaid;
     });
-    console.log(totalRevenue);
 
     totalRevenue = Number(totalRevenue.toFixed(2));
+    console.log(totalRevenue);
   
     return totalRevenue;
   };
