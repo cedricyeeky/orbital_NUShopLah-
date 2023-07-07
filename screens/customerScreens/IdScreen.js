@@ -184,6 +184,7 @@ const IdScreen = () => {
       //official nus orange colour
       backgroundColor: '#f07b10',
       padding: 16,
+      borderRadius: 20,
     },
     title: {
       fontSize: 40,

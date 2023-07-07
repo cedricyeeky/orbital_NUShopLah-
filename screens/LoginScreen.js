@@ -76,6 +76,8 @@ const LoginScreen = ({navigation}) => {
         <Text style={styles.navButtonText}>Don't have an account? Create here</Text>
       </TouchableOpacity>
 
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+
     </ScrollView>
   );
 };
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: 'white',
   },
   logo: {
     height: 250,
@@ -110,5 +113,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#2e64e5',
+  },
+  whiteSpaceText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

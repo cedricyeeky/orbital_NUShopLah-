@@ -100,7 +100,7 @@ const SettingsScreen = () => {
   };
 
   const getDateOfVoucher = (timestamp) => {
-    console.log(timestamp);
+    //console.log(timestamp);
     if (timestamp) {
       return timestamp.toDate().toLocaleString();
     } else {
@@ -155,15 +155,13 @@ const SettingsScreen = () => {
             <Text style={styles.noVouchers}>No vouchers found.</Text>
         )}
         {/**Change Password Button */}
-        <Pressable style={styles.button1} onPress={() => {changePassword()}}>
-            <Text style={styles.buttonText}>Change Password</Text>
-        </Pressable>
+        <View style={styles.passwordButton}>
+          <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
+        </View>
 
         <Text style={styles.whiteSpaceText}>White Space.</Text>
         <Text style={styles.whiteSpaceText}>White Space.</Text>
-        <Text style={styles.whiteSpaceText}>White Space.</Text>
-        <Text style={styles.whiteSpaceText}>White Space.</Text>
-        <Text style={styles.whiteSpaceText}>White Space.</Text>
+
 
       </View>
     </ScrollView>
@@ -176,25 +174,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     borderRadius: 10,
   },
-  button1: {
-    marginTop: 10,
-    backgroundColor: "#003d7c",
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 10,
-    marginHorizontal: 32,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   container: {
     backgroundColor: '#fff',
     padding: 20,
     flex: 0.9,
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   container1: {
     backgroundColor: '#f9fafd',
@@ -214,7 +199,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f07b10',
     borderRadius: 20,
     padding: 16,
-    marginBottom: 16,
+    marginVertical: 10,
     elevation: 2,
     padding: 30,
   },
@@ -222,7 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#db7b98',
     borderRadius: 20,
     padding: 16,
-    marginBottom: 16,
+    marginVertical: 10,
     elevation: 2,
     padding: 30,
   },
@@ -259,6 +244,10 @@ const styles = StyleSheet.create({
     height: 250,
     marginBottom: 10,
   },
+  passwordButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default SettingsScreen;

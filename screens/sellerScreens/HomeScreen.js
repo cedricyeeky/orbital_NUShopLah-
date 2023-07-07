@@ -208,8 +208,6 @@ const HomeScreen = () => {
           />
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
-          {/* <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} /> */}
-
 
       {/* Radio Buttons */}
       <View style={styles.radioContainer}>
@@ -233,7 +231,7 @@ const HomeScreen = () => {
 
       {/* Render the selected card */}
       {voucherType === 'dollar' && (
-        <Card style={styles.card1}>
+        <Card style={styles.dollarCard}>
           <Card.Title title="Create Dollar Voucher" titleStyle={styles.titleVoucher}/>
           <Card.Content>
             {/* Input fields */}
@@ -303,7 +301,7 @@ const HomeScreen = () => {
       )}
 
       {voucherType === 'percentage' && (
-      <Card style={styles.card2}>
+      <Card style={styles.percentageCard}>
         <Card.Title title="Create Percentage Voucher" titleStyle={styles.titleVoucher}/>
         <Card.Content>
           {/* Input fields */}
@@ -379,12 +377,7 @@ const HomeScreen = () => {
 
       <Text style={styles.whiteSpaceText}>White Space.</Text>
       <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
+
     </View>
     </ScrollView>
   );
@@ -394,7 +387,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   titleVoucher: {
     fontSize: 20,
-    color: 'white'
+    color: 'white',
+    marginTop: 20,
   },
   radioContainer: {
     flexDirection: 'row',
@@ -446,25 +440,21 @@ const styles = StyleSheet.create({
     padding: 2,
     backgroundColor: 'white',
   },
-  card: {
-    width: '100%',
-    marginTop: 10,
-    backgroundColor: 'white',
-    color: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  card1: {
+  dollarCard: {
     width: '100%',
     marginTop: 10,
     backgroundColor: '#f07b10',
     color: 'white',
+    borderRadius: 20,
+    padding: 10,
   },
-  card2: {
+  percentageCard: {
     width: '100%',
     marginTop: 10,
     backgroundColor: '#db7b98',
     color: 'white',
+    borderRadius: 20,
+    padding: 10,
   },
   selectedImage: {
     width: 200,

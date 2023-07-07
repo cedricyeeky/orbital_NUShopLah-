@@ -64,18 +64,33 @@ const ActivityScreen = () => {
     //There are 2 types of Transaction Log: Points and Voucher Transaction
 
     if (item.pointsAwarded == 0) {
-      return (
-        <View style={styles.voucherTransactionContainer}>
-          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
-          <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
-          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
-          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
-          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
-          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-          <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
-          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
-        </View>
-      );
+      if (item.voucherType === 'dollar') {
+        return (
+          <View style={styles.dollarVoucherTransactionContainer}>
+            <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+            <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+            <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+            <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+            <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+            <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+          </View>
+        );
+      } else {
+        return (
+          <View style={styles.percentageVoucherTransactionContainer}>
+            <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+            <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+            <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+            <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+            <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+            <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+          </View>
+        );
+      }
     } else {
       return (
       <View style={styles.pointTransactionContainer}>
@@ -115,9 +130,18 @@ const ActivityScreen = () => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
-      ) : (
+
+      )
+
+      : (
         <Text style={styles.noTransactions}>No transactions found.</Text>
       )}
+
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+      <Text style={styles.whiteSpaceText}>White Space.</Text>
+
+
     </View>
   );
 };
@@ -153,17 +177,23 @@ const styles = StyleSheet.create({
   },
   pointTransactionContainer: {
     padding: 30,
-    marginBottom: 30,
+    marginVertical: 10,
     borderRadius: 20,
     backgroundColor: '#003D7C',
 
     
   },
-  voucherTransactionContainer: {
+  dollarVoucherTransactionContainer: {
     padding: 30,
-    marginBottom: 30,
+    marginVertical: 10,
     borderRadius: 20,
     backgroundColor: '#f07b10',
+  },
+  percentageVoucherTransactionContainer: {
+    padding: 30,
+    marginVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#db7b98',
   },
   transactionText: {
     fontSize: 18,
@@ -174,6 +204,11 @@ const styles = StyleSheet.create({
   noTransactions: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  whiteSpaceText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

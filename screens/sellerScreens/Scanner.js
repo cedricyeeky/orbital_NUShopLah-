@@ -104,13 +104,14 @@ const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
           voucherId, 
           voucherAmount,
           voucherDescription, 
+          voucherPercentage,
           voucherType, 
           pointsRequired, 
           sellerId, 
           showVoucherQRCodeModal, //Modal in Customer Screen must be tracked
               } = data;
         
-        let customerModal = Boolean(data.showVoucherQRCodeModal);
+        //let customerModal = Boolean(data.showVoucherQRCodeModal);
 
         let finalAmount = Number((originalPrice - data.voucherAmount).toFixed(2));
         
@@ -155,8 +156,9 @@ const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
           timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
           transactionType: "Voucher Transaction",
           voucherAmount: data.voucherAmount,
-          voucherId: data.voucherId,
           voucherDescription: data.voucherDescription,
+          voucherId: data.voucherId,
+          voucherPercentage: data.voucherPercentage,
           voucherType: data.voucherType,
         });
 
@@ -233,8 +235,9 @@ const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
         timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
         transactionType: "Voucher Transaction",
         voucherAmount: data.voucherAmount,
-        voucherId: data.voucherId,
         voucherDescription: data.voucherDescription,
+        voucherId: data.voucherId,
+        voucherPercentage: data.voucherPercentage,
         voucherType: data.voucherType,
       });
 

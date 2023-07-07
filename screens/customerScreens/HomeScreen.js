@@ -192,9 +192,10 @@ const HomeScreen = () => {
           <Text style={styles.whiteSpaceText}>White Space.</Text>
 
           <Searchbar
-            placeholder="Search"
+            placeholder="Search Seller Name"
             onChangeText={onChangeSearch}
             value={searchQuery}
+            style={styles.searchBar}
           />
 
           <Text style={styles.heading}>Available Vouchers</Text>
@@ -208,7 +209,7 @@ const HomeScreen = () => {
                 >
 
                 {voucher.voucherType === 'dollar' && (
-                <View style={styles.dollarVouchercard}>
+                <View style={styles.dollarVoucherCard}>
                   <Card.Content>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
@@ -228,7 +229,7 @@ const HomeScreen = () => {
                 )}
 
                 {voucher.voucherType === 'percentage' && (
-                <View style={styles.percentageVouchercard}>
+                <View style={styles.percentageVoucherCard}>
                   <Card.Content>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
@@ -378,6 +379,9 @@ const styles = StyleSheet.create({
       padding: 15,
       backgroundColor: '#003d7c',
     },
+    searchBar: {
+      backgroundColor: '#f6eee3',
+    },
     logo: {
       height: 150,
       width: '100%',
@@ -386,31 +390,19 @@ const styles = StyleSheet.create({
     qrCodeText: {
       fontSize: 60,
       marginBottom: 60,
-      color: 'white',
-      
+      color: 'white',    
     },
-    voucherCard: {
-        backgroundColor: '#003D7C',
-        borderRadius: 8,
-        marginRight: 8,
-        width: deviceWidth * 0.9,
-        height: 600,
-        padding: 16,
-        marginVertical: 10,
-    },
-    dollarVouchercard: {
+    dollarVoucherCard: {
       backgroundColor: '#f07b10',
-      borderRadius: 8,
-      marginRight: 8,
+      borderRadius: 20,
       width: deviceWidth * 0.9,
       height: 600,
       padding: 16,
       marginVertical: 10,
     },
-    percentageVouchercard: {
+    percentageVoucherCard: {
       backgroundColor: '#db7b98',
-      borderRadius: 8,
-      marginRight: 8,
+      borderRadius: 20,
       width: deviceWidth * 0.9,
       height: 600,
       padding: 16,
@@ -428,12 +420,11 @@ const styles = StyleSheet.create({
     voucherImage: {
         width: '100%',
         height: 250,
-        marginBottom: 10,
+        marginVertical: 15,
     },
     voucherCardRedeemed: {
         backgroundColor: '#828282',
-        borderRadius: 8,
-        marginRight: 8,
+        borderRadius: 20,
         width: deviceWidth * 0.9,
         padding: 16,
         marginVertical: 10,
@@ -449,18 +440,17 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 14,
         marginBottom: 8,
-      },
+    },
     voucherStatus: {
         color: '#FFF',
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 8,
         marginBottom: 8,
-      },
+    },
     whiteSpaceText: {
-    
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold',
-      },
+    },
 });

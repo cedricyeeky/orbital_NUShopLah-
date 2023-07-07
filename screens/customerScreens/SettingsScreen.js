@@ -272,29 +272,11 @@ const SettingsScreen = () => {
         </View>
 
           {/**Change Password Button */}
-          <Pressable style={styles.button1} onPress={() => {changePassword()}}>
-              <Text style={styles.buttonText}>Change Password</Text>
-          </Pressable>
-
-          {/**Log Out Button */}
-          {/* <View style={styles.container}>
-            <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
-          </View> */}
-
-          {/* <Card>
-            <Card.Content>
-              <Text style={styles.text}>Welcome! {firstName}</Text>
-              <FormButton buttonTitle='Logout' onPress={() => user?.uid && logout()} />
-            </Card.Content>
-          </Card> */}
+          <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
 
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
-          <Text style={styles.whiteSpaceText}>White Space.</Text>
-          <Text style={styles.whiteSpaceText}>White Space.</Text>
-
-          
 
         </View>
       </ScrollView>
@@ -319,19 +301,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-  },
-  button1: {
-    marginTop: 20,
-    backgroundColor: "#003d7c",
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   logoutContainer: {
     marginTop: 20,
@@ -414,7 +383,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   }
-  
 });
 
 export default SettingsScreen;
