@@ -29,11 +29,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      
       "permissions": [
         "CAMERA",
         "SYSTEM_ALERT_WINDOW"
-      ]
+      ],
+      "package": "com.cedricyeeky.nushoplahapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,6 +43,8 @@
         "projectId": "abc4d008-5483-4177-a9da-29dc53ad4a0d"
       }
     },
-    "plugins": ["expo-image-picker"]
+    "plugins": [
+      "expo-image-picker"
+    ]
   }
 }

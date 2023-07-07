@@ -43,7 +43,7 @@ const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   return newTotalPoint;
 }
 
-const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
+const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
   const [scanning, setScanning] = useState(false);
   const [sellerName, setSellerName] = useState('');
@@ -180,7 +180,7 @@ const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
         });
 
         //Reset state variables
-        toggleModal(); // Customer Side Voucher QR Should disappear
+        // toggleModal(); // Customer Side Voucher QR Should disappear
         console.log("Customer Modal:", showVoucherQRCodeModal);
         setShowPromptModal(false);
         setOriginalPrice(0);
@@ -259,7 +259,7 @@ const ScannerScreen = ({showVoucherQRCodeModal, toggleModal}) => {
       });
 
       //Reset state variables
-      toggleModal(); // Customer Side Voucher QR Should disappear
+      // toggleModal(); // Customer Side Voucher QR Should disappear
       console.log("Customer Modal:", showVoucherQRCodeModal);
       setShowPromptModal(false);
       setOriginalPrice(0);

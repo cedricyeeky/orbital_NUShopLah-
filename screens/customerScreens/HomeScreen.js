@@ -159,19 +159,23 @@ const HomeScreen = () => {
 
     //Data for Voucher QR Code
     const generateQRCodeData = () => {
-      const qrCodeData = {
-          customerId: firebase.auth().currentUser.uid,
-          customerName: firstName,
-          pointsRequired: redeemedVoucher.pointsRequired,
-          isVoucher: true,
-          sellerId: redeemedVoucher.sellerId,
-          voucherAmount: redeemedVoucher.voucherAmount,
-          voucherDescription: redeemedVoucher.voucherDescription,
-          voucherId: redeemedVoucher.voucherId,
-          voucherPercentage: redeemedVoucher.voucherPercentage,
-          voucherType: redeemedVoucher.voucherType,
-      };
-      return JSON.stringify(qrCodeData);
+      if (user && user.uid) {
+        const qrCodeData = {
+            customerId: firebase.auth().currentUser.uid,
+            customerName: firstName,
+            pointsRequired: redeemedVoucher.pointsRequired,
+            isVoucher: true,
+            sellerId: redeemedVoucher.sellerId,
+            voucherAmount: redeemedVoucher.voucherAmount,
+            voucherDescription: redeemedVoucher.voucherDescription,
+            voucherId: redeemedVoucher.voucherId,
+            voucherPercentage: redeemedVoucher.voucherPercentage,
+            voucherType: redeemedVoucher.voucherType,
+        };
+        return JSON.stringify(qrCodeData);
+      } else {
+        console.log("User has logged out. (generateQRCode Data)");
+      }
     };
     
     const filteredVouchers = vouchers.filter(voucher =>
@@ -181,7 +185,7 @@ const HomeScreen = () => {
     return (
       <ScrollView>
         <View style={styles.container}>
-          <Image
+          <Image 
             source={require('../../assets/NUShopLah!-logo.png')}
             style={styles.logo}
           />
