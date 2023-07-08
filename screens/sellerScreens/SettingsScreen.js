@@ -122,11 +122,12 @@ const SettingsScreen = () => {
               <View>
                 {/* Render dollar voucher */}
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
+                <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
                 <Text style={styles.voucherText}>Value: ${voucher.voucherAmount}</Text>
                 <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
-                <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
+                <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
                 <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
                   <Text style={styles.cancelText}>Cancel Voucher</Text>
                 </Pressable>
@@ -137,11 +138,12 @@ const SettingsScreen = () => {
               <View>
                 {/* Render percentage voucher */}
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                <Text style={styles.voucherText}>Voucher ID: {voucher.id}</Text>
+                <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
                 <Text style={styles.voucherText}>Percentage: {voucher.voucherPercentage}%</Text>
                 <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
-                <Text style={styles.voucherText}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
+                <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
                 <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
                   <Text style={styles.cancelText}>Cancel Voucher</Text>
                 </Pressable>
@@ -170,7 +172,7 @@ const SettingsScreen = () => {
 
 const styles = StyleSheet.create({
   button: {
-    marginHorizontal: 50,
+    marginHorizontal: 20,
     borderRadius: 10,
   },
   cancelText: {
@@ -188,8 +190,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     flex: 0.9,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
   container1: {
     backgroundColor: '#f9fafd',
@@ -201,10 +201,8 @@ const styles = StyleSheet.create({
   dollarVoucherContainer: {
     backgroundColor: '#f07b10',
     borderRadius: 20,
-    padding: 16,
-    marginVertical: 10,
-    elevation: 2,
     padding: 30,
+    marginVertical: 10,
   },
   noVouchers: {
     fontSize: 16,
@@ -218,9 +216,7 @@ const styles = StyleSheet.create({
   percentageVoucherContainer: {
     backgroundColor: '#db7b98',
     borderRadius: 20,
-    padding: 16,
     marginVertical: 10,
-    elevation: 2,
     padding: 30,
   },
   text: {
@@ -236,15 +232,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   voucherText: {
-    fontSize: 16,
+    fontSize: 15,
     marginVertical: 5,
     color: 'white',
+    fontWeight: 'bold',
+  },
+  voucherTextId: {
+    fontSize: 13,
+    marginVertical: 5,
+    color: '#003d7c',
     fontWeight: 'bold',
   },
   whiteSpaceText: {
     fontSize: 16,
     marginBottom: 20,
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextOrange: {
+    fontSize: 20,
+    color: '#f07b10',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextPink: {
+    fontSize: 20,
+    color: '#db7b98',
     fontWeight: 'bold',
   },
 });

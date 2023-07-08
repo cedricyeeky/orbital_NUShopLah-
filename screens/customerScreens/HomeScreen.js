@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
@@ -189,18 +189,20 @@ const HomeScreen = () => {
           <FormButton buttonTitle='Logout' onPress={logout} />
           <Text style={styles.whiteSpaceText}>White Space.</Text>
 
-          <Searchbar
+          {Platform.OS === "android" && (
+            <Searchbar
             placeholder="Search Seller Name"
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={styles.searchBar}
-          />
+            />
+          )}
 
           <Text style={styles.heading}>Available Vouchers</Text>
-          <ScrollView>
+          <View>
             {/* Render available vouchers */}
             {filteredVouchers.map((voucher) => (
-                <TouchableOpacity
+                <View
                   key={voucher.voucherId}
                 >
 
@@ -209,16 +211,19 @@ const HomeScreen = () => {
                   <Card.Content>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
-                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                    <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
                     <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
-                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
+                    <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
                     <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
-                    <FormButton
-                      buttonTitle="USE NOW"
-                      onPress={() => redeemVoucher(voucher)}
-                    />
+                    <View style={styles.useNow}>
+                      <FormButton
+                        buttonTitle="USE NOW"
+                        onPress={() => redeemVoucher(voucher)}
+                      />
+                    </View>
                   </Card.Content>
                 </View>
                 
@@ -229,27 +234,30 @@ const HomeScreen = () => {
                   <Card.Content>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
-                    <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                    <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
                     <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
-                    <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                    <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
+                    <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
+                    <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
                     <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
-                    <FormButton
-                      buttonTitle="USE NOW"
-                      onPress={() => redeemVoucher(voucher)}
-                    />
+                    <View style={styles.useNow}>
+                      <FormButton
+                        buttonTitle="USE NOW"
+                        onPress={() => redeemVoucher(voucher)}
+                      />
+                    </View>
                   </Card.Content>
                 </View>
                 
                 )}
                   
-                </TouchableOpacity>
+                </View>
             ))}
 
             {/* Render redeemed vouchers */}
             {redeemedVouchers.map((voucher) => (
-                <TouchableOpacity
+                <View
                   key={voucher.voucherId}
                   style={styles.voucherCardRedeemed}
                   onError={() => console.log("Failed to Load Image.")}
@@ -260,11 +268,12 @@ const HomeScreen = () => {
                     <Card.Content>
                       <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
-                      <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                      <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
                       <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
-                      <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                      <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
+                      <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
                       <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
                     </Card.Content>
                   </View>
@@ -275,20 +284,21 @@ const HomeScreen = () => {
                     <Card.Content>
                       <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
-                      <Text style={styles.voucherSubtitle}>Seller ID: {voucher.sellerId}</Text>
+                      <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
                       <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
-                      <Text style={styles.voucherSubtitle}>Cost: {voucher.pointsRequired} points</Text>
-                      <Text style={styles.voucherSubtitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
+                      <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
+                      <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
                       <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
                     </Card.Content>
                   </View>
                 )}
 
-                </TouchableOpacity>
+                </View>
             ))}
 
-          </ScrollView>
+          </View>
           
           {/* Modal for Voucher QR Code */}
           {isUseNowButtonClicked && (
@@ -345,8 +355,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#f07b10',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      height: 600,
-      padding: 16,
+      padding: 20,
       marginVertical: 10,
     },
     heading: {
@@ -373,8 +382,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#db7b98',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      height: 600,
-      padding: 16,
+      padding: 20,
       marginVertical: 10,
     },
     qrCodeText: {
@@ -404,6 +412,9 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: 'white',
     },
+    useNow: {
+      alignItems: 'center',
+    },
     voucherSubtitle1: {
       color: '#828282',
     },
@@ -422,27 +433,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#828282',
         borderRadius: 20,
         width: deviceWidth * 0.9,
-        padding: 16,
+        padding: 20,
         marginVertical: 10,
-        height: 600,
     },
     voucherTitle: {
         color: '#FFF',
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: 'bold',
-        marginBottom: 8,
+        marginVertical: 5,
     },
-    voucherSubtitle: {
-        color: '#FFF',
-        fontSize: 14,
-        marginBottom: 8,
+    voucherTitle1: {
+      color: '#003d7c',
+      fontSize: 12,
+      fontWeight: 'bold',
+      marginVertical: 5,
     },
     voucherStatus: {
         color: '#FFF',
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: 'bold',
-        marginTop: 8,
-        marginBottom: 8,
+        marginVertical: 12,
+        textAlign: 'center',
     },
     whiteSpaceText: {
         fontSize: 16,

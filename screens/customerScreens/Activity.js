@@ -73,7 +73,8 @@ const ActivityScreen = () => {
             <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
             <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
             <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+            <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
           </View>
         );
@@ -86,7 +87,8 @@ const ActivityScreen = () => {
             <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
             <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
             <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+            <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
           </View>
         );
@@ -99,6 +101,7 @@ const ActivityScreen = () => {
           <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.whiteSpaceTextBlue}>White Space.</Text>
           <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
         </View>
       );
@@ -137,8 +140,6 @@ const ActivityScreen = () => {
         <Text style={styles.noTransactions}>No transactions found.</Text>
       )}
 
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
-      <Text style={styles.whiteSpaceText}>White Space.</Text>
       <Text style={styles.whiteSpaceText}>White Space.</Text>
 
 
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#003D7C', 
   },
   transactionText: {
-    fontSize: 18,
+    fontSize: 15,
     marginBottom: 5,
     fontWeight: 'bold',
     color: 'white',
@@ -202,6 +203,21 @@ const styles = StyleSheet.create({
   whiteSpaceText: {
     fontSize: 16,
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextBlue: {
+    fontSize: 20,
+    color: '#003d7c',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextOrange: {
+    fontSize: 20,
+    color: '#f07b10',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextPink: {
+    fontSize: 20,
+    color: '#db7b98',
     fontWeight: 'bold',
   },
 });

@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textWelcome: {
-    margin: 20,
+    marginVertical: 15,
     color: 'black',
     fontWeight: 'bold',
   },

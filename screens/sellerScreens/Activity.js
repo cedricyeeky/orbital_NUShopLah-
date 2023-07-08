@@ -61,12 +61,14 @@ const ActivityScreen = () => {
         return (
           <View style={styles.dollarVoucherTransactionContainer}>
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+            {/* <Text style={styles.whiteSpaceTextOrange}>White Space.</Text> */}
             <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
             <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
             <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
             <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
             <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+            <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
           </View>
         );
@@ -74,12 +76,14 @@ const ActivityScreen = () => {
         return (
           <View style={styles.percentageVoucherTransactionContainer}>
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+            {/* <Text style={styles.whiteSpaceTextPink}>White Space.</Text> */}
             <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
             <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
             <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
             <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
             <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher: {item.voucherDescription}</Text>
+            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+            <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
           </View>
         );
@@ -89,10 +93,12 @@ const ActivityScreen = () => {
       return (
       <View style={styles.pointTransactionContainer}>
           <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
+          {/* <Text style={styles.whiteSpaceTextBlue}>White Space.</Text> */}
           <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
           <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
           <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
           <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.whiteSpaceTextBlue}>White Space.</Text>
           <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
         </View>
       );
@@ -168,6 +174,13 @@ const styles = StyleSheet.create({
   listContainer: {
     flexGrow: 1,
   },
+  listDollarVoucher: {
+    backgroundColor: '#f07b10',
+  },
+  listPercentageVoucher: {
+    backgroundColor: '#db7b98',
+    color: 'white',
+  },
   noTransactions: {
     fontSize: 16,
     textAlign: 'center',
@@ -185,14 +198,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#003D7C',
   },
   transactionText: {
-    fontSize: 18,
-    marginBottom: 5,
+    fontSize: 15,
+    marginVertical: 5,
     fontWeight: 'bold',
     color: 'white',
   },
   whiteSpaceText: {
     fontSize: 16,
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextBlue: {
+    fontSize: 20,
+    color: '#003d7c',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextOrange: {
+    fontSize: 20,
+    color: '#f07b10',
+    fontWeight: 'bold',
+  },
+  whiteSpaceTextPink: {
+    fontSize: 20,
+    color: '#db7b98',
     fontWeight: 'bold',
   },
 });

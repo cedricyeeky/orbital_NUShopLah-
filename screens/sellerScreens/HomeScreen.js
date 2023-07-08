@@ -216,6 +216,7 @@ const HomeScreen = () => {
             value="dollar"
             status={voucherType === 'dollar' ? 'checked' : 'unchecked'}
             onPress={() => setVoucherType('dollar')}
+            color='#f07b10'
           />
           <Text style={styles.radioLabel}>Dollar Voucher</Text>
         </View>
@@ -224,6 +225,7 @@ const HomeScreen = () => {
             value="percentage"
             status={voucherType === 'percentage' ? 'checked' : 'unchecked'}
             onPress={() => setVoucherType('percentage')}
+            color='#db7b98'
           />
           <Text style={styles.radioLabel}>Percentage Voucher</Text>
         </View>
@@ -239,15 +241,12 @@ const HomeScreen = () => {
               style={styles.textInput1}
               label="Voucher Amount ($)"
               value={String(voucherAmount)}
-              keyboardType='number-pad'
+              keyboardType='numeric'
               onChangeText={(text) => setVoucherAmount(text)}
               selectionColor='white'
               cursorColor='white'
               activeUnderlineColor='white'
-              outlineColor='white'
-              activeOutlineColor='white'
               textColor='white'
-
             />
             
             <TextInput
@@ -259,8 +258,6 @@ const HomeScreen = () => {
               selectionColor='white'
               cursorColor='white'
               activeUnderlineColor='white'
-              outlineColor='white'
-              activeOutlineColor='white'
               textColor='white'
             />
             
@@ -272,9 +269,8 @@ const HomeScreen = () => {
               selectionColor='white'
               cursorColor='white'
               activeUnderlineColor='white'
-              outlineColor='white'
-              activeOutlineColor='white'
               textColor='white'
+              multiline= {true}
             />
 
 
@@ -306,21 +302,19 @@ const HomeScreen = () => {
         <Card.Content>
           {/* Input fields */}
           <TextInput
-            contentStyle={styles.textInput2}
+            style={styles.textInput2}
             label="Voucher Percentage (%)"
             value={String(voucherPercentage)}
-            keyboardType='number-pad'
+            keyboardType='numeric'
             onChangeText={(text) => setVoucherPercentage(text)}
             selectionColor='white'
             cursorColor='white'
             activeUnderlineColor='white'
-            outlineColor='white'
-            activeOutlineColor='white'
             textColor='white'
           />
           
           <TextInput
-            contentStyle={styles.textInput2}
+            style={styles.textInput2}
             label="Points Required"
             value={String(pointsRequired)}
             keyboardType='number-pad'
@@ -328,22 +322,19 @@ const HomeScreen = () => {
             selectionColor='white'
             cursorColor='white'
             activeUnderlineColor='white'
-            outlineColor='white'
-            activeOutlineColor='white'
             textColor='white'
           />
           
           <TextInput
-            contentStyle={styles.textInput2}
+            style={styles.textInput2}
             label="Voucher Description"
             value={voucherDescription}
             onChangeText={(text) => setVoucherDescription(text)}
             selectionColor='white'
             cursorColor='white'
             activeUnderlineColor='white'
-            outlineColor='white'
-            activeOutlineColor='white'
             textColor='white'
+            multiline={true}
           />
 
 
@@ -373,6 +364,7 @@ const HomeScreen = () => {
         style={styles.fab}
         label="Scan QR"
         onPress={() => navigation.navigate('Scan QR')}
+        color='#003d7c'
       />
 
       <Text style={styles.whiteSpaceText}>White Space.</Text>
