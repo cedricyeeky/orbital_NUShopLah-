@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Pressable, Image, TouchableOpacity, Alert, Scro
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
-import { Card } from 'react-native-paper';
 
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
@@ -174,6 +173,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     borderRadius: 10,
   },
+  cancelText: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 20,
+    textAlign: 'center',
+  },
   container: {
     backgroundColor: '#fff',
     padding: 20,
@@ -188,13 +198,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 20,
-    marginLeft: 16,
-  },
   dollarVoucherContainer: {
     backgroundColor: '#f07b10',
     borderRadius: 20,
@@ -202,6 +205,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     elevation: 2,
     padding: 30,
+  },
+  noVouchers: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 50,
+  },
+  passwordButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   percentageVoucherContainer: {
     backgroundColor: '#db7b98',
@@ -211,27 +223,23 @@ const styles = StyleSheet.create({
     elevation: 2,
     padding: 30,
   },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 20,
+    marginLeft: 16,
+  },
+  voucherImage: {
+    width: '100%',
+    height: 250,
+    marginBottom: 10,
+  },
   voucherText: {
     fontSize: 16,
     marginVertical: 5,
     color: 'white',
     fontWeight: 'bold',
-  },
-  cancelText: {
-    marginTop: 20,
-    marginHorizontal: 20,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 20,
-    textAlign: 'center',
-  },
-  noVouchers: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 50,
   },
   whiteSpaceText: {
     fontSize: 16,
@@ -239,15 +247,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  voucherImage: {
-    width: '100%',
-    height: 250,
-    marginBottom: 10,
-  },
-  passwordButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
 });
 
 export default SettingsScreen;

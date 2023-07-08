@@ -151,9 +151,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: 'white',
-    shadowColor: "#000",
-    shadowOffset: {width: 0, height: 10},
-    shadowRadius: 30,
+  },
+  dollarVoucherTransactionContainer: {
+    padding: 30,
+    marginVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#f07b10',
   },
   header: {
     fontSize: 24,
@@ -173,21 +176,10 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flexGrow: 1,
-    
   },
-  pointTransactionContainer: {
-    padding: 30,
-    marginVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#003D7C',
-
-    
-  },
-  dollarVoucherTransactionContainer: {
-    padding: 30,
-    marginVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#f07b10',
+  noTransactions: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   percentageVoucherTransactionContainer: {
     padding: 30,
@@ -195,15 +187,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#db7b98',
   },
+  pointTransactionContainer: {
+    padding: 30,
+    marginVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#003D7C', 
+  },
   transactionText: {
     fontSize: 18,
     marginBottom: 5,
     fontWeight: 'bold',
     color: 'white',
-  },
-  noTransactions: {
-    fontSize: 16,
-    textAlign: 'center',
   },
   whiteSpaceText: {
     fontSize: 16,

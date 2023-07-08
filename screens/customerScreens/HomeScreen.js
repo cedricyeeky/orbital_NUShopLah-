@@ -3,11 +3,8 @@ import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSh
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
- import { Card, Portal, PaperProvider, Searchbar } from 'react-native-paper';
-import QRCode from 'react-native-qrcode-svg';
+ import { Card, Searchbar } from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
-// import { SearchBar } from '@rneui/themed';
-// import { globalState } from 
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -22,9 +19,6 @@ const HomeScreen = () => {
     const toggleModal = () => {
       setShowVoucherQRCodeModal(!showVoucherQRCodeModal);
     };
-    // const toggleModal = () => {
-    //   globalState.showVoucherQRCodeModal = !globalState.showVoucherQRCodeModal;
-    // }
 
     const toggleFalse = () => {
       setShowVoucherQRCodeModal(false);
@@ -208,8 +202,6 @@ const HomeScreen = () => {
             {filteredVouchers.map((voucher) => (
                 <TouchableOpacity
                   key={voucher.voucherId}
-                  // style={styles.voucherCard}
-                  // onPress={() => redeemVoucher(voucher.voucherId)}
                 >
 
                 {voucher.voucherType === 'dollar' && (
@@ -297,8 +289,8 @@ const HomeScreen = () => {
             ))}
 
           </ScrollView>
+          
           {/* Modal for Voucher QR Code */}
-
           {isUseNowButtonClicked && (
                  
             <Modal
@@ -335,6 +327,13 @@ export default HomeScreen;
 const deviceWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
+    closeButtonText: {
+      color: 'white',
+      marginTop: 20,
+      fontWeight: 'bold',
+      padding: 15,
+      backgroundColor: '#003d7c',
+    },
     container: {
         backgroundColor: '#fff',
         flex: 0.9,
@@ -342,10 +341,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    dollarVoucherCard: {
+      backgroundColor: '#f07b10',
+      borderRadius: 20,
+      width: deviceWidth * 0.9,
+      height: 600,
+      padding: 16,
+      marginVertical: 10,
+    },
     heading: {
       fontSize: 20,
       fontWeight: 'bold',
       marginVertical: 20,
+    },
+    logo: {
+      height: 150,
+      width: '100%',
+      resizeMode: 'contain',
     },
     modalContent: {
       height: '50%',
@@ -356,6 +368,22 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 0,
       alignItems: 'center', 
+    },
+    percentageVoucherCard: {
+      backgroundColor: '#db7b98',
+      borderRadius: 20,
+      width: deviceWidth * 0.9,
+      height: 600,
+      padding: 16,
+      marginVertical: 10,
+    },
+    qrCodeText: {
+      fontSize: 60,
+      marginBottom: 60,
+      color: 'white',    
+    },
+    searchBar: {
+      backgroundColor: '#f6eee3',
     },
     text: {
         fontSize: 20,
@@ -375,42 +403,6 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 'bold',
       color: 'white',
-    },
-    closeButtonText: {
-      color: 'white',
-      marginTop: 20,
-      fontWeight: 'bold',
-      padding: 15,
-      backgroundColor: '#003d7c',
-    },
-    searchBar: {
-      backgroundColor: '#f6eee3',
-    },
-    logo: {
-      height: 150,
-      width: '100%',
-      resizeMode: 'contain',
-    },
-    qrCodeText: {
-      fontSize: 60,
-      marginBottom: 60,
-      color: 'white',    
-    },
-    dollarVoucherCard: {
-      backgroundColor: '#f07b10',
-      borderRadius: 20,
-      width: deviceWidth * 0.9,
-      height: 600,
-      padding: 16,
-      marginVertical: 10,
-    },
-    percentageVoucherCard: {
-      backgroundColor: '#db7b98',
-      borderRadius: 20,
-      width: deviceWidth * 0.9,
-      height: 600,
-      padding: 16,
-      marginVertical: 10,
     },
     voucherSubtitle1: {
       color: '#828282',

@@ -59,21 +59,6 @@ const IdScreen = () => {
         });
     
         fetchUserData();
-  
-        // //Increase screen brightness
-        //   Brightness.getBrightnessAsync().then((brightness) => {
-        //       setPreviousBrightness(brightness);
-        //       Brightness.setBrightnessAsync(1);
-        //   });
-  
-        //   // console.log(previousBrightness);
-      
-        //   // Restore screen brightness when unmounting the component
-        //   return () => {
-        //     if (previousBrightness !== null) {
-        //       Brightness.setBrightnessAsync(previousBrightness);
-        //     }
-        //   };
       } else {
         console.log("User has logged out already! Stop fetching user data (Id Screen 2)");
       }
@@ -127,21 +112,6 @@ const IdScreen = () => {
       }
     };
   
-
-    // // Listen for navigation changes and restore previous brightness when navigating to other screens
-    // useEffect(() => {
-    //   console.log("Attempt to revert to previous brightness level");
-    //   const unsubscribe = navigation.addListener('blur', () => {
-    //     if (previousBrightness !== null) {
-    //       Brightness.setBrightnessAsync(previousBrightness);
-    //       console.log("UPDATED back to previous brightness level");
-    //     }
-    //   });
-
-    //   return unsubscribe;
-    // }, [navigation, previousBrightness]);
-
-
     return (
       <View style={styles.container}>
         <Card style={styles.card}>
@@ -156,19 +126,6 @@ const IdScreen = () => {
         </Card>
       </View>
     );
-    // return (
-    //   <View style={styles.container}>
-    //     <Text style={styles.title}>{firstName}'s ID</Text>
-    //     <Text style={styles.label}>UID:</Text>
-    //     <Text style={styles.text}>{user.uid}</Text>
-    //     <Text style={styles.label}>Current Point Balance:</Text>
-    //     <Text style={styles.text}>{currentPoint}</Text>
-    //     <QRCodeWithLogo
-    //       value={generateQRCodeData()}
-    //       logo={logoImage}
-    //     />
-    //   </View>
-    // );
   };
   
   const styles = StyleSheet.create({
@@ -179,12 +136,15 @@ const IdScreen = () => {
       backgroundColor: '#003d7c',
     },
     card: {
-      //backgroundColor: '#ff914d',
-      //backgroundColor: '#003d7c',
-      //official nus orange colour
       backgroundColor: '#f07b10',
       padding: 16,
       borderRadius: 20,
+    },
+    label: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginTop: 10,
+      color: 'white',
     },
     title: {
       fontSize: 40,
@@ -192,12 +152,6 @@ const IdScreen = () => {
       marginBottom: 20,
       color: 'white',
       textAlign: 'center',
-    },
-    label: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginTop: 10,
-      color: 'white',
     },
     text: {
       fontSize: 16,
@@ -208,18 +162,5 @@ const IdScreen = () => {
   
   export default IdScreen;
 
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: '#f9fafd',
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: 20,
-//     },
-//     text: {
-//         fontSize: 20,
-//         color: '#333333',
-//     }
-// });
 
 

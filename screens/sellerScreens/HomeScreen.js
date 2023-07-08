@@ -383,27 +383,7 @@ const HomeScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
-  titleVoucher: {
-    fontSize: 20,
-    color: 'white',
-    marginTop: 20,
-  },
-  radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-    marginTop: 15,
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  radioLabel: {
-    marginLeft: 8,
-  },
   button: {
     marginTop: 20,
     backgroundColor: "#f07b10",
@@ -426,20 +406,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  text1: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  fab: {
-    marginTop: 25,
-    padding: 2,
-    backgroundColor: 'white',
-  },
   dollarCard: {
     width: '100%',
     marginTop: 10,
@@ -447,6 +413,16 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 20,
     padding: 10,
+  },
+  fab: {
+    marginTop: 25,
+    padding: 2,
+    backgroundColor: 'white',
+  },
+  logo: {
+    height: 150,
+    width: '100%',
+    resizeMode: 'contain',
   },
   percentageCard: {
     width: '100%',
@@ -456,11 +432,34 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
   },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 15,
+  },
+  radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  radioLabel: {
+    marginLeft: 8,
+  },
   selectedImage: {
     width: 200,
     height: 200,
     marginTop: 10,
     resizeMode: 'cover',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  text1: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
   },
   textInput1: {
     backgroundColor: '#f07b10',  
@@ -468,16 +467,16 @@ const styles = StyleSheet.create({
   textInput2: {
     backgroundColor: '#db7b98',
   },
+  titleVoucher: {
+    fontSize: 20,
+    color: 'white',
+    marginTop: 20,
+  },
   whiteSpaceText: {
     fontSize: 16,
     marginVertical: 20,
     color: '#fff',
     fontWeight: 'bold',
-  },
-  logo: {
-    height: 150,
-    width: '100%',
-    resizeMode: 'contain',
   },
 });
 

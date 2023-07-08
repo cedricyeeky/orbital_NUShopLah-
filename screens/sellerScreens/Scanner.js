@@ -7,7 +7,6 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import prompt from 'react-native-prompt-android';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
-// import { globalState } from '../globalState';
 import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
 
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
@@ -445,11 +444,6 @@ const ScannerScreen = () => {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   button1: {
     marginTop: 20,
     backgroundColor: "red",
@@ -457,50 +451,21 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  scanAgainButton: {
-    backgroundColor: '#f07b10',
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 5,
-  },
-  message: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   buttonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  mask: {
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  squareContainer: {
-    position: 'relative',
-    width: 280,
-    height: 280,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-  },
-  square: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    borderColor: '#fff',
   },
   corner: {
     position: 'absolute',
@@ -536,6 +501,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderRightWidth: 0,
   },
+  mask: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  message: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   modalContent: {
     height: '100%',
     width: '100%',
@@ -545,6 +521,34 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     alignItems: 'center', 
+  },
+  scanAgainButton: {
+    backgroundColor: '#f07b10',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 5,
+  },
+  squareContainer: {
+    position: 'relative',
+    width: 280,
+    height: 280,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  square: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   titleContainer: {
     height: '16%',
@@ -560,11 +564,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 });
 

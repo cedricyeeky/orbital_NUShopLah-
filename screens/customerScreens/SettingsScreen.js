@@ -290,21 +290,6 @@ const offset = 40;
 const radius = 20;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 0.85,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  container2: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  logoutContainer: {
-    marginTop: 20,
-  },
   bulletPointContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -340,6 +325,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  container: {
+    flex: 0.85,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  container2: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  logoutContainer: {
+    marginTop: 20,
+  },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -355,12 +355,6 @@ const styles = StyleSheet.create({
     padding: 50,
     margin: 20,
   },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#fff',
-  },
   text: {
     fontSize: 16,
     marginBottom: 0,
@@ -371,6 +365,12 @@ const styles = StyleSheet.create({
     margin: 20,
     color: 'black',
     fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#fff',
   },
   tierDescription: {
     marginTop: 20,
