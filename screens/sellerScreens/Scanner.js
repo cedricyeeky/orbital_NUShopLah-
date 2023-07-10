@@ -8,6 +8,7 @@ import prompt from 'react-native-prompt-android';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
+import { useNavigation } from '@react-navigation/native';
 
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
@@ -50,6 +51,7 @@ const ScannerScreen = () => {
   const [showPromptModal, setShowPromptModal] = useState(false);
   const [data, setData] = useState(null); //QR Code Data
   const [originalPrice, setOriginalPrice] = useState(0);
+  const navigation = useNavigation();
 
   useEffect(() => {
     console.log("(Seller Scan QR) useEffect running...")
@@ -91,6 +93,32 @@ const ScannerScreen = () => {
     }
     
   }, [user]);
+
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     setScanning(true);
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation]);
+
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      // Handle camera activation when the screen comes into focus
+      setScanning(true);
+    });
+
+    const blurListener = navigation.addListener('blur', () => {
+      // Handle camera deactivation when the screen loses focus
+      setScanning(false);
+    });
+
+    return () => {
+      // Cleanup function when component unmounts or navigation listener is removed
+      focusListener();
+      blurListener();
+    };
+  }, [navigation]);
 
   const handleTransaction = async (originalPrice) => {
     if (data.isVoucher) {

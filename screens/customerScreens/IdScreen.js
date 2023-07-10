@@ -17,16 +17,16 @@ const IdScreen = () => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
 
-    useEffect(() => {
-      if (isFocused) {
-        Brightness.getBrightnessAsync().then((brightness) => {
-          setPreviousBrightness(brightness);
-          Brightness.setBrightnessAsync(1);
-        });
-      } else {
-        Brightness.setBrightnessAsync(previousBrightness);
-      }
-    }, [isFocused, previousBrightness]);
+    // useEffect(() => {
+    //   if (isFocused && Platform.OS === 'ios') {
+    //     Brightness.getBrightnessAsync().then((brightness) => {
+    //       setPreviousBrightness(brightness);
+    //       Brightness.setBrightnessAsync(1);
+    //     });
+    //   } else {
+    //     Brightness.setBrightnessAsync(previousBrightness);
+    //   }
+    // }, [isFocused, previousBrightness]);
 
     useEffect(() => {
       //console.log("IdScreen useEffect fetchUserData running...")
