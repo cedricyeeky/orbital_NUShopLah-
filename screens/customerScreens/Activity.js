@@ -63,7 +63,7 @@ const ActivityScreen = () => {
 
     //There are 2 types of Transaction Log: Points and Voucher Transaction
 
-    if (item.pointsAwarded == 0) {
+    if (item.transactionType == "Voucher Transaction") {
       if (item.voucherType === 'dollar') {
         return (
           <View style={styles.dollarVoucherTransactionContainer}>
@@ -149,7 +149,7 @@ const ActivityScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.95,
     padding: 20,
     backgroundColor: 'white',
   },

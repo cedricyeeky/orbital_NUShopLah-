@@ -56,7 +56,7 @@ const ActivityScreen = () => {
     const capitalizedString = capitalizeFirstLetter(item.voucherType);
 
     //Render According to Transaction Type
-    if (item.pointsAwarded == 0) {
+    if (item.transactionType == "Voucher Transaction") {
       if (item.voucherType === 'dollar') {
         return (
           <View style={styles.dollarVoucherTransactionContainer}>
@@ -143,9 +143,7 @@ const styles = StyleSheet.create({
     flex: 0.95,
     padding: 20,
     backgroundColor: 'white',
-    shadowColor: "#000",
-    shadowOffset: {width: 0, height: 10},
-    shadowRadius: 30,
+
   },
   dollarVoucherTransactionContainer: {
     padding: 30,

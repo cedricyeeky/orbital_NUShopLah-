@@ -14,8 +14,13 @@ export const AuthProvider = ({children}) => {
             login: async (email, password) => {
                 try {
                     console.log(email);
+                    // console.log(firebase.auth().currentUser.emailVerified);
                     //console.log(user);
-                    await firebase.auth().signInWithEmailAndPassword(email, password);
+                    // if (firebase.auth().currentUser.emailVerified) {
+                        await firebase.auth().signInWithEmailAndPassword(email, password);
+                    // } else {
+                    //     Alert.alert('Email unergoing verification', 'Please try again in a few minutes');
+                    // }
                 } catch(e) {
                     console.log(e);
                     alert(e);
@@ -38,43 +43,15 @@ export const AuthProvider = ({children}) => {
                             firebase.firestore().collection('users')
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
-                                    firstName,
-                                    // lastName,
-                                    email,
-                                    userType,
-                                    currentPoint,
-                                    totalPoint,
                                     amountPaid,
-                                    totalRevenue,
+                                    currentPoint,
+                                    firstName,
+                                    email,
+                                    totalPoint,
+                                    userType,
+                                    // lastName,
+                                    // totalRevenue,
                                 });
-
-                            //Version 2 Check if user is Customer or Seller
-                            // if (userType === "Customer") {
-                            //     firebase.firestore().collection('customer')
-                            //     .doc(firebase.auth().currentUser.uid)
-                            //     .set({
-                            //         firstName,
-                            //         lastName,
-                            //         email,
-                            //         userType,
-                            //         currentPoint,
-                            //         totalPoint,
-                            //         amountPaid,
-                            //     });
-
-                            // } else {
-                            //     //UserType is Seller
-                            //     console.log(userType);
-                            //     firebase.firestore().collection('seller')
-                            //     .doc(firebase.auth().currentUser.uid)
-                            //     .set({
-                            //         firstName,
-                            //         lastName,
-                            //         email,
-                            //         userType,
-                            //         totalRevenue,
-                            //     });
-                            // }
                             
                         })
                     })
