@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, View, Alert, Button, Pressable} from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
 import { FAB, Card, TextInput, RadioButton, PaperProvider } from 'react-native-paper';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
@@ -429,6 +428,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 5,
     marginTop: 15,
+    width: '80%',
+    fontSize: 12,
+    justifyContent: 'center',
   },
   radioButton: {
     flexDirection: 'row',
@@ -436,7 +438,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   radioLabel: {
-    marginLeft: 8,
+    marginLeft:20,
   },
   selectedImage: {
     width: 200,
