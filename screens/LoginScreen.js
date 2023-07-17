@@ -4,7 +4,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  StyleSheet,
+  StyleSheet, Alert
 } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -22,18 +22,29 @@ const LoginScreen = ({navigation}) => {
   const forgetPassword = () => {
     firebase.auth().sendPasswordResetEmail(email) //this email is from the email input bar. check if it is correct
     .then(() => {
-      alert("Password Reset Email Sent!")
-      console.log("Password Reset Email Sent!")
-    }).catch((error) => {
-      alert(error)
+      showPasswordResetSuccessMessage();
+      console.log("After using show mock function: Password Reset Email Sent!")
+    }).catch((err) => {
+      showAlert(err);
     })
   }
+
+  //Custom functions to show Alert
+  const showAlert = (message) => {
+    console.log('Alert:', message);
+  };
+
+  const showPasswordResetSuccessMessage = () => {
+    Alert.alert("Password Reset Email Sent!");
+    console.log('Password Reset Email Sent!');
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image
         source={require('../assets/NUShopLah!-logo.png')}
         style={styles.logo}
+        testID="logo" //testID prop
       />
       <Text style={styles.text}>Login</Text>
 
@@ -45,6 +56,7 @@ const LoginScreen = ({navigation}) => {
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
+        testID="email-input" //testID prop
       />
 
       <FormInput
@@ -53,14 +65,20 @@ const LoginScreen = ({navigation}) => {
         placeholderText="Password"
         iconType="lock"
         secureTextEntry={true}
+        testID="password-input" // Add testID prop
       />
 
       <FormButton
         buttonTitle="Sign In"
         onPress={() => login(email, password)}
+        testID="sign-in-button" // Add testID prop
       />
 
-      <TouchableOpacity style={styles.forgotButton} onPress={() => {forgetPassword()}}>
+      <TouchableOpacity 
+        style={styles.forgotButton} 
+        onPress={() => {forgetPassword()}}
+        testID='forgot-password-button' // Add testID prop
+        >
         <Text style={styles.navButtonText}>Forgot Password?</Text>
       </TouchableOpacity>
 
@@ -72,7 +90,11 @@ const LoginScreen = ({navigation}) => {
         onPress={() => {}}
       />  */}
 
-      <TouchableOpacity style={styles.forgotButton} onPress={() => navigation.navigate('Signup')}> 
+      <TouchableOpacity 
+        style={styles.forgotButton} 
+        onPress={() => navigation.navigate('Signup')}
+        testID='sign-up-button' // Add testID prop
+        > 
         <Text style={styles.navButtonText}>Don't have an account? Create here</Text>
       </TouchableOpacity>
 

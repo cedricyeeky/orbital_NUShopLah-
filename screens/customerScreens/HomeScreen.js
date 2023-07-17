@@ -3,7 +3,7 @@ import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSh
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
- import { Card, Searchbar } from 'react-native-paper';
+ import { Card, Searchbar} from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 
 const HomeScreen = () => {
@@ -12,6 +12,32 @@ const HomeScreen = () => {
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
     const logoImage = require('../../assets/NUShopLah!.png');
+    const [sellerNames, setSellerNames] = useState([]);
+    const [expanded, setExpanded] = useState(false);
+    
+    // Fetch Seller Names from Firestore
+    useEffect(() => {
+      const unsubscribe = firebase.firestore()
+        .collection('users')
+        .where('userType', '==', 'Seller')
+        .orderBy('firstName', 'asc')
+        .onSnapshot((querySnapshot) => {
+          const names = [];
+          querySnapshot.forEach((doc) => {
+            const {firstName} = doc.data();
+            names.push(firstName);
+          });
+          setSellerNames(names);
+        });
+  
+      return () => unsubscribe();
+    }, []);
+
+    const toggleExpanded = () => {
+      setExpanded(!expanded);
+    };
+
+    
 
     //Modal
     const [showVoucherQRCodeModal, setShowVoucherQRCodeModal] = useState(false);
@@ -100,6 +126,8 @@ const HomeScreen = () => {
           });
     }, []);
 
+    
+
     //Function to handle redeem vouchers for Customers
     const redeemVoucher = (voucher) => {
 
@@ -131,7 +159,7 @@ const HomeScreen = () => {
                 toggleTrue();
                 setIsUseNowButtonClicked(true);
 
-                Alert.alert("Alert", "The QR Code will be valid for only 5 minutes!");
+                Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
 
                 // DISPLAY TIMER IN FUTURE
                 
@@ -145,12 +173,9 @@ const HomeScreen = () => {
             },
           ]
         );
-
       }
-      
     };
   
-
     //Data for Voucher QR Code
     const generateQRCodeData = () => {
       if (user && user.uid) {
@@ -182,12 +207,15 @@ const HomeScreen = () => {
           <Image 
             source={require('../../assets/NUShopLah!-logo.png')}
             style={styles.logo}
+            testID='logo'
           />
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
           <Text style={styles.whiteSpaceText}>White Space.</Text>
+
+            
 
           {Platform.OS === "android" && (
             <Searchbar
@@ -197,6 +225,15 @@ const HomeScreen = () => {
             style={styles.searchBar}
             />
           )}
+          
+          <Text style={styles.heading}>Participating Sellers</Text>
+          <View style={styles.sellerCard}>
+          {sellerNames.map((name, index) => (
+          <View key={index}>
+            <Text style={styles.seller}>{name}</Text>
+          </View>
+          ))}
+          </View>
 
           <Text style={styles.heading}>Available Vouchers</Text>
           <View>
@@ -392,6 +429,21 @@ const styles = StyleSheet.create({
     },
     searchBar: {
       backgroundColor: '#f6eee3',
+    },
+    seller: {
+      color: 'white',
+      fontSize: 16,
+      marginVertical: 5,
+      fontWeight: 'bold',
+    },
+    sellerCard: {
+      padding: 10,
+      margin: 10,
+      backgroundColor: '#003d7c',
+      width: '100%',
+      borderRadius: 20,
+      alignItems: 'center',
+      
     },
     text: {
         fontSize: 20,

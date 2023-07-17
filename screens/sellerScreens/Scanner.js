@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
 
-const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
+ export const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
   let newCurrentPoint = 0;
   //Member
   if (currentPoint < TIER_STATUS_LIMIT[0]) {
@@ -28,7 +28,7 @@ const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
   return newCurrentPoint;
 }
 
-const calculateNewTotalPoint = (totalPoint, amountPaid) => {
+export const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   let newTotalPoint = 0;
   //Member
   if (totalPoint < TIER_STATUS_LIMIT[0]) {
@@ -206,8 +206,7 @@ const ScannerScreen = () => {
           console.log('Error redeeming voucher:', error);
         });
 
-        //Reset state variables
-        // toggleModal(); // Customer Side Voucher QR Should disappear
+        
         console.log("Customer Modal:", showVoucherQRCodeModal);
         setShowPromptModal(false);
         setOriginalPrice(0);
@@ -393,14 +392,6 @@ const ScannerScreen = () => {
     }
   };
   
-  const handleRequestPermissionAgain = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasCameraPermission(status === 'granted');
-    if (status !== 'granted') {
-      // Display a prompt or handle the scenario as needed
-      console.log('Camera permission denied');
-    }
-  };
 
   const handleScanAgain = async () => {
       setScanning(true);

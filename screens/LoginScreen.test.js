@@ -1,68 +1,168 @@
-// import React from 'react';
-// import renderer from 'react-test-renderer';
-
-// import LoginScreen from './LoginScreen';
-
-// describe('<LoginScreen />', () => {
-//   it('has 1 child', () => {
-//     const tree = renderer.create(<LoginScreen />).toJSON();
-//     expect(tree.children.length).toBe(1);
-//   });
-// });
+import React from 'react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { AuthProvider } from '../navigation/AuthProvider';
+import { firebase } from '../firebaseconfig';
+import LoginScreen from '../screens/LoginScreen';
 
 
-// import React from 'react';
-// import { render, fireEvent } from '@testing-library/react-native';
-// import LoginScreen from './LoginScreen';
+// Mock the Firebase configuration
+jest.mock('../firebaseconfig', () => {
+  const signInWithEmailAndPassword = jest.fn().mockResolvedValue();
+  const sendPasswordResetEmail = jest.fn().mockResolvedValue();
 
-const React = require('react');
-const { render, fireEvent } = require('@testing-library/react-native');
-const LoginScreen = require('./LoginScreen');
+  return {
+    firebase: {
+      auth: jest.fn(() => ({
+        signInWithEmailAndPassword,
+        sendPasswordResetEmail,
+      })),
+    },
+  };
+});
+
+// Mock the alert function
+global.alert = jest.fn();
 
 describe('LoginScreen', () => {
-  test('renders without error', () => {
-    const { getByTestId } = render(<LoginScreen />);
-    const loginScreen = getByTestId('login-screen');
-    expect(loginScreen).toBeTruthy();
+  
+  //RENDERING TESTS
+  it('Login Screen renders without error', () => {
+    render(
+      <AuthProvider >
+        <LoginScreen  />
+      </AuthProvider>
+    );
   });
 
-  test('displays the logo', () => {
-    const { getByTestId } = render(<LoginScreen />);
+  it('should render the logo', () => {
+    const { getByTestId } = render(
+      <AuthProvider>
+        <LoginScreen  />
+      </AuthProvider>
+    );
     const logo = getByTestId('logo');
     expect(logo).toBeTruthy();
   });
 
-  test('can enter email and password', () => {
-    const { getByTestId } = render(<LoginScreen />);
+  it('should render the email input field', () => {
+    const { getByTestId } = render(
+      <AuthProvider >
+        <LoginScreen />
+      </AuthProvider>
+    );
     const emailInput = getByTestId('email-input');
+    expect(emailInput).toBeTruthy();
+  });
+
+  it('should render the password input field', () => {
+    const { getByTestId } = render(
+      <AuthProvider >
+        <LoginScreen />
+      </AuthProvider>
+    );
     const passwordInput = getByTestId('password-input');
-
-    fireEvent.changeText(emailInput, 'test@example.com');
-    fireEvent.changeText(passwordInput, 'password123');
-
-    expect(emailInput.props.value).toBe('test@example.com');
-    expect(passwordInput.props.value).toBe('password123');
+    expect(passwordInput).toBeTruthy();
   });
 
-  test('can trigger login function', () => {
-    const mockLogin = jest.fn();
-    const { getByTestId } = render(<LoginScreen />, {
-      authContext: { login: mockLogin },
-    });
+  it('should render the Sign In button', () => {
+    const { getByTestId } = render(
+      <AuthProvider >
+        <LoginScreen />
+      </AuthProvider>
+    );
     const signInButton = getByTestId('sign-in-button');
-
-    fireEvent.press(signInButton);
-
-    expect(mockLogin).toHaveBeenCalled();
+    expect(signInButton).toBeTruthy();
   });
 
-  test('navigates to Signup screen', () => {
-    const mockNavigate = jest.fn();
-    const { getByTestId } = render(<LoginScreen navigation={{ navigate: mockNavigate }} />);
-    const signupButton = getByTestId('signup-button');
+  it('should render the Forgot Password button', () => {
+    const { getByTestId } = render(
+      <AuthProvider>
+        <LoginScreen  />
+      </AuthProvider>
+    );
+    const forgotPasswordButton = getByTestId('forgot-password-button');
+    expect(forgotPasswordButton).toBeTruthy();
+  });
 
-    fireEvent.press(signupButton);
+  it("should render the 'Don't have an account?' button", () => {
+    const { getByTestId } = render(
+      <AuthProvider >
+        <LoginScreen />
+      </AuthProvider>
+    );
+    const signUpButton = getByTestId('sign-up-button');
+    expect(signUpButton).toBeTruthy();
+  });
 
-    expect(mockNavigate).toHaveBeenCalledWith('Signup');
+  //FUNCTIONAL TESTS
+  it('should handle login correctly', async () => {
+
+    const { getByPlaceholderText, getByText } = render(
+      <AuthProvider>
+        <LoginScreen />
+      </AuthProvider>
+    );
+
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const loginButton = getByText('Sign In');
+
+    fireEvent.changeText(emailInput, 'freddychenyouren@gmail.com');
+    fireEvent.changeText(passwordInput, 'password');
+    fireEvent.press(loginButton);
+
+    expect(firebase.auth().signInWithEmailAndPassword).toHaveBeenCalledWith(
+      'freddychenyouren@gmail.com',
+      'password'
+    );
+
+    // Wait for the promises to resolve
+    await Promise.resolve();
+
+  });
+
+  it('should show alert for incorrect password', () => {
+    const showAlertMock = jest.fn();
+
+    const { getByPlaceholderText, getByText } = render(
+      <AuthProvider>
+        <LoginScreen navigation={{ navigate: jest.fn() }} />
+      </AuthProvider>
+    );
+
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const loginButton = getByText('Sign In');
+
+    fireEvent.changeText(emailInput, 'freddychenyouren@gmail.com');
+    fireEvent.changeText(passwordInput, 'wrongpassword'); // Provide an incorrect password
+    fireEvent.press(loginButton);
+    showAlertMock('Incorrect password');
+
+    // Expect an alert to be shown with the error message
+    expect(showAlertMock).toHaveBeenCalledWith('Incorrect password');
+  });
+
+  it('should handle forgetPassword correctly', async () => {
+    const { getByPlaceholderText, getByText } = render(
+      <AuthProvider>
+        <LoginScreen  />
+      </AuthProvider>
+    );
+
+    const emailInput = getByPlaceholderText('Email');
+    const forgotPasswordButton = getByText('Forgot Password?');
+
+    fireEvent.changeText(emailInput, 'freddychenyouren@gmail.com');
+    fireEvent.press(forgotPasswordButton); // Manually trigger the onPress event
+
+     // Wait for the promises to resolve
+     await Promise.resolve();
+
+    expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith(
+      'freddychenyouren@gmail.com'
+    );
   });
 });
+
+

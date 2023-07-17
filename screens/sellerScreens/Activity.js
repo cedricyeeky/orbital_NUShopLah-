@@ -3,6 +3,34 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
+export const capitalizeFirstLetter = (string) => {
+  if (!string) {
+    return ''; // Return an empty string if the input is empty or undefined
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const getDateOfTransaction = (timestamp) => {
+  if (timestamp) {
+    return timestamp.toDate().toLocaleString();
+  } else {
+    console.log("timestamp does not exist for this transaction YET. Might be due to lagging. Try again a few seconds later")
+  }
+}
+
+export const calculateTotalRevenue = (transactions) => {
+  let totalRevenue = 0;
+
+  transactions.forEach((transaction) => {
+    totalRevenue += transaction.amountPaid;
+  });
+
+  totalRevenue = Number(totalRevenue.toFixed(2));
+  console.log(totalRevenue);
+
+  return totalRevenue;
+};
+
 const ActivityScreen = () => {
   const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
@@ -30,15 +58,6 @@ const ActivityScreen = () => {
     }
   }, [user]);
 
-  //Handle if timestamp from Firestore is lagging
-  const getDateOfTransaction = (timestamp) => {
-    if (timestamp) {
-      return timestamp.toDate().toLocaleString();
-    } else {
-      console.log("timestamp does not exist for this transaction YET. Might be due to lagging. Try again a few seconds later")
-    }
-  }
-
   const renderItem = ({ item }) => {
     // Convert the Firestore Timestamp to a JavaScript Date object
     // Format the timestamp as a string
@@ -46,12 +65,6 @@ const ActivityScreen = () => {
 
     const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
 
-    const capitalizeFirstLetter = (string) => {
-      if (!string) {
-        return ''; // Return an empty string if the input is empty or undefined
-      }
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    };
     
     const capitalizedString = capitalizeFirstLetter(item.voucherType);
 
@@ -105,23 +118,10 @@ const ActivityScreen = () => {
     }
   };
 
-  const calculateTotalRevenue = () => {
-    let totalRevenue = 0;
-  
-    transactions.forEach((transaction) => {
-      totalRevenue += transaction.amountPaid;
-    });
-
-    totalRevenue = Number(totalRevenue.toFixed(2));
-    console.log(totalRevenue);
-  
-    return totalRevenue;
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Transaction History</Text>
-      <Text style={styles.header2}>Total Revenue: ${calculateTotalRevenue()}</Text>
+      <Text style={styles.header2}>Total Revenue: ${calculateTotalRevenue(transactions)}</Text>
       {transactions.length > 0 ? (
         <FlatList
           data={transactions}

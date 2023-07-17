@@ -56,6 +56,9 @@ const HomeScreen = () => {
       } else if (pointsRequired < 0) {
         Alert.alert('Error!', 'Points Required cannot be Negative!');
         throw new Error('Error!, Points Required cannot be Negative!');
+      } else if (voucherPercentage < 0) {
+        Alert.alert('Error!', 'Voucher Percentage cannot be Negative!');
+        throw new Error('Error!, Voucher Percentage cannot be Negative!');
       } else if (voucherImage == null) {
         Alert.alert('Error! Please Upload a valid Voucher Image', "WARNING: All Customers can see your uploaded image. The developers will not condone inappropriate images.");
         throw new Error('Error!, Please Upload a valid Voucher Image');
@@ -187,7 +190,7 @@ const HomeScreen = () => {
       var ref = firebase.storage().ref().child(fileName).put(blob);
 
       try {
-        await ref;
+        await ref; 
       } catch (error) {
         console.log(error);
       }
@@ -246,6 +249,7 @@ const HomeScreen = () => {
               cursorColor='white'
               activeUnderlineColor='white'
               textColor='white'
+              testID='Voucher Amount ($)'
             />
             
             <TextInput
@@ -258,6 +262,7 @@ const HomeScreen = () => {
               cursorColor='white'
               activeUnderlineColor='white'
               textColor='white'
+              testID='Points Required'
             />
             
             <TextInput
@@ -270,6 +275,7 @@ const HomeScreen = () => {
               activeUnderlineColor='white'
               textColor='white'
               multiline= {true}
+              testID='Voucher Description'
             />
 
 
@@ -310,6 +316,7 @@ const HomeScreen = () => {
             cursorColor='white'
             activeUnderlineColor='white'
             textColor='white'
+            testID='Voucher Percentage'
           />
           
           <TextInput
@@ -322,6 +329,7 @@ const HomeScreen = () => {
             cursorColor='white'
             activeUnderlineColor='white'
             textColor='white'
+            testID='Points Required'
           />
           
           <TextInput
@@ -334,6 +342,7 @@ const HomeScreen = () => {
             activeUnderlineColor='white'
             textColor='white'
             multiline={true}
+            testID='Voucher Description'
           />
 
 

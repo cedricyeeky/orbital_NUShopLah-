@@ -18,6 +18,7 @@ const Dots = ({ selected }) => {
           backgroundColor,
           borderRadius: 5,
         }}
+        testID='dot-0'
       />
   )
 }
@@ -32,6 +33,7 @@ const Skip = ({...props}) => (
     borderRadius: 10,
   }}
   {...props}
+  testID="skip-button"
 >
   <Text style = {{
       fontSize : 16,
@@ -51,6 +53,7 @@ const Next = ({...props}) => (
     borderRadius: 10,
   }}
   {...props}
+  testID="next-button"
 >
   <Text 
     style = {{
@@ -71,6 +74,7 @@ const Done = ({...props}) => (
       borderRadius: 10,
     }}
     {...props}
+    testID="done-button"
 >
     <Text style = {{
       fontSize : 16,
