@@ -3,6 +3,24 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
+export const fetchTransactions = (customerId, setTransactions) => {
+  const unsubscribe = firebase
+      .firestore()
+      .collection('transactions')
+      .where('sellerId', '==', customerId)
+      .orderBy('timeStamp', 'desc')
+      .onSnapshot((snapshot) => {
+        const data = [];
+        snapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data()} );
+        });
+        console.log(data);
+        setTransactions(data);
+      });
+
+  return unsubscribe;
+};
+
 export const capitalizeFirstLetter = (string) => {
   if (!string) {
     return ''; // Return an empty string if the input is empty or undefined
@@ -39,18 +57,21 @@ const ActivityScreen = () => {
     console.log("(Seller Activity) useEffect running...");
 
     if (user && user.uid) {
-      const unsubscribe = firebase
-      .firestore()
-      .collection('transactions')
-      .where('sellerId', '==', user.uid)
-      .orderBy('timeStamp', 'desc')
-      .onSnapshot((snapshot) => {
-        const data = [];
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data()} );
-        });
-        setTransactions(data);
-      });
+      // const unsubscribe = firebase
+      // .firestore()
+      // .collection('transactions')
+      // .where('sellerId', '==', user.uid)
+      // .orderBy('timeStamp', 'desc')
+      // .onSnapshot((snapshot) => {
+      //   const data = [];
+      //   snapshot.forEach((doc) => {
+      //     data.push({ id: doc.id, ...doc.data()} );
+      //   });
+      //   console.log(data);
+      //   setTransactions(data);
+      // });
+
+      const unsubscribe = fetchTransactions(user.uid, setTransactions);
 
       return () => unsubscribe();
     } else {
@@ -72,7 +93,7 @@ const ActivityScreen = () => {
     if (item.transactionType == "Voucher Transaction") {
       if (item.voucherType === 'dollar') {
         return (
-          <View style={styles.dollarVoucherTransactionContainer}>
+          <View style={styles.dollarVoucherTransactionContainer} testID="dollar-voucher-container">
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
             {/* <Text style={styles.whiteSpaceTextOrange}>White Space.</Text> */}
             <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
@@ -87,7 +108,7 @@ const ActivityScreen = () => {
         );
       } else {
         return (
-          <View style={styles.percentageVoucherTransactionContainer}>
+          <View style={styles.percentageVoucherTransactionContainer} testID="percentage-voucher-container">
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
             {/* <Text style={styles.whiteSpaceTextPink}>White Space.</Text> */}
             <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
@@ -104,7 +125,7 @@ const ActivityScreen = () => {
     //points
     } else {
       return (
-      <View style={styles.pointTransactionContainer}>
+      <View style={styles.pointTransactionContainer} testID="point-transaction-container">
           <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
           {/* <Text style={styles.whiteSpaceTextBlue}>White Space.</Text> */}
           <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
