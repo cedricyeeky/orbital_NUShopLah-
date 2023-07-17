@@ -85,6 +85,19 @@ const renderWithAuthContext = () => {
     );
 };
 
+// const renderWithAuthContext = (user) => {
+//   return render(
+//     <AuthContext.Provider
+//       value={{
+//         user,
+//         logout: jest.fn(),
+//       }}
+//     >
+//       <HomeScreen />
+//     </AuthContext.Provider>
+//   );
+// };
+
 describe('Customer HomeScreen', () => {
     let renderResult; // Store the render result
   
@@ -114,6 +127,30 @@ describe('Customer HomeScreen', () => {
       const pointBalanceText = getByText(/Your Current Point Balance: .*/);
       expect(pointBalanceText).toBeDefined();
     });
+
+  //   it('renders the welcome text with dummy user', () => {
+  //   const user = {
+  //     uid: 'user-uid',
+  //     currentPoint: '100',
+  //     totalPoint: '100',
+  //     firstName: 'John',
+  //   };
+  //   const { getByText } = renderWithAuthContext(user);
+  //   const welcomeText = getByText(/Welcome! John/);
+  //   expect(welcomeText).toBeDefined();
+  // });
+
+  // it('renders the current point balance with dummy user', () => {
+  //   const user = {
+  //     uid: 'user-uid',
+  //     currentPoint: '100',
+  //     totalPoint: '100',
+  //     firstName: 'John',
+  //   };
+  //   const { getByText } = renderWithAuthContext(user);
+  //   const pointBalanceText = getByText(/Your Current Point Balance: 100/);
+  //   expect(pointBalanceText).toBeDefined();
+  // });
   
 
   //Functional Tests
