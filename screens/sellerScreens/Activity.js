@@ -14,7 +14,7 @@ export const fetchTransactions = (customerId, setTransactions) => {
         snapshot.forEach((doc) => {
           data.push({ id: doc.id, ...doc.data()} );
         });
-        console.log(data);
+        // console.log(data);
         setTransactions(data);
       });
 
