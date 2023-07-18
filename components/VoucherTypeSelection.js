@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const UserTypeSelection = ({ selectedType, onTypeSelect }) => {
+const VoucherTypeSelection = ({ selectedType, onTypeSelect }) => {
   const [selected, setSelected] = useState(selectedType);
 
   const handleTypeSelect = (type) => {
@@ -11,60 +11,58 @@ const UserTypeSelection = ({ selectedType, onTypeSelect }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Are you a Customer or Seller?</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity
-          style={[styles.radioButton, selected === 'Customer' && styles.selectedRadioButton]}
-          onPress={() => handleTypeSelect('Customer')}
+          style={[styles.radioButton, selected === 'dollar' && styles.selectedRadioButtonOrange]}
+          onPress={() => handleTypeSelect('dollar')}
         >
-          <Text style={[styles.radioText, selected === 'Customer' && styles.selectedRadioText]}>{'Customer'}</Text>
+          <Text style={[styles.radioText, selected === 'dollar' && styles.selectedRadioText]}>{'Dollar Voucher'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.radioButton, selected === 'Seller' && styles.selectedRadioButton]}
-          onPress={() => handleTypeSelect('Seller')}
+          style={[styles.radioButton, selected === 'percentage' && styles.selectedRadioButtonPink]}
+          onPress={() => handleTypeSelect('percentage')}
         >
-          <Text style={[styles.radioText, selected === 'Seller' && styles.selectedRadioText]}>{'Seller'}</Text>
+          <Text style={[styles.radioText, selected === 'percentage' && styles.selectedRadioText]}>{'Percentage Voucher'}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default UserTypeSelection;
+export default VoucherTypeSelection;
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20,
+    marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'black',
   },
-
-  label: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   radioButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingtop: 10,
-    paddingHorizontal: 40,
-    marginHorizontal: 10,
+    paddingHorizontal: 20,
     padding: 10,
+    // marginHorizontal: 10,
   },
-  selectedRadioButton: {
+  selectedRadioButtonOrange: {
     backgroundColor: '#F07B10',
     borderRadius: 20,
     paddingVertical: 10,
   },
+  selectedRadioButtonPink: {
+    backgroundColor: '#db7b98',
+    borderRadius: 20,
+    paddingVertical: 10,
+  },
   radioText: {
-    fontSize: 20,
-    marginLeft: 0,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   selectedRadioText: {

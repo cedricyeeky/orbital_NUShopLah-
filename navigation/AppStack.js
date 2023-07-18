@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 
 //Screens for Customers to see
 import HomeScreen from '../screens/customerScreens/HomeScreen';

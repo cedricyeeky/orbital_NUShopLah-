@@ -31,32 +31,32 @@ export const AuthProvider = ({children}) => {
             register: async (email, password, firstName, {/** lastName */}, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
                 try {
                     // console.log('Registered User Type:', userType);
-                    // await firebase.auth().createUserWithEmailAndPassword(email, password)
-                    // .then(() => {
-                    //     firebase.auth().currentUser.sendEmailVerification({
-                    //         handleCodeInApp: true,
-                    //         url: 'https://nushoplah.firebaseapp.com',
-                    //     })
-                    //     .then(() => {
-                    //         alert('Verification email sent!')
-                    //     })
-                    //     .then(() => {
-                    //         //Version 1: Store everything as "users"
-                    //         firebase.firestore().collection('users')
-                    //             .doc(firebase.auth().currentUser.uid)
-                    //             .set({
-                    //                 amountPaid,
-                    //                 currentPoint,
-                    //                 firstName,
-                    //                 email,
-                    //                 totalPoint,
-                    //                 userType,
-                    //                 // lastName,
-                    //                 // totalRevenue,
-                    //             }); 
+                    await firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then(() => {
+                        firebase.auth().currentUser.sendEmailVerification({
+                            handleCodeInApp: true,
+                            url: 'https://nushoplah.firebaseapp.com',
+                        })
+                        .then(() => {
+                            alert('Verification email sent!')
+                        })
+                        .then(() => {
+                            //Version 1: Store everything as "users"
+                            firebase.firestore().collection('users')
+                                .doc(firebase.auth().currentUser.uid)
+                                .set({
+                                    amountPaid,
+                                    currentPoint,
+                                    firstName,
+                                    email,
+                                    totalPoint,
+                                    userType,
+                                    // lastName,
+                                    // totalRevenue,
+                                }); 
                             
-                    //     })
-                    // })
+                        })
+                    })
                     
                     // await firebase.auth().createUserWithEmailAndPassword(email, password);
                     // await firebase.auth().currentUser.sendEmailVerification({
@@ -76,32 +76,32 @@ export const AuthProvider = ({children}) => {
                     //                         // totalRevenue,
                     //                     }); 
 
-                    await firebase.auth().createUserWithEmailAndPassword(email, password);
+                    // await firebase.auth().createUserWithEmailAndPassword(email, password);
 
     // Send the verification email to the user
-    await firebase.auth().currentUser.sendEmailVerification({
-      handleCodeInApp: true,
-      url: 'https://nushoplah.firebaseapp.com',
-    });
+    // await firebase.auth().currentUser.sendEmailVerification({
+    //   handleCodeInApp: true,
+    //   url: 'https://nushoplah.firebaseapp.com',
+    // });
 
     // Wait for the user to verify their email
     await firebase.auth().currentUser.reload();
-    const user = firebase.auth().currentUser;
+    // const user = firebase.auth().currentUser;
 
-      await firebase.firestore().collection('users').doc(user.uid).set({
-        amountPaid,
-        currentPoint,
-        firstName,
-        email,
-        totalPoint,
-        userType,
-        // lastName,
-        // totalRevenue,
-      });
+    //   await firebase.firestore().collection('users').doc(user.uid).set({
+    //     amountPaid,
+    //     currentPoint,
+    //     firstName,
+    //     email,
+    //     totalPoint,
+    //     userType,
+    //     // lastName,
+    //     // totalRevenue,
+    //   });
 
       // Additional logic or actions after successful registration
 
-        alert('Registration successful! Please check your email to verify your account.');
+        // alert('Registration successful! Please check your email to verify your account.');
 
                 } catch(e) {
                     console.log(e);
