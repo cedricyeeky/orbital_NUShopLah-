@@ -1,8 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Pressable, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
+
+export const changePassword = () => {
+  if (firebase.auth().currentUser && firebase.auth().currentUser.email) {
+    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+    .then(() => {
+      Alert.alert("Password Reset Email Sent!")
+    }).catch((error) => {
+      Alert.alert(error)
+    })
+  }
+}
 
 export const getDateOfVoucher = (timestamp) => {
   //console.log(timestamp);
@@ -12,6 +23,39 @@ export const getDateOfVoucher = (timestamp) => {
     console.log("timestamp does not exist for this voucher YET. Might be due to lagging. Try again a few seconds later")
   }
 }
+
+export const handleCancelVoucher = (voucherId) => {
+  Alert.alert(
+    'Cancel Voucher',
+    'Are you sure you want to cancel this voucher?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Confirm',
+        onPress: () => deleteVoucher(voucherId),
+        style: 'destructive',
+      },
+    ],
+    { cancelable: true }
+  );
+};
+
+export const deleteVoucher = (voucherId) => {
+  firebase
+    .firestore()
+    .collection('vouchers')
+    .doc(voucherId)
+    .delete()
+    .then(() => {
+      console.log('Voucher deleted successfully.');
+    })
+    .catch((error) => {
+      console.log('Error deleting voucher:', error);
+    });
+};
 
 export const fetchVouchers = (sellerId, setVouchers) => {
   const unsubscribe = firebase
@@ -30,20 +74,56 @@ export const fetchVouchers = (sellerId, setVouchers) => {
   return unsubscribe;
 }
 
+export const renderItem = ({ item }) => {
+
+  if (item.voucherType === 'dollar') {
+    return (
+      <View style={styles.dollarVoucherContainer} testID="TEST_ID_DOLLAR_VOUCHER">
+                <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} />
+                <Text style={styles.voucherTextId}>Voucher ID: {item.id}</Text>
+                <Text style={styles.voucherText}>Description: {item.voucherDescription}</Text>
+                <Text style={styles.voucherText}>Value: ${item.voucherAmount}</Text>
+                <Text style={styles.voucherText}>Points Required: {item.pointsRequired}</Text>
+                <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(item.timeStamp)}</Text>
+                <Pressable style={styles.button} onPress={() => handleCancelVoucher(item.id)}>
+                  <Text style={styles.cancelText}>Cancel Voucher</Text>
+                </Pressable>
+              </View>
+    );
+  } else {
+    return (
+      <View style={styles.percentageVoucherContainer} testID="TEST_ID_PERCENTAGE_VOUCHER">
+                <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} />
+                <Text style={styles.voucherTextId}>Voucher ID: {item.id}</Text>
+                <Text style={styles.voucherText}>Description: {item.voucherDescription}</Text>
+                <Text style={styles.voucherText}>Percentage: {item.voucherPercentage}%</Text>
+                <Text style={styles.voucherText}>Points Required: {item.pointsRequired}</Text>
+                <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(item.timeStamp)}</Text>
+                <Pressable style={styles.button} onPress={() => handleCancelVoucher(item.id)}>
+                  <Text style={styles.cancelText}>Cancel Voucher</Text>
+                </Pressable>
+              </View>
+    );
+  }
+};
+
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [firstName, setFirstName] = useState('');
   const [vouchers, setVouchers] = useState([]);
+  const [isBottomReached, setIsBottomReached] = useState(false);
 
   // Change the password
-  const changePassword = () => {
-    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
-    .then(() => {
-      alert("Password Reset Email Sent!")
-    }).catch((error) => {
-      alert(error)
-    })
-  }
+  // const changePassword = () => {
+  //   firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+  //   .then(() => {
+  //     alert("Password Reset Email Sent!")
+  //   }).catch((error) => {
+  //     alert(error)
+  //   })
+  // }
 
   useEffect(() => {
     console.log("(Seller Accounts) useEffect1 running...");
@@ -93,45 +173,69 @@ const SettingsScreen = () => {
     }
   }, [user]);
 
-  const handleCancelVoucher = (voucherId) => {
-    Alert.alert(
-      'Cancel Voucher',
-      'Are you sure you want to cancel this voucher?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Confirm',
-          onPress: () => deleteVoucher(voucherId),
-          style: 'destructive',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+  // const handleCancelVoucher = (voucherId) => {
+  //   Alert.alert(
+  //     'Cancel Voucher',
+  //     'Are you sure you want to cancel this voucher?',
+  //     [
+  //       {
+  //         text: 'Cancel',
+  //         style: 'cancel',
+  //       },
+  //       {
+  //         text: 'Confirm',
+  //         onPress: () => deleteVoucher(voucherId),
+  //         style: 'destructive',
+  //       },
+  //     ],
+  //     { cancelable: true }
+  //   );
+  // };
 
-  const deleteVoucher = (voucherId) => {
-    firebase
-      .firestore()
-      .collection('vouchers')
-      .doc(voucherId)
-      .delete()
-      .then(() => {
-        console.log('Voucher deleted successfully.');
-      })
-      .catch((error) => {
-        console.log('Error deleting voucher:', error);
-      });
-  };
+  // const deleteVoucher = (voucherId) => {
+  //   firebase
+  //     .firestore()
+  //     .collection('vouchers')
+  //     .doc(voucherId)
+  //     .delete()
+  //     .then(() => {
+  //       console.log('Voucher deleted successfully.');
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error deleting voucher:', error);
+  //     });
+  // };
 
 
   return (
-    <ScrollView>
       <View style={styles.container}>
         <Text style={styles.text}>My Vouchers</Text>
         {vouchers.length > 0 ? (
+        <FlatList
+          data={vouchers}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+          // onScroll={(event) => {
+          //   const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+          //   const paddingToBottom = 20; // Adjust this value as needed
+        
+          //   if (
+          //     layoutMeasurement.height + contentOffset.y >=
+          //     contentSize.height - paddingToBottom
+          //   ) {
+          //     setIsBottomReached(true);
+          //   } else {
+          //     setIsBottomReached(false);
+          //   }
+          // }}
+        />
+
+        ) : (
+          <Text style={styles.noVouchers}>No Vouchers found.</Text>
+        )}
+
+        {/* {vouchers.length > 0 ? ( 
             vouchers.map((voucher) => (
               <View 
                 key={voucher.id}  
@@ -140,7 +244,6 @@ const SettingsScreen = () => {
 
               {voucher.voucherType === 'dollar' && (
               <View>
-                {/* Render dollar voucher */}
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
                 <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
@@ -156,7 +259,6 @@ const SettingsScreen = () => {
             
               {voucher.voucherType === 'percentage' && (
               <View>
-                {/* Render percentage voucher */}
                 <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
                 <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
                 <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
@@ -173,19 +275,33 @@ const SettingsScreen = () => {
               </View>    
             ))
         ) : (
-            <Text style={styles.noVouchers}>No vouchers found.</Text>
-        )}
+             <Text style={styles.noVouchers}>No vouchers found.</Text>
+        )} */}
         {/**Change Password Button */}
-        <View style={styles.passwordButton}>
-          <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
-        </View>
+          {/* <View style={styles.passwordButton}>
+            <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
+          </View> */}
 
+          {/* {vouchers.length > 0 && (
+            <View>
+              <View style={styles.passwordButton}>
+                <FormButton buttonTitle="Change Password" onPress={changePassword} />
+              </View>
+            </View>
+          )} */}
+
+            <View>
+              <View style={styles.passwordButton}>
+                <FormButton buttonTitle="Change Password" onPress={changePassword} />
+              </View>
+            </View>
         <Text style={styles.whiteSpaceText}>White Space.</Text>
         <Text style={styles.whiteSpaceText}>White Space.</Text>
 
 
       </View>
-    </ScrollView>
+  
+      
     
   );
 };
@@ -209,7 +325,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     padding: 20,
-    flex: 0.9,
+    flex: 1,
   },
   container1: {
     backgroundColor: '#f9fafd',
@@ -221,8 +337,11 @@ const styles = StyleSheet.create({
   dollarVoucherContainer: {
     backgroundColor: '#f07b10',
     borderRadius: 20,
-    padding: 30,
+    padding: 20,
     marginVertical: 10,
+  },
+  listContainer: {
+    flexGrow: 1,
   },
   noVouchers: {
     fontSize: 16,
@@ -232,12 +351,14 @@ const styles = StyleSheet.create({
   passwordButton: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 5,
+    bottom: 10,
   },
   percentageVoucherContainer: {
     backgroundColor: '#db7b98',
     borderRadius: 20,
     marginVertical: 10,
-    padding: 30,
+    padding: 20,
   },
   text: {
     fontSize: 24,
@@ -265,7 +386,7 @@ const styles = StyleSheet.create({
   },
   whiteSpaceText: {
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 8,
     color: '#fff',
     fontWeight: 'bold',
   },

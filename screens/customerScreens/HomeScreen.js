@@ -1,11 +1,182 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
+import { Alert, Button, FlatList, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
  import { Card, Searchbar} from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 import { Ionicons } from '@expo/vector-icons';
+
+// export const fetchAvailableVouchers = (setVouchers, setRedeemedVouchers) => {
+//   const unsubscribe = firebase
+//   .firestore()
+//   .collection('vouchers')
+//   .orderBy('sellerName', 'asc')
+//   .onSnapshot((snapshot) => {
+//     const vouchersData = [];
+//     const redeemedVouchersData = [];
+
+//     snapshot.forEach((doc) => {
+//       const voucher = doc.data();
+//       voucher.voucherId = doc.id;
+
+//       if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
+//         redeemedVouchersData.push(voucher);
+//       } else {
+//         vouchersData.push(voucher);
+//       }
+//     });
+
+//     setVouchers(vouchersData);
+//     setRedeemedVouchers(redeemedVouchersData);
+//   });
+
+//   return unsubscribe;
+// };
+
+// export const redeemVoucher = (voucher, currentPoint, setRedeemedVoucher, setIsUseNowButtonClicked) => {
+
+//   //Checks if user is logged in.
+//   const currentUser = firebase.auth().currentUser;
+//   if (!currentUser) {
+//     console.log("User is not logged in!");
+//     return;
+//   }
+  
+//   if (voucher.pointsRequired > currentPoint) {
+//     Alert.alert("Warning", "Insufficient Point Balance!");
+//   } else {
+//     // Confirm with the user if they want to redeem the voucher
+//     Alert.alert(
+//       'Redeem Voucher',
+//       'Are you sure you want to redeem this voucher?',
+//       [
+//         {
+//           text: 'Cancel',
+//           style: 'cancel',
+//         },
+//         {
+//           text: 'Confirm',
+//           onPress: () => {
+//             const currentUserUid = firebase.auth().currentUser.uid;
+//             console.log("Voucher is:", voucher.voucherId);
+//             setRedeemedVoucher(voucher);
+//             toggleTrue();
+//             setIsUseNowButtonClicked(true);
+
+//             Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
+
+//             // DISPLAY TIMER IN FUTURE
+            
+//             //Automatically hide the voucher QR code modal after 5 minutes
+//             setTimeout(() => {
+//               toggleFalse();
+//               setIsUseNowButtonClicked(false);
+//             }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+//           },
+//         },
+//       ]
+//     );
+//   }
+// };
+
+// export const renderItem = ({ item }) => {
+  
+//   if (firebase.auth().currentUser && firebase.auth().currentUser.uid) {
+//     const currentUser = firebase.auth().currentUser;
+//     const currentUserUid = firebase.auth().currentUser.uid;
+//     const usedBy = item.usedBy; 
+
+//     const isRedeemed = usedBy.includes(currentUserUid);
+
+//       if (isRedeemed) {
+//         if (item.voucherType === "dollar") {
+//           return (
+//             <View style={styles.voucherCardRedeemed}>
+//               <Card.Content>
+//                 <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} /> 
+//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
+//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
+//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
+//                 <Text style={styles.voucherTitle}>Voucher Amount: ${item.voucherAmount}</Text>
+//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
+//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
+//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
+//                 <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
+//               </Card.Content>
+//             </View>
+//           );
+//         } else {
+//           return (
+//             <View style={styles.voucherCardRedeemed}>
+//               <Card.Content>
+//                 <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} /> 
+//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
+//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
+//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
+//                 <Text style={styles.voucherTitle}>Voucher Percentage: %{item.voucherPercentage}</Text>
+//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
+//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
+//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
+//                 <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
+//               </Card.Content>
+//             </View>
+//           );
+//         }
+//       } else {
+//         if (item.voucherType === "dollar") {
+//           return (
+//             <View style={styles.dollarVoucherCard}>
+//               <Card.Content>
+//                 <Image src={item.voucherImage} style={styles.voucherImage} />
+//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
+//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
+//                 <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
+//                 <Text style={styles.voucherTitle}>Voucher Amount: ${item.voucherAmount}</Text>
+//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
+//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
+//                 <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
+//                 <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
+//                 <View style={styles.useNow}>
+//                   <FormButton
+//                     buttonTitle="USE NOW"
+//                     onPress={() => redeemVoucher(item)}
+//                   />
+//                 </View>
+//               </Card.Content>
+//             </View>
+//           );
+//         } else {
+//           return (
+//             <View style={styles.percentageVoucherCard}>
+//                     <Card.Content>
+//                       <Image src={item.voucherImage} style={styles.voucherImage} />
+//                       <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
+//                       <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
+//                       <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
+//                       <Text style={styles.voucherTitle}>Voucher Percentage: {item.voucherPercentage}%</Text>
+//                       <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
+//                       <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
+//                       <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
+//                       <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
+//                       <View style={styles.useNow}>
+//                         <FormButton
+//                           buttonTitle="USE NOW"
+//                           onPress={() => redeemVoucher(item)}
+//                         />
+//                       </View>
+//                     </Card.Content>
+//                   </View>
+//           );
+//         }
+//       }
+//   } else {
+//     console.log("User has logged out.");
+//   }
+  
+
+// };
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -15,7 +186,8 @@ const HomeScreen = () => {
     const logoImage = require('../../assets/NUShopLah!.png');
     const [sellerNames, setSellerNames] = useState([]);
     const [expanded, setExpanded] = useState(false);
-    
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+
     // Fetch Seller Names from Firestore
     // useEffect(() => {
     //   const unsubscribe = firebase.firestore()
@@ -99,9 +271,8 @@ const HomeScreen = () => {
       }
     }, [user])
 
-    //For Vouchers
+    //For Fetching Vouchers
     useEffect(() => {
-        // Fetch all vouchers from Firestore
         firebase
           .firestore()
           .collection('vouchers')
@@ -124,6 +295,14 @@ const HomeScreen = () => {
             setVouchers(vouchersData);
             setRedeemedVouchers(redeemedVouchersData);
           });
+
+      // if (user && user.uid) {
+      //   const unsubscribe = fetchAvailableVouchers(setVouchers, setRedeemedVouchers);
+
+      //   return () => unsubscribe();
+      // } else {
+      //   console.log("User has logged out!");
+      // }
     }, []);
 
     
@@ -201,9 +380,19 @@ const HomeScreen = () => {
       voucher.sellerName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // const handleScroll = (event) => {
+    //   const scrollPosition = event.nativeEvent.contentOffset.y;
+    //   if (scrollPosition > 0 && isHeaderVisible) {
+    //     setIsHeaderVisible(false);
+    //   } else if (scrollPosition === 0 && !isHeaderVisible) {
+    //     setIsHeaderVisible(true);
+    //   }
+    // };
+
     return (
       <ScrollView>
         <View style={styles.container}>
+              
           <Image 
             source={require('../../assets/NUShopLah!-logo.png')}
             style={styles.logo}
@@ -211,9 +400,8 @@ const HomeScreen = () => {
           />
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
-          <Text style={styles.whiteSpaceText}>White Space.</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
-          <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text> 
 
             
 
@@ -223,8 +411,9 @@ const HomeScreen = () => {
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={styles.searchBar}
-            icon={() => <Ionicons name="search" size={20}/>}
-            />
+            icon={() => <Ionicons name="search" size={20} />}
+            clearIcon={() => <Ionicons name="close" size={20} />}
+          />
           )}
           
           {/* <Text style={styles.heading}>Participating Sellers</Text>
@@ -237,7 +426,15 @@ const HomeScreen = () => {
           </View> */}
 
           <Text style={styles.heading}>Available Vouchers</Text>
-          <View>
+          
+          {/* <FlatList
+            data={[...filteredVouchers, ...redeemedVouchers]}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.voucherId}
+            contentContainerStyle={styles.listContainer}
+             onScroll={handleScroll}
+          /> */}
+
             {/* Render available vouchers */}
             {filteredVouchers.map((voucher) => (
                 <View
@@ -291,7 +488,7 @@ const HomeScreen = () => {
                 )}
                   
                 </View>
-            ))}
+            ))} 
 
             {/* Render redeemed vouchers */}
             {redeemedVouchers.map((voucher) => (
@@ -334,9 +531,8 @@ const HomeScreen = () => {
                 )}
 
                 </View>
-            ))}
+            ))} 
 
-          </View>
           
           {/* Modal for Voucher QR Code */}
           {isUseNowButtonClicked && (
@@ -363,10 +559,9 @@ const HomeScreen = () => {
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
-          <Text style={styles.whiteSpaceText}>White Space.</Text>
         </View>
-      
       </ScrollView>
+      
     );
 }
 
@@ -381,37 +576,46 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       padding: 15,
       backgroundColor: '#003d7c',
+      borderRadius: 20,
     },
     container: {
         backgroundColor: '#fff',
         flex: 0.9,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        paddingHorizontal: 20,
     },
     dollarVoucherCard: {
       backgroundColor: '#f07b10',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      padding: 20,
+      padding: 10,
       marginVertical: 10,
     },
     heading: {
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: 'bold',
-      marginVertical: 20,
+      marginVertical: 8,
+    },
+    headerContainer: {
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    listContainer: {
+      flexGrow: 1,
     },
     logo: {
-      height: 150,
       width: '100%',
       resizeMode: 'contain',
+      height: 150,
     },
     modalContent: {
-      height: '50%',
+      height: '60%',
       width: '100%',
       backgroundColor: '#f07b10',
-      borderTopRightRadius: 18,
-      borderTopLeftRadius: 18,
+      borderTopRightRadius: 20,
+      borderTopLeftRadius: 20,
       position: 'absolute',
       bottom: 0,
       alignItems: 'center', 
@@ -420,7 +624,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#db7b98',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      padding: 20,
+      padding: 10,
       marginVertical: 10,
     },
     qrCodeText: {
@@ -430,6 +634,12 @@ const styles = StyleSheet.create({
     },
     searchBar: {
       backgroundColor: '#f6eee3',
+      height: 50,
+    },
+    searchInput: {
+      fontSize: 12, 
+      justifyContent: 'center',
+      height: 10,
     },
     seller: {
       color: 'white',
@@ -447,7 +657,7 @@ const styles = StyleSheet.create({
       
     },
     text: {
-        fontSize: 20,
+        fontSize: 18,
         color: '#333333',
         fontWeight: 'bold',
     },
