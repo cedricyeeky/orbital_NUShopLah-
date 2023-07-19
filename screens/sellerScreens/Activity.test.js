@@ -3,44 +3,7 @@ import { render, waitFor, fireEvent, findByText } from '@testing-library/react-n
 import { AuthContext, AuthProvider } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import ActivityScreen from './Activity';
-import { capitalizeFirstLetter, getDateOfTransaction, calculateTotalRevenue, fetchTransactions } from './Activity';
-
-
-// // Mock the AuthContext value
-// const authContextValue = {
-//   user: { uid: 'user-uid' }
-// };
-
-// // Mock firebase and firestore
-// jest.mock('../../firebaseconfig', () => ({
-//   firebase: {
-//     firestore: jest.fn().mockReturnValue({
-//       collection: jest.fn().mockReturnThis(),
-//       where: jest.fn().mockReturnThis(),
-//       orderBy: jest.fn().mockReturnThis(),
-//       onSnapshot: jest.fn().mockImplementation((callback) => {
-//         const mockSnapshot = {
-//           forEach: (cb) => {
-//             const mockDoc = {
-//               id: 'mockDocId',
-//               data: () => ({
-//                 // Mock data properties for a transaction
-//                 id: 'mockTransactionId',
-//                 sellerId: 'mockSellerId',
-//                 timeStamp: { toDate: () => new Date('2023-07-16T09:30:00') },
-//                 amountPaid: 10.5,
-//                 // Add more mock data properties as needed
-//               }),
-//             };
-//             cb(mockDoc);
-//           },
-//         };
-//         callback(mockSnapshot);
-//         return jest.fn(); // Mock unsubscribe function
-//       }),
-//     }),
-//   },
-// }));
+import { capitalizeFirstLetter, getDateOfTransaction, calculateTotalRevenue, fetchTransactions, renderItem } from './Activity';
 
 // Mock dependencies
 jest.mock('../../navigation/AuthProvider', () => ({
@@ -75,104 +38,186 @@ jest.mock('../../firebaseconfig', () => ({
 }));
 
 
-describe('ActivityScreen', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
 
-  it('calculates total revenue correctly', () => {
-    const mockTransactions = [
-      { amountPaid: 10.5 },
-      { amountPaid: 15.75 },
-    ];
-
-    const totalRevenue = calculateTotalRevenue(mockTransactions);
-
-    expect(totalRevenue).toBe(26.25);
-  });
-
-  it('capitalizeFirstLetter() capitalizes the first letter of a non-empty string', () => {
-    expect(capitalizeFirstLetter('hello')).toBe('Hello');
-    expect(capitalizeFirstLetter('world')).toBe('World');
-    expect(capitalizeFirstLetter('example')).toBe('Example');
-  });
-
-  it('formats transaction date correctly', () => {
-    const mockTimestamp = { toDate: () => new Date('2023-07-16T09:30:00') };
-    const formattedDate = getDateOfTransaction(mockTimestamp);
-
-    expect(formattedDate).toBe('16/07/2023, 9:30:00 am');
-  });
-
-  it('should fetch transactions and set them correctly', () => {
-    // Mock user and setTransactions function
-    const user = { uid: 'user123' };
-    const setTransactions = jest.fn();
-
-    // Mock Firestore query
-    mockFirestore.onSnapshot.mockImplementation((callback) => {
-      callback(mockQuery);
-      return jest.fn(); // Mocking the unsubscribe function
+  describe('calculateTotalRevenue', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
     });
 
-    fetchTransactions(user.uid, setTransactions);
+    it('calculates total revenue correctly', () => {
+      const mockTransactions = [
+        { amountPaid: 10 },
+        { amountPaid: 15 },
+      ];
+  
+      const totalRevenue = calculateTotalRevenue(mockTransactions);
+  
+      expect(totalRevenue).toBe(25);
+    });
 
-    expect(mockFirestore.collection).toHaveBeenCalledWith('transactions');
-    expect(mockFirestore.where).toHaveBeenCalledWith('sellerId', '==', user.uid);
-    expect(mockFirestore.orderBy).toHaveBeenCalledWith('timeStamp', 'desc');
-    expect(mockFirestore.onSnapshot).toHaveBeenCalledTimes(1);
-    expect(setTransactions).toHaveBeenCalledWith(
-        expect.arrayContaining([
-            { id: 'transaction1', timeStamp: expect.any(Object), /* other data properties */ },
-            { id: 'transaction2', timeStamp: expect.any(Object), /* other data properties */ },
-          ])
-    );
+    it('calculates total revenue correctly and rounds the sum to 2 decimal places', () => {
+      const mockTransactions = [
+        { amountPaid: 10.375 },
+        { amountPaid: 15.547 },
+      ];
+  
+      const totalRevenue = calculateTotalRevenue(mockTransactions);
+  
+      expect(totalRevenue).toBe(25.92);
+    });
+  
+    it('calculates total revenue to be $0 if there is no transactions', () => {
+      const mockTransactions = [];
+  
+      const totalRevenue = calculateTotalRevenue(mockTransactions);
+  
+      expect(totalRevenue).toBe(0);
+    });
+
   });
 
-  it('renders Dollar Voucher transaction containers with orange colour', async () => {
-    // Render the ActivityScreen component
-    const { getByTestId } = render(
-      <AuthContext.Provider value={{ user: { uid: 'user-uid' }, logout: jest.fn() }}>
-        <ActivityScreen />
-      </AuthContext.Provider>
-    );
-  
-    // Find the containers by test ID
-    const dollarContainer = getByTestId('dollar-voucher-container');
-  
-    // Assert the container colors
-    expect(dollarContainer).toHaveStyle({ backgroundColor: '#f07b10' }); // Orange color
+  describe('capitalizeFirstLetter', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    
+    it('should capitalize the first letter of a non-empty string', () => {
+      expect(capitalizeFirstLetter('hello')).toBe('Hello');
+      expect(capitalizeFirstLetter('world')).toBe('World');
+      expect(capitalizeFirstLetter('example')).toBe('Example');
+    });
+
   });
 
-  it('renders Percentage Voucher transaction containers with pink colour', async () => {
-    // Render the ActivityScreen component
-    const { getByTestId } = render(
-      <AuthContext.Provider value={{ user: { uid: 'user-uid' }, logout: jest.fn() }}>
-        <ActivityScreen />
-      </AuthContext.Provider>
-    );
+  describe('getDateOfTransaction', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('formats transaction date correctly', () => {
+      const mockTimestamp = { toDate: () => new Date('2023-07-16T09:30:00') };
+      const formattedDate = getDateOfTransaction(mockTimestamp);
   
-    // Find the containers by test ID
-    const percentageContainer = getByTestId('percentage-voucher-container');
-  
-    // Assert the container colors
-    expect(percentageContainer).toHaveStyle({ backgroundColor: '#db7b98' }); // Pink color
+      expect(formattedDate).toBe('16/07/2023, 9:30:00 am');
+    });
+
   });
 
-  it('renders Points Voucher transaction containers with dark blue colour', async () => {
-    // Render the ActivityScreen component
-    const { getByTestId } = render(
-      <AuthContext.Provider value={{ user: { uid: 'user-uid' }, logout: jest.fn() }}>
-        <ActivityScreen />
-      </AuthContext.Provider>
-    );
+  describe('Seller Activity Screen', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should fetch transactions and set them correctly', () => {
+      // Mock user and setTransactions function
+      const user = { uid: 'user123' };
+      const setTransactions = jest.fn();
   
-    // Find the containers by test ID
-    const pointContainer = getByTestId('point-transaction-container');
+      // Mock Firestore query
+      mockFirestore.onSnapshot.mockImplementation((callback) => {
+        callback(mockQuery);
+        return jest.fn(); // Mocking the unsubscribe function
+      });
   
-    // Assert the container colors
-    expect(pointContainer).toHaveStyle({backgroundColor: '#003d7c'});
+      fetchTransactions(user.uid, setTransactions);
+  
+      expect(mockFirestore.collection).toHaveBeenCalledWith('transactions');
+      expect(mockFirestore.where).toHaveBeenCalledWith('sellerId', '==', user.uid);
+      expect(mockFirestore.orderBy).toHaveBeenCalledWith('timeStamp', 'desc');
+      expect(mockFirestore.onSnapshot).toHaveBeenCalledTimes(1);
+      expect(setTransactions).toHaveBeenCalledWith(
+          expect.arrayContaining([
+              { id: 'transaction1', timeStamp: expect.any(Object), /* other data properties */ },
+              { id: 'transaction2', timeStamp: expect.any(Object), /* other data properties */ },
+            ])
+      );
+    });
+
+    it('should render the percentage voucher transaction log with correct format', () => {
+      // Mock item data
+      const mockItem = {
+        id: 'transaction2',
+        timeStamp: { toDate: jest.fn(() => new Date('2023-01-01T00:00:00Z')) },
+        amountPaid: 15,
+        pointsAwarded: 0,
+        voucherType: 'percentage',
+        transactionType: 'Voucher Transaction',
+        /* other item properties */
+      };
+  
+      const { getByTestId, getByText } = render(renderItem({ item: mockItem }));
+  
+      jest.spyOn(Date.prototype, 'toLocaleString').mockReturnValue('1/1/2023, 8:00:00 AM')
+  
+      // Perform assertions
+      const renderedItem = getByTestId('TEST_ID_PERCENTAGE_VOUCHER_TRANSACTION');
+      expect(renderedItem.props.style.backgroundColor).toBe('#db7b98'); // Assert background color
+  
+      //Stronger Test
+      const verifyingText = getByText('Transaction Type: Voucher Transaction');
+      expect(verifyingText).toBeDefined();
+  
+      // Clean up the spy
+      jest.restoreAllMocks();
+    });
+  
+    it('should render the dollar voucher transaction log with correct format', () => {
+      // Mock item data
+      const mockItem = {
+        id: 'transaction1',
+        timeStamp: { toDate: jest.fn(() => new Date('2023-01-01T00:00:00Z')) },
+        amountPaid: 10,
+        pointsAwarded: 0,
+        voucherType: 'dollar',
+        transactionType: 'Voucher Transaction',
+        /* other item properties */
+      };
+  
+      const { getByTestId, getByText } = render(renderItem({ item: mockItem }));
+  
+      jest.spyOn(Date.prototype, 'toLocaleString').mockReturnValue('1/1/2023, 8:00:00 AM')
+  
+      // Perform assertions
+      const renderedItem = getByTestId('TEST_ID_DOLLAR_VOUCHER_TRANSACTION');
+      expect(renderedItem.props.style.backgroundColor).toBe('#f07b10'); // Assert background color
+  
+      //Stronger Test
+      const verifyingText = getByText('Transaction Type: Voucher Transaction');
+      expect(verifyingText).toBeDefined();
+  
+      // Clean up the spy
+      jest.restoreAllMocks();
+    });
+  
+    it('should render the points transaction log with correct format', () => {
+      // Mock item data
+      const mockItem = {
+        id: 'transaction3',
+        timeStamp: { toDate: jest.fn(() => new Date('2023-01-01T00:00:00Z')) },
+        amountPaid: 20,
+        pointsAwarded: 20,
+        transactionType: 'Points Transaction',
+        /* other item properties */
+      };
+  
+      const { getByTestId, getByText } = render(renderItem({ item: mockItem }));
+  
+      jest.spyOn(Date.prototype, 'toLocaleString').mockReturnValue('1/1/2023, 8:00:00 AM')
+  
+      // Perform assertions
+      const renderedItem = getByTestId('TEST_ID_POINT_TRANSACTION');
+      expect(renderedItem.props.style.backgroundColor).toBe('#003D7C'); // Assert background color
+  
+      //Stronger Test
+      const verifyingText = getByText('Transaction Type: Points Transaction');
+      expect(verifyingText).toBeDefined();
+  
+      // Clean up the spy
+      jest.restoreAllMocks();
+    });
+
   });
 
   
-});
+
+  
