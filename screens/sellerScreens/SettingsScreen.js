@@ -4,6 +4,32 @@ import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
+export const getDateOfVoucher = (timestamp) => {
+  //console.log(timestamp);
+  if (timestamp) {
+    return timestamp.toDate().toLocaleString();
+  } else {
+    console.log("timestamp does not exist for this voucher YET. Might be due to lagging. Try again a few seconds later")
+  }
+}
+
+export const fetchVouchers = (sellerId, setVouchers) => {
+  const unsubscribe = firebase
+      .firestore()
+      .collection('vouchers')
+      .where('sellerId', '==', sellerId)
+      .orderBy('timeStamp', 'desc')
+      .onSnapshot((snapshot) => {
+        const data = [];
+        snapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        setVouchers(data);
+      });
+
+  return unsubscribe;
+}
+
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [firstName, setFirstName] = useState('');
@@ -46,18 +72,20 @@ const SettingsScreen = () => {
   useEffect(() => {
     console.log("(Seller Account) sorting vouchers useEffect running...");
     if (user && user.uid) {
-      const unsubscribe = firebase
-      .firestore()
-      .collection('vouchers')
-      .where('sellerId', '==', user.uid)
-      .orderBy('timeStamp', 'desc')
-      .onSnapshot((snapshot) => {
-        const data = [];
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        setVouchers(data);
-      });
+      // const unsubscribe = firebase
+      // .firestore()
+      // .collection('vouchers')
+      // .where('sellerId', '==', user.uid)
+      // .orderBy('timeStamp', 'desc')
+      // .onSnapshot((snapshot) => {
+      //   const data = [];
+      //   snapshot.forEach((doc) => {
+      //     data.push({ id: doc.id, ...doc.data() });
+      //   });
+      //   setVouchers(data);
+      // });
+
+      const unsubscribe = fetchVouchers(user.uid, setVouchers);
 
       return () => unsubscribe();
     } else {
@@ -98,14 +126,6 @@ const SettingsScreen = () => {
       });
   };
 
-  const getDateOfVoucher = (timestamp) => {
-    //console.log(timestamp);
-    if (timestamp) {
-      return timestamp.toDate().toLocaleString();
-    } else {
-      console.log("timestamp does not exist for this voucher YET. Might be due to lagging. Try again a few seconds later")
-    }
-  }
 
   return (
     <ScrollView>

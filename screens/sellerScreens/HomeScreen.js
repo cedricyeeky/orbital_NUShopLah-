@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, Alert, Button, Pressable} from 'react-native';
+import { Image, StyleSheet, Text, View, Alert, Button, Pressable, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../firebaseconfig';
 import { FAB, Card, TextInput, RadioButton, PaperProvider } from 'react-native-paper';
@@ -8,6 +8,8 @@ import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { ScrollView } from 'react-native-gesture-handler';
+import VoucherTypeSelection from '../../components/VoucherTypeSelection';
+import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -21,6 +23,7 @@ const HomeScreen = () => {
   const [checked, setChecked] = React.useState('first');
   const [voucherType, setVoucherType] = useState('dollar');
   const [voucherPercentage, setVoucherPercentage] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     console.log("(Seller Home) useEffect running...");
@@ -200,6 +203,15 @@ const HomeScreen = () => {
     }
   // };
 
+  const handlePress = (option) => {
+    setSelectedOption(option);
+    switch (option) {
+      case 'percentageVoucher':
+        setVoucherType('percentage');
+      default:
+        setVoucherType('dollar');
+    }
+  };
 
   return (
     <ScrollView>
@@ -211,8 +223,21 @@ const HomeScreen = () => {
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
 
-      {/* Radio Buttons */}
-      <View style={styles.radioContainer}>
+      
+      {/* Radio Buttons - icons not appearing */}
+      {/* <View>
+      <TouchableOpacity onPress={() => handlePress('option1')}>
+        <Text>{selectedOption === 'option1' ? 'Selected' : 'Not Selected'}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => handlePress('option2')}>
+        <Text>{selectedOption === 'option2' ? 'Selected' : 'Not Selected'}</Text>
+      </TouchableOpacity>
+
+      {/* Add more TouchableOpacity components for additional options */}
+      {/* </View> */} 
+
+      {/* <View style={styles.radioContainer}>
         <View style={styles.radioButton}>
           <RadioButton
             value="dollar"
@@ -231,12 +256,17 @@ const HomeScreen = () => {
           />
           <Text style={styles.radioLabel}>Percentage Voucher</Text>
         </View>
-      </View>
+ 
+      </View> */}
+
+      <Text style={styles.radioButtonTitle}>Create your Voucher here!</Text>
+
+      <VoucherTypeSelection selectedType={voucherType} onTypeSelect={setVoucherType} /> 
 
       {/* Render the selected card */}
       {voucherType === 'dollar' && (
         <Card style={styles.dollarCard}>
-          <Card.Title title="Create Dollar Voucher" titleStyle={styles.titleVoucher}/>
+          <Card.Title title="Dollar Voucher" titleStyle={styles.titleVoucher}/>
           <Card.Content>
             {/* Input fields */}
             <TextInput
@@ -303,7 +333,7 @@ const HomeScreen = () => {
 
       {voucherType === 'percentage' && (
       <Card style={styles.percentageCard}>
-        <Card.Title title="Create Percentage Voucher" titleStyle={styles.titleVoucher}/>
+        <Card.Title title="Percentage Voucher" titleStyle={styles.titleVoucher}/>
         <Card.Content>
           {/* Input fields */}
           <TextInput
@@ -368,12 +398,15 @@ const HomeScreen = () => {
       )}
 
       <FAB
-        icon="qrcode-scan"
+        icon={() => <Ionicons name="scan-outline" size={20}/>}
         style={styles.fab}
         label="Scan QR"
         onPress={() => navigation.navigate('Scan QR')}
         color='#003d7c'
       />
+
+      
+
 
       <Text style={styles.whiteSpaceText}>White Space.</Text>
       <Text style={styles.whiteSpaceText}>White Space.</Text>
@@ -445,6 +478,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 16,
+  },
+  radioButtonTitle: {
+    marginTop: 40,
+    marginBottom: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   radioLabel: {
     marginLeft:20,

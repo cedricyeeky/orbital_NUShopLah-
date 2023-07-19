@@ -5,6 +5,7 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
  import { Card, Searchbar} from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
+import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -16,28 +17,27 @@ const HomeScreen = () => {
     const [expanded, setExpanded] = useState(false);
     
     // Fetch Seller Names from Firestore
-    useEffect(() => {
-      const unsubscribe = firebase.firestore()
-        .collection('users')
-        .where('userType', '==', 'Seller')
-        .orderBy('firstName', 'asc')
-        .onSnapshot((querySnapshot) => {
-          const names = [];
-          querySnapshot.forEach((doc) => {
-            const {firstName} = doc.data();
-            names.push(firstName);
-          });
-          setSellerNames(names);
-        });
+    // useEffect(() => {
+    //   const unsubscribe = firebase.firestore()
+    //     .collection('users')
+    //     .where('userType', '==', 'Seller')
+    //     .orderBy('firstName', 'asc')
+    //     .onSnapshot((querySnapshot) => {
+    //       const names = [];
+    //       querySnapshot.forEach((doc) => {
+    //         const {firstName} = doc.data();
+    //         names.push(firstName);
+    //       });
+    //       setSellerNames(names);
+    //     });
   
-      return () => unsubscribe();
-    }, []);
+    //   return () => unsubscribe();
+    // }, []);
 
     const toggleExpanded = () => {
       setExpanded(!expanded);
     };
 
-    
 
     //Modal
     const [showVoucherQRCodeModal, setShowVoucherQRCodeModal] = useState(false);
@@ -223,17 +223,18 @@ const HomeScreen = () => {
             onChangeText={onChangeSearch}
             value={searchQuery}
             style={styles.searchBar}
+            icon={() => <Ionicons name="search" size={20}/>}
             />
           )}
           
-          <Text style={styles.heading}>Participating Sellers</Text>
+          {/* <Text style={styles.heading}>Participating Sellers</Text>
           <View style={styles.sellerCard}>
           {sellerNames.map((name, index) => (
           <View key={index}>
             <Text style={styles.seller}>{name}</Text>
           </View>
           ))}
-          </View>
+          </View> */}
 
           <Text style={styles.heading}>Available Vouchers</Text>
           <View>
@@ -250,7 +251,7 @@ const HomeScreen = () => {
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
-                    <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                    <Text style={styles.voucherTitle}>Voucher Amount: ${voucher.voucherAmount}</Text>
                     <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
@@ -273,7 +274,7 @@ const HomeScreen = () => {
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
-                    <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
+                    <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}%</Text>
                     <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                     <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
@@ -307,7 +308,7 @@ const HomeScreen = () => {
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                       <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-                      <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
+                      <Text style={styles.voucherTitle}>Voucher Amount: ${voucher.voucherAmount}</Text>
                       <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                       <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
@@ -323,7 +324,7 @@ const HomeScreen = () => {
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                       <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-                      <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
+                      <Text style={styles.voucherTitle}>Voucher Percentage: %{voucher.voucherPercentage}</Text>
                       <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                       <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
