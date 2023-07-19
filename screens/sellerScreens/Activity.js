@@ -49,6 +49,66 @@ export const calculateTotalRevenue = (transactions) => {
   return totalRevenue;
 };
 
+export const renderItem = ({ item }) => {
+  // Convert the Firestore Timestamp to a JavaScript Date object
+  // Format the timestamp as a string
+  const formattedTimestamp = getDateOfTransaction(item.timeStamp);
+
+  const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
+
+  
+  const capitalizedString = capitalizeFirstLetter(item.voucherType);
+
+  //Render According to Transaction Type
+  if (item.transactionType == "Voucher Transaction") {
+    if (item.voucherType === 'dollar') {
+      return (
+        <View style={styles.dollarVoucherTransactionContainer} testID="TEST_ID_DOLLAR_VOUCHER_TRANSACTION">
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          {/* <Text style={styles.whiteSpaceTextOrange}>White Space.</Text> */}
+          <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+          <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+          <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.percentageVoucherTransactionContainer} testID="TEST_ID_PERCENTAGE_VOUCHER_TRANSACTION">
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          {/* <Text style={styles.whiteSpaceTextPink}>White Space.</Text> */}
+          <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+          <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+          <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    }
+  //points
+  } else {
+    return (
+    <View style={styles.pointTransactionContainer} testID="TEST_ID_POINT_TRANSACTION">
+        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
+        {/* <Text style={styles.whiteSpaceTextBlue}>White Space.</Text> */}
+        <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
+        <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+        <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+        <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+        <Text style={styles.whiteSpaceTextBlue}>White Space.</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+      </View>
+    );
+  }
+};
+
 const ActivityScreen = () => {
   const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
@@ -78,66 +138,6 @@ const ActivityScreen = () => {
       console.log("Seller has logged out!(Activity Screen)");
     }
   }, [user]);
-
-  const renderItem = ({ item }) => {
-    // Convert the Firestore Timestamp to a JavaScript Date object
-    // Format the timestamp as a string
-    const formattedTimestamp = getDateOfTransaction(item.timeStamp);
-
-    const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
-
-    
-    const capitalizedString = capitalizeFirstLetter(item.voucherType);
-
-    //Render According to Transaction Type
-    if (item.transactionType == "Voucher Transaction") {
-      if (item.voucherType === 'dollar') {
-        return (
-          <View style={styles.dollarVoucherTransactionContainer} testID="dollar-voucher-container">
-            <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
-            {/* <Text style={styles.whiteSpaceTextOrange}>White Space.</Text> */}
-            <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
-            <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
-            <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
-            <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
-            <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
-            <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
-          </View>
-        );
-      } else {
-        return (
-          <View style={styles.percentageVoucherTransactionContainer} testID="percentage-voucher-container">
-            <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
-            {/* <Text style={styles.whiteSpaceTextPink}>White Space.</Text> */}
-            <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
-            <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
-            <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
-            <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
-            <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
-            <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
-            <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
-          </View>
-        );
-      }
-    //points
-    } else {
-      return (
-      <View style={styles.pointTransactionContainer} testID="point-transaction-container">
-          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
-          {/* <Text style={styles.whiteSpaceTextBlue}>White Space.</Text> */}
-          <Text style={styles.transactionText}>Customer: {item.customerName}</Text>
-          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
-          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
-          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
-          <Text style={styles.whiteSpaceTextBlue}>White Space.</Text>
-          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
-        </View>
-      );
-    }
-  };
 
   return (
     <View style={styles.container}>
