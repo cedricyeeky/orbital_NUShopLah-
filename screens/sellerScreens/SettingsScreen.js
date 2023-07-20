@@ -4,16 +4,16 @@ import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
-export const changePassword = () => {
-  if (firebase.auth().currentUser && firebase.auth().currentUser.email) {
-    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
-    .then(() => {
-      Alert.alert("Password Reset Email Sent!")
-    }).catch((error) => {
-      Alert.alert(error)
-    })
-  }
-}
+// export const changePassword = () => {
+//   if (firebase.auth().currentUser && firebase.auth().currentUser.email) {
+//     firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+//     .then(() => {
+//       Alert.alert("Password Reset Email Sent!")
+//     }).catch((error) => {
+//       Alert.alert(error)
+//     })
+//   }
+// }
 
 export const getDateOfVoucher = (timestamp) => {
   //console.log(timestamp);
@@ -115,15 +115,14 @@ const SettingsScreen = () => {
   const [vouchers, setVouchers] = useState([]);
   const [isBottomReached, setIsBottomReached] = useState(false);
 
-  // Change the password
-  // const changePassword = () => {
-  //   firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
-  //   .then(() => {
-  //     alert("Password Reset Email Sent!")
-  //   }).catch((error) => {
-  //     alert(error)
-  //   })
-  // }
+  const changePassword = () => {
+    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
+    .then(() => {
+      Alert.alert("Password Reset Email Sent!")
+    }).catch((error) => {
+      Alert.alert(error)
+    })
+  }
 
   useEffect(() => {
     console.log("(Seller Accounts) useEffect1 running...");
@@ -291,12 +290,12 @@ const SettingsScreen = () => {
           )} */}
 
             <View>
-              <View style={styles.passwordButton}>
+              <View style={styles.passwordButton} testID="TEST_ID_CHANGE_PASSWORD_BUTTON">
                 <FormButton buttonTitle="Change Password" onPress={changePassword} />
               </View>
             </View>
-        <Text style={styles.whiteSpaceText}>White Space.</Text>
-        <Text style={styles.whiteSpaceText}>White Space.</Text>
+        {/* <Text style={styles.whiteSpaceText}>White Space.</Text>
+        <Text style={styles.whiteSpaceText}>White Space.</Text> */}
 
 
       </View>
@@ -324,8 +323,8 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#fff',
-    padding: 20,
-    flex: 1,
+    padding: 15,
+    flex: 0.9,
   },
   container1: {
     backgroundColor: '#f9fafd',
@@ -351,8 +350,7 @@ const styles = StyleSheet.create({
   passwordButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 5,
-    bottom: 10,
+    marginBottom: 2,
   },
   percentageVoucherContainer: {
     backgroundColor: '#db7b98',

@@ -53,19 +53,43 @@ const HomeScreen = () => {
   const createVoucher = () => {
     //Added try-catch to handle negative voucherAmount input
     try {
-      if (voucherAmount < 0) {
-        Alert.alert('Error!', 'Voucher Amount cannot be Negative!');
-        throw new Error('Error!, Voucher Amount cannot be Negative!');
-      } else if (pointsRequired < 0) {
-        Alert.alert('Error!', 'Points Required cannot be Negative!');
-        throw new Error('Error!, Points Required cannot be Negative!');
-      } else if (voucherPercentage < 0) {
-        Alert.alert('Error!', 'Voucher Percentage cannot be Negative!');
-        throw new Error('Error!, Voucher Percentage cannot be Negative!');
+      if (voucherType === 'dollar') {
+        if (voucherAmount < 0 || voucherAmount == '') {
+          Alert.alert('Error!', 'Voucher Amount must be non-negative!');
+          throw new Error('Error!, Voucher Amount must be non-negative!');
+        } 
+      } else {
+        if (voucherPercentage < 0 || voucherPercentage == '') {
+          Alert.alert('Error!', 'Voucher Percentage must be non-negative!');
+          throw new Error('Error!, Voucher Percentage must be non-negative!');
+        } 
+      }
+
+      if (pointsRequired < 0 || pointsRequired == '') {
+        Alert.alert('Error!', 'Points Required must be non-negative!');
+        throw new Error('Error!, Points Required must be non-negative!');
+      } else if (voucherDescription == '') {
+        Alert.alert('Error!', 'Please fill in a Voucher Description!' );
+        throw new Error('Error!, Voucher Description must be filled in!');
       } else if (voucherImage == null) {
         Alert.alert('Error! Please Upload a valid Voucher Image', "WARNING: All Customers can see your uploaded image. The developers will not condone inappropriate images.");
         throw new Error('Error!, Please Upload a valid Voucher Image');
-      } else {
+      }
+
+      // if (voucherAmount < 0 || voucherAmount == '') {
+      //   Alert.alert('Error!', 'Voucher Amount must be non-negative!');
+      //   throw new Error('Error!, Voucher Amount must be non-negative!');
+      // } else if (pointsRequired < 0 || pointsRequired == '') {
+      //   Alert.alert('Error!', 'Points Required must be non-negative!');
+      //   throw new Error('Error!, Points Required must be non-negative!');
+      // } else if (voucherPercentage < 0 || voucherPercentage == '') {
+      //   Alert.alert('Error!', 'Voucher Percentage must be non-negative!');
+      //   throw new Error('Error!, Voucher Percentage must be non-negative!');
+      // } else if (voucherImage == null) {
+      //   Alert.alert('Error! Please Upload a valid Voucher Image', "WARNING: All Customers can see your uploaded image. The developers will not condone inappropriate images.");
+      //   throw new Error('Error!, Please Upload a valid Voucher Image');
+      // } else {
+
         // Generate a unique voucher ID
         const voucherId = firebase.firestore().collection('vouchers').doc().id;
         console.log("voucherId:", voucherId);
@@ -132,7 +156,7 @@ const HomeScreen = () => {
                       setVoucherAmount('');
                       setPointsRequired('');
                       setVoucherDescription('');
-                      setVoucherType('dollar');
+                      // setVoucherType('dollar');
                       setVoucherPercentage('');
                     })
                     .catch((error) => {
@@ -155,7 +179,7 @@ const HomeScreen = () => {
         xhr.send();
 
         Alert.alert('Voucher Created', 'Your voucher has been successfully created!')
-      }
+      
 
     } catch (err) {
       console.log(err);

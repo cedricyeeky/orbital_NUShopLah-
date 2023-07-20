@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
         flex: 0.9,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        padding: 15,
     },
     dollarVoucherCard: {
       backgroundColor: '#f07b10',
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#828282',
         borderRadius: 20,
         width: deviceWidth * 0.9,
-        padding: 20,
+        padding: 10,
         marginVertical: 10,
     },
     voucherTitle: {
