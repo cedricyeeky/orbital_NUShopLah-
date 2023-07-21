@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { render, act, fireEvent, getByTestId } from '@testing-library/react-native';
 import SettingsScreen from './SettingsScreen';
@@ -141,4 +142,40 @@ describe('SettingsScreen', () => {
 
     });
 
+    it('should determine Customer Tier Status', async () => {
+        expect(calculateLoyaltyTier(0)).toEqual('Member');
+        expect(calculateLoyaltyTier(657)).toEqual('Silver');
+        expect(calculateLoyaltyTier(3421)).toEqual('Gold');
+        expect(calculateLoyaltyTier(123456)).toEqual('Platinum');
+    });
+
+    it('should calculate Remaining Points to advance to next Tier', async () => {
+        expect(calculateRemainingPoints(100)).toEqual(400); // Member to Silver
+        expect(calculateRemainingPoints(780)).toEqual(1500 - 780); // Silver to Gold
+        expect(calculateRemainingPoints(2400)).toEqual(5000 - 2400); // Gold to Platinum
+        expect(calculateRemainingPoints(9000)).toEqual(0); // Platinum Already, must return 0.
+    });
+
+    it('should show the correct Loyalty Tier Color', async () => {
+        //With text inputs
+        expect(getTierBackgroundColor('Member')).toEqual('black');
+        expect(getTierBackgroundColor('Silver')).toEqual('#c0c0c0');
+        expect(getTierBackgroundColor('Gold')).toEqual('#ffd51e');
+        expect(getTierBackgroundColor('Platinum')).toEqual('#800080');
+
+        //With totalPoint inputs using calculateLoyaltyTier
+        expect(getTierBackgroundColor(calculateLoyaltyTier(0))).toEqual('black');
+        expect(getTierBackgroundColor(calculateLoyaltyTier(657))).toEqual('#c0c0c0');
+        expect(getTierBackgroundColor(calculateLoyaltyTier(3421))).toEqual('#ffd51e');
+        expect(getTierBackgroundColor(calculateLoyaltyTier(123456))).toEqual('#800080');
+    });
+
+    it('should return the correct image source based on loyalty tier', async () => {
+        expect(getImageSource('Member')).toEqual(require('../../assets/memberCard.png'));
+        expect(getImageSource('Silver')).toEqual(require('../../assets/silverCard.png'));
+        expect(getImageSource('Gold')).toEqual(require('../../assets/goldCard.png'));
+        expect(getImageSource('Platinum')).toEqual(require('../../assets/platinumCard.png'));
+    })
+
 });
+

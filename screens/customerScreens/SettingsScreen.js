@@ -5,7 +5,57 @@ import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card, ProgressBar } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+//Functions Export for Testing purposes.
+export const calculateLoyaltyTier = (points) => {
+  if (points >= 5000) {
+    return 'Platinum';
+  } else if (points >= 1500) {
+    return 'Gold';
+  } else if (points >= 500) {
+    return 'Silver';
+  } else {
+    return 'Member';
+  }
+};
+
+export const calculateRemainingPoints = (points) => {
+  if (points >= 5000) {
+    return 0;
+  } else if (points >= 1500) {
+    return 5000 - points;
+  } else if (points >= 500) {
+    return 1500 - points;
+  } else {
+    return 500 - points;
+  }
+};
+
+export const getTierBackgroundColor = (loyaltyTier) => {
+  switch (loyaltyTier) {
+    case 'Silver':
+      return '#c0c0c0';
+    case 'Gold':
+      return '#ffd51e';
+    case 'Platinum':
+      return '#800080';
+    default:
+      return 'black';
+  }
+};
+
+export const getImageSource = (loyaltyTier) => {
+  switch (loyaltyTier) {
+    case 'Silver':
+      return require('../../assets/silverCard.png');
+    case 'Gold':
+      return require('../../assets/goldCard.png');
+    case 'Platinum':
+      return require('../../assets/platinumCard.png');
+    default:
+      return require('../../assets/memberCard.png');
+  }
+};
 
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
@@ -14,10 +64,9 @@ const SettingsScreen = () => {
   const [loyaltyTier, setLoyaltyTier] = useState('');
   const [remainingPoints, setRemainingPoints] = useState(0);
   const [firstName, setFirstName] = useState('');
-  const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
-    console.log("SettingsScreen useEffect running...");
+    //console.log("SettingsScreen useEffect running...");
 
     if (user && user.uid) {
       firebase
@@ -46,9 +95,11 @@ const SettingsScreen = () => {
   const changePassword = () => {
     firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
     .then(() => {
+
       Alert.alert("Password Reset Email Sent!")
     }).catch((error) => {
       Alert.alert(error)
+      console.log(error)
     })
   }
 
@@ -69,6 +120,7 @@ const SettingsScreen = () => {
         }
       };
   
+      //Exported
       const calculateLoyaltyTier = (points) => {
         if (points >= 5000) {
           return 'Platinum';
@@ -81,6 +133,7 @@ const SettingsScreen = () => {
         }
       };
   
+      //Exported
       const calculateRemainingPoints = (points) => {
         if (points >= 5000) {
           return 0;
@@ -129,8 +182,7 @@ const SettingsScreen = () => {
 
   }, [user]);
 
-    
-
+  //Exported
   const getTierBackgroundColor = () => {
     switch (loyaltyTier) {
       case 'Silver':
@@ -148,8 +200,6 @@ const SettingsScreen = () => {
   const bullet = '\u2022'; // Unicode character for bullet symbol
 
   const tierBenefitDescriptions = () => {
-    
-  
     switch (loyaltyTier) {
       case 'Silver':
         benefitDescriptions = [
@@ -186,13 +236,9 @@ const SettingsScreen = () => {
   
   tierBenefitDescriptions(); // Call the function to populate the benefitDescriptions array
 
-  const handleFeedbackSubmit = () => {
-    // Save feedback to Firestore or perform desired action
-    console.log('Feedback submitted:', feedback);
-    setFeedback('');
-  };
 
   // Diff card cover image source for diff loyalty tiers
+  //Exported
   const getImageSource = () => {
     switch (loyaltyTier) {
       case 'Silver':
@@ -246,25 +292,49 @@ const SettingsScreen = () => {
     //<SafeAreaView style={{ flex: 1 }}> 
       <ScrollView>
         <View style={styles.container}>
-          <Text style={[styles.textWelcome, { fontSize: 20 }]}>Welcome! {firstName}</Text>
-          <Text style={[styles.textWelcome, { fontSize: 16 }]}>Here is your NUShopLah! Loyalty Card!</Text>
-          <Card style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}>
+
+          <Text 
+            style={[styles.textWelcome, { fontSize: 20 }]}
+            testID='TEST_ID_WELCOME'
+          >
+            Welcome! {firstName}
+          </Text>
+
+          <Text 
+            style={[styles.textWelcome, { fontSize: 16 }]}
+            testID='TEST_ID_INTRO'
+          >
+            Here is your NUShopLah! Loyalty Card!
+          </Text>
+
+          <Card 
+            style={[styles.cardContainer, { backgroundColor: getTierBackgroundColor() }]}
+            testID='TEST_ID_CARD'
+          >
+            
             <Image source={getImageSource()} 
-                    style={styles.cardCover}/>  
-            <Card.Content style={styles.cardContent}>
+                    style={styles.cardCover}
+                    testID='TEST_ID_TIER_IMAGE'/>  
+            <Card.Content 
+              style={styles.cardContent}
+              testID='TEST_ID_CARD_CONTENT'
+            >
+
               <Text style={styles.text}>Total Points: {totalPoint}</Text>
               {/* {renderProgressBar()} */}
               {loyaltyTier !== 'Platinum' && (
-                <><Text style={styles.label}>
+                <><Text style={styles.label} testID='TEST_ID_REMAINING_TEXT'>
                   Remaining Points to {loyaltyTier === 'Member' ? 'Silver' : loyaltyTier === 'Silver' ? 'Gold' : 'Platinum'}:
-                </Text><Text style={styles.text}>
+                </Text>
+                <Text style={styles.text}>
                     {remainingPoints}</Text></>
             )} 
             </Card.Content>
         </Card>
+
         <View >
             {benefitDescriptions.map((description, index) => (
-              <View key={index} style={styles.bulletPointContainer}>
+              <View key={index} style={styles.bulletPointContainer} testID='TEST_ID_BENEFIT_DESCRIPTION'>
                 <Text style={styles.bulletPoint}>{bullet}</Text>
                 <Text style={styles.bulletPointText}>{description}</Text>
               </View>

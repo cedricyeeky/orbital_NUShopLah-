@@ -6,6 +6,107 @@ import { firebase } from '../../firebaseconfig';
 const deviceWidth = Math.round(Dimensions.get('window').width);
 const deviceHeight = Math.round(Dimensions.get('window').height);
 
+export const fetchTransactions = (customerId, setTransactions) => {
+  const unsubscribe = firebase
+      .firestore()
+      .collection('transactions')
+      .where('customerId', '==', customerId)
+      .orderBy('timeStamp', 'desc')
+      .onSnapshot((snapshot) => {
+        const data = [];
+        snapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+          
+        });
+        setTransactions(data);
+      });
+  return unsubscribe;
+};
+
+export const getDateOfTransaction = (timestamp) => {
+  if (timestamp) {
+    return timestamp.toDate().toLocaleString();
+  } else {
+    console.log("timestamp does not exist for this transaction YET. Might be due to lagging. Try again a few seconds later")
+  }
+}
+
+export const capitalizeFirstLetter = (string) => {
+  if (!string) {
+    return ''; // Return an empty string if the input is empty or undefined
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const calculateTotalSpent = (transactions) => {
+  let totalSpent = 0;
+
+  transactions.forEach((transaction) => {
+    totalSpent += transaction.amountPaid;
+  });
+
+  totalSpent = Number(totalSpent.toFixed(2));
+  console.log(totalSpent);
+
+  return totalSpent;
+};
+
+export const renderItem = ({ item }) => {
+  // Convert the Firestore Timestamp to a JavaScript Date object
+  // Format the timestamp as a string
+  const formattedTimestamp = getDateOfTransaction(item.timeStamp);
+  //console.log(item);
+  const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
+  
+  const capitalizedString = capitalizeFirstLetter(item.voucherType);
+
+  //There are 2 types of Transaction Log: Points and Voucher Transaction
+
+  if (item.transactionType == 'Voucher Transaction') {
+    if (item.voucherType === 'dollar') {
+      return (
+        <View style={styles.dollarVoucherTransactionContainer} testID='TEST_ID_DOLLAR_VOUCHER_TRANSACTION'>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+          <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+          <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.percentageVoucherTransactionContainer} testID='TEST_ID_PERCENTAGE_VOUCHER_TRANSACTION'>
+          <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
+          <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+          <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+          <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+          <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+          <Text style={styles.transactionText}>Voucher Type: {capitalizedString}</Text>
+          <Text style={styles.transactionText}>Voucher Description: {item.voucherDescription}</Text>
+          <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+        </View>
+      );
+    }
+  } else {
+    return (
+    <View style={styles.pointTransactionContainer} testID='TEST_ID_POINT_TRANSACTION'>
+        <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
+        <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
+        <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
+        <Text style={styles.transactionText}>Points Awarded: {item.pointsAwarded} Points</Text>
+        <Text style={styles.transactionText}>Transaction Type: {item.transactionType}</Text>
+        <Text style={styles.whiteSpaceTextBlue}>White Space.</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Date: {formattedTimestamp}</Text>
+      </View>
+    );
+  }
+};
+
 const ActivityScreen = () => {
   const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
@@ -14,10 +115,33 @@ const ActivityScreen = () => {
     console.log("Activity Screen useEffect running...");
 
     if (user && user.uid) {
-      const unsubscribe = firebase
+      // const unsubscribe = firebase
+      //   .firestore()
+      //   .collection('transactions')
+      //   .where('customerId', '==', user.uid)
+      //   .orderBy('timeStamp', 'desc')
+      //   .onSnapshot((snapshot) => {
+      //     const data = [];
+      //     snapshot.forEach((doc) => {
+      //       data.push({ id: doc.id, ...doc.data() });
+            
+      //     });
+      //     setTransactions(data);
+      //   });
+      const unsubscribe = fetchTransactions(user.uid, setTransactions);
+
+      return () => unsubscribe();
+    } else {
+      console.log("User has logged out! Stop fetching UID (Activity Screen)");
+    }
+  }, [user]);
+
+  //Exported
+  const fetchTransactions = (customerId, setTransactions) => {
+    const unsubscribe = firebase
         .firestore()
         .collection('transactions')
-        .where('customerId', '==', user.uid)
+        .where('customerId', '==', customerId)
         .orderBy('timeStamp', 'desc')
         .onSnapshot((snapshot) => {
           const data = [];
@@ -27,14 +151,11 @@ const ActivityScreen = () => {
           });
           setTransactions(data);
         });
-
-      return () => unsubscribe();
-    } else {
-      console.log("User has logged out! Stop fetching UID (Activity Screen)");
-    }
-  }, [user]);
+    return unsubscribe;
+  };
 
   //Handle if timestamp from Firestore is lagging
+  //Exported
   const getDateOfTransaction = (timestamp) => {
     if (timestamp) {
       return timestamp.toDate().toLocaleString();
@@ -43,30 +164,31 @@ const ActivityScreen = () => {
     }
   }
 
+  //Capitalize first letter function
+  //exported
+  const capitalizeFirstLetter = (string) => {
+    if (!string) {
+      return ''; // Return an empty string if the input is empty or undefined
+    }
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+
   const renderItem = ({ item }) => {
     // Convert the Firestore Timestamp to a JavaScript Date object
     // Format the timestamp as a string
     const formattedTimestamp = getDateOfTransaction(item.timeStamp);
-  
     //console.log(item);
-
     const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
-
-    const capitalizeFirstLetter = (string) => {
-      if (!string) {
-        return ''; // Return an empty string if the input is empty or undefined
-      }
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    };
     
     const capitalizedString = capitalizeFirstLetter(item.voucherType);
 
     //There are 2 types of Transaction Log: Points and Voucher Transaction
 
-    if (item.transactionType == "Voucher Transaction") {
+    if (item.transactionType == 'Voucher Transaction') {
       if (item.voucherType === 'dollar') {
         return (
-          <View style={styles.dollarVoucherTransactionContainer}>
+          <View style={styles.dollarVoucherTransactionContainer} testID='TEST_ID_DOLLAR_VOUCHER_TRANSACTION'>
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
             <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
             <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
@@ -80,7 +202,7 @@ const ActivityScreen = () => {
         );
       } else {
         return (
-          <View style={styles.percentageVoucherTransactionContainer}>
+          <View style={styles.percentageVoucherTransactionContainer} testID='TEST_ID_PERCENTAGE_VOUCHER_TRANSACTION'>
             <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#003D7C'}}>Transaction ID: {item.id}</Text>
             <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
             <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
@@ -95,7 +217,7 @@ const ActivityScreen = () => {
       }
     } else {
       return (
-      <View style={styles.pointTransactionContainer}>
+      <View style={styles.pointTransactionContainer} testID='TEST_ID_POINT_TRANSACTION'>
           <Text style={{fontWeight: 'bold', marginBottom: 5, fontSize: 13, color: '#f07b10'}}>Transaction ID: {item.id}</Text>
           <Text style={styles.transactionText}>Seller: {item.sellerName}</Text>
           <Text style={styles.transactionText}>Amount Paid: ${roundedAmountPaid}</Text>
@@ -108,6 +230,7 @@ const ActivityScreen = () => {
     }
   };
 
+  //Exported
   const calculateTotalSpent = () => {
     let totalSpent = 0;
   
@@ -149,7 +272,7 @@ const ActivityScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.95,
+    flex: 1,
     padding: 20,
     backgroundColor: 'white',
   },

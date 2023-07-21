@@ -58,9 +58,10 @@ const AppStack = () => {
               let iconName;
               iconName = focused ? 'home' : 'home-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            }
-            
-          }}/>
+            },
+            tabBarTestID:'TEST_ID_HOME_BUTTON',
+          }}
+          />
         <Tab.Screen 
           name={activityName}
           component={ActivityScreen}
@@ -71,7 +72,8 @@ const AppStack = () => {
               let iconName;
               iconName = focused ? 'receipt' : 'receipt-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            }
+            },
+            tabBarTestID:'TEST_ID_ACTIVITY_BUTTON',
           }} />
         <Tab.Screen 
           name={idName} 
@@ -83,7 +85,8 @@ const AppStack = () => {
               let iconName;
               iconName = focused ? 'qr-code' : 'qr-code-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            }
+            },
+            tabBarTestID:'TEST_ID_PERSONALID_BUTTON',
           }} />
         <Tab.Screen 
           name={accountName} 
@@ -95,7 +98,8 @@ const AppStack = () => {
               let iconName;
               iconName = focused ? 'person-circle' : 'person-circle-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            }
+            },
+            tabBarTestID:'TEST_ID_ACCOUNT_BUTTON',
           }} />
 
         </Tab.Navigator>
