@@ -5,20 +5,22 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 
+import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } from '@env';
+
 // Web app's firebase config
 const firebaseConfig = {
 
-  apiKey: "AIzaSyBaD_978uAHA-vKKFSGpSv_jTaDlzTXBRI",
+  apiKey: FIREBASE_API_KEY,
 
-  authDomain: "nushoplah.firebaseapp.com",
+  authDomain: FIREBASE_AUTH_DOMAIN,
 
-  projectId: "nushoplah",
+  projectId: FIREBASE_PROJECT_ID,
 
-  storageBucket: "nushoplah.appspot.com",
+  storageBucket: FIREBASE_STORAGE_BUCKET,
 
-  messagingSenderId: "431618692118",
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
 
-  appId: "1:431618692118:web:203aa110965ad0c1135137"
+  appId: FIREBASE_APP_ID
 
 };
 

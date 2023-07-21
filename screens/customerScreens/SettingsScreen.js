@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import {Alert, Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
@@ -46,9 +46,9 @@ const SettingsScreen = () => {
   const changePassword = () => {
     firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
     .then(() => {
-      alert("Password Reset Email Sent!")
+      Alert.alert("Password Reset Email Sent!")
     }).catch((error) => {
-      alert(error)
+      Alert.alert(error)
     })
   }
 
@@ -272,7 +272,7 @@ const SettingsScreen = () => {
         </View>
 
           {/**Change Password Button */}
-          <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
+          <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} testID='TEST_ID_CHANGE_PASSWORD_BUTTON'/>
 
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
