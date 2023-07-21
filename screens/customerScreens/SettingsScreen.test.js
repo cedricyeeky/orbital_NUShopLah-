@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { render, act, fireEvent, getByTestId } from '@testing-library/react-native';
 import SettingsScreen from './SettingsScreen';
@@ -177,3 +178,4 @@ describe('SettingsScreen', () => {
     })
 
 });
+

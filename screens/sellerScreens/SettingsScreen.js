@@ -290,8 +290,8 @@ const SettingsScreen = () => {
           )} */}
 
             <View>
-              <View style={styles.passwordButton} testID="TEST_ID_CHANGE_PASSWORD_BUTTON">
-                <FormButton buttonTitle="Change Password" onPress={changePassword} />
+              <View style={styles.passwordButton}>
+                <FormButton buttonTitle="Change Password" onPress={() => {changePassword()}} testID="TEST_ID_CHANGE_PASSWORD_BUTTON" />
               </View>
             </View>
         {/* <Text style={styles.whiteSpaceText}>White Space.</Text>

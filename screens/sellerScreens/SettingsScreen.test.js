@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent, findByText, act} from '@testing-library/react-native';
+import { render, waitFor, fireEvent, findByText, getByTestId} from '@testing-library/react-native';
 import { AuthContext, AuthProvider } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import {  changePassword, getDateOfVoucher, fetchVouchers, handleCancelVoucher, deleteVoucher, renderItem } from './SettingsScreen';
@@ -27,16 +27,23 @@ const mockQuery = {
     }),
   };
 
+  const TestComponent = () => (
+    <AuthContext.Provider value={{ user: { uid: 'user-uid' }, logout: jest.fn() }}>
+          <SettingsScreen />
+    </AuthContext.Provider>
+)
 
-jest.mock('../../firebaseconfig', () => ({
-  firebase: {
-    firestore: jest.fn(() => mockFirestore),
-    auth: jest.fn().mockReturnValue({
-      currentUser: { uid: 'user-uid', email: 'test@example.com', firstName: 'John', currentPoint: 100, totalPoint: 200, },
-      sendPasswordResetEmail: jest.fn().mockResolvedValue(),
-    }),
-  },
-}));
+
+  jest.mock('../../firebaseconfig', () => ({
+    firebase: {
+      firestore: jest.fn(() => mockFirestore),
+      auth: jest.fn().mockReturnValue({
+        currentUser: { uid: 'user-uid', email: 'test@example.com', firstName: 'John', currentPoint: 100, totalPoint: 200, },
+        sendPasswordResetEmail: jest.fn().mockResolvedValue(),
+      }),
+    },
+  }));
+
 
 // describe('changePassword', () => {
 //   it('should send a password reset email', () => {
@@ -120,7 +127,7 @@ describe('deleteVoucher', () => {
   });
 });
 
-describe('Seller Account Screen', () => {
+describe('fetchVouchers', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -150,6 +157,12 @@ describe('Seller Account Screen', () => {
     );
   });
 
+});
+
+describe('renderItem', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   
   it('should render the created dollar voucher card transaction log with correct format', () => {
     // Mock item data
@@ -207,6 +220,52 @@ describe('Seller Account Screen', () => {
     jest.restoreAllMocks();
   });
 
+});
+  
+// describe('changePassword', () => {
+//   afterEach(() => {
+//     jest.clearAllMocks();
+//   });
+
+//   it('should send a password reset email and show an alert', async () => {
+//     // Mock the resolved state of the get() method
+//     // firebase.firestore().collection().doc().get.mockResolvedValueOnce({
+//     //     exists: true,
+//     //     data: jest.fn().mockReturnValue({ firstName: 'John' }),
+//     // });
+    
+//     // Mock the sendPasswordResetEmail function
+//     // firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
+    
+//     // Create a mock implementation for the alert function
+//     const mockedAlert = jest.fn();
+    
+//     // Mock the global.alert function
+//     global.alert = mockedAlert;
+    
+//     const { getByTestId } = render(
+//       <AuthProvider>
+//         <SettingsScreen />
+//       </AuthProvider>
+//     );
+//     const changePasswordButton = getByTestId('TEST_ID_CHANGE_PASSWORD_BUTTON');
+    
+//     // Simulate a button press
+//     fireEvent.press(changePasswordButton);
+    
+//     // Test if the Firebase function was called correctly
+//     expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('test@example.com');
+   
+//     await Promise.resolve();
+
+//     const alertSpy = jest.spyOn(Alert, 'alert');
+//     // Test if the alert was called with the correct message
+//     expect(alertSpy).toHaveBeenCalledWith('Password Reset Email Sent!');
+    
+// });
+// });
+
+describe('changePassword', () => {
   it('should send a password reset email and show an alert', async () => {
     // Mock the resolved state of the get() method
     // firebase.firestore().collection().doc().get.mockResolvedValueOnce({
@@ -215,7 +274,7 @@ describe('Seller Account Screen', () => {
     // });
     
     // Mock the sendPasswordResetEmail function
-    firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
+    // firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
     
     // Create a mock implementation for the alert function
     const mockedAlert = jest.fn();
@@ -243,6 +302,8 @@ describe('Seller Account Screen', () => {
     delete global.alert;
 
 });
+
+  
 });
 
   

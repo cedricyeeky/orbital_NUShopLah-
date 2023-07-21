@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import {Alert, Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
@@ -95,11 +95,11 @@ const SettingsScreen = () => {
   const changePassword = () => {
     firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
     .then(() => {
-      console.log("Password Reset Email Sent!")
-      alert("Password Reset Email Sent!")
+
+      Alert.alert("Password Reset Email Sent!")
     }).catch((error) => {
+      Alert.alert(error)
       console.log(error)
-      // alert(error)
     })
   }
 
