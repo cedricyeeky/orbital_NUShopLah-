@@ -3,13 +3,17 @@ import { render, waitFor, fireEvent, findByText } from '@testing-library/react-n
 import { AuthContext, AuthProvider } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import ScannerScreen from './Scanner';
-import { calculateNewCurrentPoint, calculateNewTotalPoint } from './Scanner';
+import { calculateNewCurrentPoint, calculateNewTotalPoint, handleNavigationFocus} from './Scanner';
+import { Camera } from 'expo-camera';
+import { NavigationContainer } from '@react-navigation/native';
 
 
-// Mock the AuthContext value
-const authContextValue = {
-  user: { uid: 'user-uid' }
-};
+
+jest.mock('expo-camera', () => ({
+  Camera: {
+    requestCameraPermissionsAsync: jest.fn(),
+  },
+}));
 
 // Mock firebase and firestore
 jest.mock('../../firebaseconfig', () => ({
@@ -43,7 +47,12 @@ jest.mock('../../firebaseconfig', () => ({
 }));
 
 
-describe('ActivityScreen', () => {
+describe('ScannerScreen', () => {
+  beforeEach(() => {
+    // Reset mocked functions before each test
+    Camera.requestCameraPermissionsAsync.mockResolvedValueOnce({ status: 'granted' });
+  });
+  
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -69,10 +78,12 @@ describe('ActivityScreen', () => {
     const amountPaid = 50;
     const expected = 663;
 
-    const result = calculateNewCurrentPoint(totalPoint, amountPaid);
+    const result = calculateNewTotalPoint(totalPoint, amountPaid);
 
     expect(result).toBe(expected);
   });
+
+  
 
 
 
