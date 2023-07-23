@@ -4,48 +4,68 @@ import { AuthProvider, AuthContext } from '../../navigation/AuthProvider';
 import HomeScreen from './HomeScreen';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { createVoucherInFirestore } from './HomeScreen';
+// import { firebase } from '../../firebaseconfig';
 
-jest.mock('expo-image-picker');
 
+jest.mock('expo-image-picker', () => ({
+  requestMediaLibraryPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+  launchImageLibraryAsync: jest.fn().mockResolvedValue({
+    cancelled: false,
+    uri: 'mocked-image-uri',
+  }),
+  MediaTypeOptions: {
+    Images: 'image',
+  },
+}));
 // Mock Firebase dependencies
 jest.mock('@react-navigation/native');
-jest.mock('expo-image-picker', () => ({
-    requestMediaLibraryPermissionsAsync: jest.fn(),
-    launchImageLibraryAsync: jest.fn(),
-  }));
-  jest.mock('../../firebaseconfig', () => {
-    return {
+
+// Mock the Firestore implementation
+const mockFirestore = {
+  collection: jest.fn(() => mockFirestore),
+  doc: jest.fn(() => mockFirestore),
+  set: jest.fn(),
+  get: jest.fn().mockResolvedValue({ 
+    exists: true, 
+    data: () => ({ 
+        uid: 'user-uid', 
+        email: 'test@example.com',
+        firstName: 'John', 
+        currentPoint: 100, 
+        totalPoint: 200, 
+    }) 
+  }),
+  FieldValue: {
+    serverTimestamp: jest.fn(() => 'mocked-server-timestamp'), // Return a mocked server timestamp value
+  },
+};
+
+
+jest.mock('../../firebaseconfig', () => ({
+    
       firebase: {
-        auth: jest.fn(() => ({
-          currentUser: {
-            uid: 'testUserId',
-          },
-        })),
-        storage: jest.fn(() => ({
-          ref: jest.fn(() => ({
-            child: jest.fn(() => ({
-              put: jest.fn(() => ({
-                snapshot: {
-                  ref: {
-                    getDownloadURL: jest.fn(() => Promise.resolve('mockedImageUrl')),
-                  },
-                },
-              })),
-            })),
-          })),
-        })),
-        firestore: jest.fn(() => ({
-          collection: jest.fn(() => ({
-            doc: jest.fn(() => ({
-              id: 'mockedVoucherId',
-              set: jest.fn(() => Promise.resolve()),
-              get: jest.fn(() => Promise.resolve({ exists: true, data: () => ({ firstName: 'John' }) })),
-            })),
-          })),
-        })),
+        firestore: jest.fn(() => mockFirestore),
+        auth: jest.fn().mockReturnValue({
+          currentUser: { 
+              uid: 'user-uid', 
+              email: 'test@example.com', 
+              firstName: 'John', 
+              currentPoint: 100,
+              totalPoint: 200, },
+              sendPasswordResetEmail: jest.fn().mockResolvedValue(),
+        }),
       },
-    };
-  });
+      
+  
+}));
+
+const TestComponent = () => (
+  <AuthContext.Provider value={{ user: { uid: 'user-uid' }, logout: jest.fn() }}>
+        <HomeScreen />
+  </AuthContext.Provider>
+)
+
 
 describe('HomeScreen', () => {
     beforeAll(() => {
@@ -66,7 +86,7 @@ describe('HomeScreen', () => {
         jest.restoreAllMocks();
         });
 
-  test('renders home screen wihtout error', () => {
+  it('should render without error', () => {
     const { getByText } = render(
       <AuthProvider>
         <HomeScreen />
@@ -74,84 +94,158 @@ describe('HomeScreen', () => {
     );
   });
 
-  test('renders welcome message', () => {
-    const { getByText } = render(
-        <AuthProvider>
-          <HomeScreen />
-        </AuthProvider>
+  it('should render welcome message with user firstName displayed', async () => {
+    const { getByText, getByTestId } = render(
+        <TestComponent />
       );
 
-    expect(getByText('Welcome!')).toBeDefined();
+    await waitFor(() => getByTestId('test-id-container'));
+
+    expect(getByText('Welcome! John')).toBeTruthy();
+
+
   });
 
-  it('renders voucher amount input', () => {
+  it('should render Voucher Amount input for Dollar Voucher creation card', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
         </AuthProvider>
       );
+
+    fireEvent.press(getByTestId('dollar-voucher-button'));
 
     expect(getByTestId('Voucher Amount ($)')).toBeDefined();
   });
 
-  it('renders points required input', () => {
+  it('should render Points Required input for voucher creation card', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
         </AuthProvider>
       );
 
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
     expect(getByTestId('Points Required')).toBeDefined();
   });
 
-  // ...
+  it('should render Voucher Description input', () => {
+    const { getByTestId } = render(
+        <AuthProvider >
+          <HomeScreen />
+        </AuthProvider>
+      );
 
-  it('displays error alert for negative voucher amount values', async () => {
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
+    expect(getByTestId('Voucher Description')).toBeDefined();
+  });
+
+  it('should render Voucher Percentage input for Percentage Voucher creation card', () => {
+    const { getByTestId } = render(
+        <AuthProvider >
+          <HomeScreen />
+        </AuthProvider>
+      );
+
+    fireEvent.press(getByTestId('percentage-voucher-button'));
+
+    expect(getByTestId('Voucher Percentage')).toBeDefined();
+  });
+
+  it('should display error alert for negative Voucher Amount input values for Dollar Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
       </AuthProvider>
     );
+
+    fireEvent.press(getByTestId('dollar-voucher-button'));
 
     const alertSpy = jest.spyOn(Alert, 'alert');
 
     fireEvent.changeText(getByTestId('Voucher Amount ($)'), '-10');
-    // fireEvent.changeText(getByTestId('Points Required'), '-100');
 
     fireEvent.press(getByText('Create'));
 
     await waitFor(() => {
-    //   expect(getByText('Invalid voucher inputs. Please check your input values.')).toBeDefined();
-    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Amount cannot be Negative!');
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Amount must be non-negative!');
     });
   });
 
-  it('displays error alert for negative points required values', async () => {
+  it('should display error alert for empty (no input) Voucher Amount input values for Dollar Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
       </AuthProvider>
     );
 
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
     const alertSpy = jest.spyOn(Alert, 'alert');
 
-    // fireEvent.changeText(getByTestId('Voucher Amount ($)'), '-10');
+    fireEvent.changeText(getByTestId('Voucher Amount ($)'), '');
+
+    fireEvent.press(getByText('Create'));
+
+    await waitFor(() => {
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Amount must be non-negative!');
+    });
+  });
+
+  it('should display error alert for negative Points Required input values for voucher creation card', async () => {
+    const { getByText, getByTestId } = render(
+      <AuthProvider >
+        <HomeScreen />
+      </AuthProvider>
+    );
+
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
+    const alertSpy = jest.spyOn(Alert, 'alert');
+
+    fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
     fireEvent.changeText(getByTestId('Points Required'), '-100');
 
     fireEvent.press(getByText('Create'));
 
     await waitFor(() => {
     //   expect(getByText('Invalid voucher inputs. Please check your input values.')).toBeDefined();
-    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Points Required cannot be Negative!');
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Points Required must be non-negative!');
     });
   });
 
-  it('displays error alert for negative voucher percentage values', async () => {
+  it('should display error alert for empty (no input) Points Required input values for voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
       </AuthProvider>
     );
+
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
+    const alertSpy = jest.spyOn(Alert, 'alert');
+
+    fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
+    fireEvent.changeText(getByTestId('Points Required'), '');
+
+    fireEvent.press(getByText('Create'));
+
+    await waitFor(() => {
+    //   expect(getByText('Invalid voucher inputs. Please check your input values.')).toBeDefined();
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Points Required must be non-negative!');
+    });
+  });
+
+  it('should display error alert for negative Voucher Percentage input values for Percentage Voucher creation card', async () => {
+    const { getByText, getByTestId } = render(
+      <AuthProvider >
+        <HomeScreen />
+      </AuthProvider>
+    );
+
+    fireEvent.press(getByTestId('percentage-voucher-button'));
 
     const alertSpy = jest.spyOn(Alert, 'alert');
 
@@ -162,135 +256,138 @@ describe('HomeScreen', () => {
 
     await waitFor(() => {
     //   expect(getByText('Invalid voucher inputs. Please check your input values.')).toBeDefined();
-    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Percentage cannot be Negative!');
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Percentage must be non-negative!');
     });
   });
 
-
-  it('displays error alert when no voucher image is selected', async () => {
+  it('should display error alert for empty (no input) Voucher Percentage input values for Percentage Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
       </AuthProvider>
     );
 
+    fireEvent.press(getByTestId('percentage-voucher-button'));
+
+    const alertSpy = jest.spyOn(Alert, 'alert');
+
+    // fireEvent.changeText(getByTestId('Voucher Amount ($)'), '-10');
+    fireEvent.changeText(getByTestId('Voucher Percentage'), '');
+
+    fireEvent.press(getByText('Create'));
+
+    await waitFor(() => {
+    //   expect(getByText('Invalid voucher inputs. Please check your input values.')).toBeDefined();
+    expect(alertSpy).toHaveBeenCalledWith('Error!', 'Voucher Percentage must be non-negative!');
+    });
+  });
+
+
+  it('should display error alert when no Voucher Image is selected for voucher creation card', async () => {
+    const { getByText, getByTestId } = render(
+      <AuthProvider >
+        <HomeScreen />
+      </AuthProvider>
+    );
+
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+
     const alertSpy = jest.spyOn(Alert, 'alert');
 
 
     fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
     fireEvent.changeText(getByTestId('Points Required'), '100');
+    fireEvent.changeText(getByTestId('Voucher Description'), 'hi this is a voucher');
 
     fireEvent.press(getByText('Create'));
 
     await waitFor(() => {
-    //   expect(getByText('Please select a voucher image.')).toBeDefined();
     expect(alertSpy).toHaveBeenCalledWith('Error! Please Upload a valid Voucher Image', "WARNING: All Customers can see your uploaded image. The developers will not condone inappropriate images.");
     });
   });
 
 
-// it('should create a voucher successfully', async () => {
-//     // Render the HomeScreen component
-//     const { getByText, getByTestId } = render(
-//       <AuthProvider >
-//         <HomeScreen />
-//       </AuthProvider>
-//     );
-
-//     // Fill in the input fields
-//     fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
-//     fireEvent.changeText(getByTestId('Points Required'), '100');
-//     fireEvent.changeText(getByTestId('Voucher Description'), 'Test Voucher');
-
-//     // Mock the image selection
-//     fireEvent.press(getByText('Choose Image From Library'));
-//     // const selectImageSpy = jest.spyOn(ImagePicker, 'launchImageLibraryAsync').mockResolvedValueOnce({ uri: 'mockedImageUri', cancelled: false });
-
-//     // await waitFor(() =>
-//     // //   expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalledTimes(1)
-//     // // );
-
-//     // Press the create button
-//     fireEvent.press(getByText('Create'));
-
-//     // Wait for the voucher to be created
-//     await waitFor(() => {
-//     //   expect(getByText('Image download URL: mockedImageUrl')).toBeDefined();
-//       expect(firebase.firestore().collection().doc().set).toHaveBeenCalledWith({
-//         isVoucher: true,
-//         pointsRequired: '100',
-//         sellerName: '',
-//         sellerId: 'mockedUserId',
-//         timeStamp: expect.anything(),
-//         usedBy: [],
-//         voucherAmount: '10',
-//         voucherDescription: 'Test Voucher',
-//         voucherId: expect.any(String),
-//         voucherImage: 'mockedImageUrl',
-//         voucherPercentage: '0',
-//         voucherType: 'dollar',
-//       });
-//     });
-
-//     // Check if the alert was called
-//     expect(Alert.alert).toHaveBeenCalledWith('Success! Voucher created successfully!');
-//   });
-
-// test('should create a voucher successfully', async () => {
-//     // Mock the necessary dependencies
-//     jest.mock('expo-image-picker', () => ({
-//       requestMediaLibraryPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
-//       launchImageLibraryAsync: jest.fn().mockResolvedValue({ uri: 'mockedImageUri', cancelled: false }),
-//     }));
-//     jest.mock('../../firebaseconfig', () => ({
-//       firebase: {
-//         firestore: jest.fn().mockReturnThis(),
-//         collection: jest.fn().mockReturnThis(),
-//         doc: jest.fn().mockReturnThis(),
-//         set: jest.fn().mockResolvedValue(),
-//       },
-//     }));
-
-//     // Render the HomeScreen component
-//     const { getByText, getByTestId } = render(
-//       <AuthProvider >
-//         <HomeScreen />
-//       </AuthProvider>);
-
-//     // Input some values
-//     fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
-//     fireEvent.changeText(getByTestId('Points Required'), '100');
-//     fireEvent.changeText(getByTestId('Voucher Description'), 'Test voucher description');
-
-//     // Mock the image selection
-//     const selectImageSpy = jest.spyOn(ImagePicker, 'launchImageLibraryAsync').mockResolvedValueOnce({ uri: 'mockedImageUri', cancelled: false });
-
-//     // Press the create button
-//     fireEvent.press(getByText('Create'));
-
-//     // Wait for the voucher creation to complete
-//     await waitFor(() => {
-//       expect(selectImageSpy).toHaveBeenCalledTimes(1);
-//       expect(firebase.firestore().collection().doc().set).toHaveBeenCalledTimes(1);
-//       expect(Alert.alert).toHaveBeenCalledWith('Success! Voucher created successfully!');
-//       expect(getByTestId('Voucher Amount ($)').props.value).toBe('');
-//       expect(getByTestId('Points Required').props.value).toBe('');
-//       expect(getByTestId('Voucher Description').props.value).toBe('');
-//     });
-//   });
-
-  it('logs out the user', () => {
-    const logoutMock = jest.fn();
-    const { getByText } = render(
-      <AuthContext.Provider value={{ user: { uid: 'testUserId' }, logout: logoutMock }}>
+  it('should ask for permission upon press of Choose Image from library button', async () => {
+    const { getByText, getByTestId } = render(
+      <AuthProvider >
         <HomeScreen />
-      </AuthContext.Provider>
+      </AuthProvider>
     );
 
-    fireEvent.press(getByText('Logout'));
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+    
 
-    expect(logoutMock).toHaveBeenCalled();
+
+    fireEvent.press(getByTestId('voucher-image-button'));
+    
+    expect(ImagePicker.requestMediaLibraryPermissionsAsync).toHaveBeenCalled();
+
+    
   });
 
+  it('should launch library after granting image access permissions', async () => {
+    const { getByText, getByTestId } = render(
+      <AuthProvider >
+        <HomeScreen />
+      </AuthProvider>
+    );
 
-});
+    fireEvent.press(getByTestId('dollar-voucher-button'));
+    
+
+    fireEvent.press(getByTestId('voucher-image-button'));
+
+    expect(ImagePicker.requestMediaLibraryPermissionsAsync).toHaveBeenCalled();
+    expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalled();
+
+  });
+
+    it('should store the voucher details in Firestore', async () => {
+      const voucherData = {
+        isVoucher: true,
+        pointsRequired: 100,
+        sellerName: 'John Doe',
+        usedBy: [],
+        voucherAmount: 50,
+        voucherDescription: 'Test voucher',
+        voucherImage: 'mocked-image-url',
+        voucherPercentage: 0,
+        voucherType: 'dollar',
+        timeStamp: 'mocked-server-timestamp',
+        sellerId: 'mocked-current-user-id',
+      };
+  
+      const voucherId = await createVoucherInFirestore(voucherData);
+  
+      // Expect that the Firestore collection method is called with the correct data
+      expect(mockFirestore.collection).toHaveBeenCalledWith('vouchers');
+      expect(mockFirestore.collection('vouchers').doc).toHaveBeenCalledWith(voucherId);
+      expect(mockFirestore.collection('vouchers').doc().set).toHaveBeenCalledWith({
+        ...voucherData,
+        voucherId
+      });
+    });
+
+  });
+
+  
+
+
+
+  describe('Log out button', () => {
+
+    it('should log out the user', () => {
+      const logoutMock = jest.fn();
+      const { getByText } = render(
+        <AuthContext.Provider value={{ user: { uid: 'testUserId' }, logout: logoutMock }}>
+          <HomeScreen />
+        </AuthContext.Provider>
+      );
+  
+      fireEvent.press(getByText('Logout'));
+  
+      expect(logoutMock).toHaveBeenCalled();
+    });
+
+
+  });

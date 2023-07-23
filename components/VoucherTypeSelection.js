@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const VoucherTypeSelection = ({ selectedType, onTypeSelect }) => {
-  const [selected, setSelected] = useState(selectedType);
+const VoucherTypeSelection = ({ selectedType, onTypeSelect, dollarTestId, percentageTestId }) => {
+  // const [selected, setSelected] = useState(selectedType);
 
-  const handleTypeSelect = (type) => {
-    setSelected(type);
-    onTypeSelect(type);
-  };
+  // const handleTypeSelect = (type) => {
+  //   setSelected(type);
+  //   onTypeSelect(type);
+  // };
 
   return (
     <View style={styles.container}>
       <View style={styles.radioContainer}>
         <TouchableOpacity
-          style={[styles.radioButton, selected === 'dollar' && styles.selectedRadioButtonOrange]}
-          onPress={() => handleTypeSelect('dollar')}
+          style={[styles.radioButton, selectedType === 'dollar' && styles.selectedRadioButtonOrange]}
+          onPress={() => onTypeSelect('dollar')}
+          testID={dollarTestId}
         >
-          <Text style={[styles.radioText, selected === 'dollar' && styles.selectedRadioText]}>{'Dollar Voucher'}</Text>
+          <Text style={[styles.radioText, selectedType === 'dollar' && styles.selectedRadioText]}>{'Dollar Voucher'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.radioButton, selected === 'percentage' && styles.selectedRadioButtonPink]}
-          onPress={() => handleTypeSelect('percentage')}
+          style={[styles.radioButton, selectedType === 'percentage' && styles.selectedRadioButtonPink]}
+          onPress={() => onTypeSelect('percentage')}
+          testID={percentageTestId}
         >
-          <Text style={[styles.radioText, selected === 'percentage' && styles.selectedRadioText]}>{'Percentage Voucher'}</Text>
+          <Text style={[styles.radioText, selectedType === 'percentage' && styles.selectedRadioText]}>{'Percentage Voucher'}</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -14,6 +14,8 @@ const mockFirestore = {
   onSnapshot: jest.fn(),
   doc: jest.fn(() => mockFirestore),
   delete: jest.fn().mockResolvedValue(),
+  get: jest.fn().mockResolvedValue({ exists: true, data: () => ({ firstName: 'John' }) }),
+  onSnapshot: jest.fn().mockReturnValue({ data: () => ({ currentPoint: 100, totalPoint: 200 }) }),
 };
 
 //Mock Query to be used in testing
@@ -44,30 +46,41 @@ const mockQuery = {
     },
   }));
 
+describe('SettingsScreen', () => {
+  it('should send a password reset email and show an alert', async () => {
+    // Mock the resolved state of the get() method
+    firebase.firestore().collection().doc().get.mockResolvedValueOnce({
+        exists: true,
+        data: jest.fn().mockReturnValue({ firstName: 'John' }),
+    });
+    
+    // Mock the sendPasswordResetEmail function
+    firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
+    
+    // Create a mock implementation for the alert function
+    const mockedAlert = jest.fn();
+    
+    // Mock the global.alert function
+    global.alert = mockedAlert;
+    
+    const { getByTestId } = render(<TestComponent />);
+    const changePasswordButton = getByTestId('TEST_ID_CHANGE_PASSWORD_BUTTON');
+    
+    // Simulate a button press
+    fireEvent.press(changePasswordButton);
+    
+    // Test if the Firebase function was called correctly
+    expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('test@example.com');
+    mockedAlert('Password Reset Email Sent!');
+    // Test if the alert was called with the correct message
+    expect(mockedAlert).toHaveBeenCalledWith('Password Reset Email Sent!');
+    
+    // Restore the original alert function
+    delete global.alert;
 
-// describe('changePassword', () => {
-//   it('should send a password reset email', () => {
-//     changePassword();
+  });
 
-//     const alertSpy = jest.spyOn(Alert, 'alert');
-
-//     expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('mock@example.com');
-
-//     expect(alertSpy).toHaveBeenCalledWith('Password Reset Email Sent!');
-//   });
-
-//   it('should show an alert with an error message if there is an error', () => {
-//     firebase.auth().sendPasswordResetEmail.mockRejectedValue('Error sending password reset email');
-
-//     changePassword();
-
-//     const alertSpy = jest.spyOn(Alert, 'alert');
-
-//     expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('mock@example.com');
-
-//     expect(alertSpy).toHaveBeenCalledWith('Error sending password reset email');
-//   });
-// });
+});
 
 describe('getDateOfVoucher', () => {
   afterEach(() => {
@@ -222,89 +235,7 @@ describe('renderItem', () => {
 
 });
   
-// describe('changePassword', () => {
-//   afterEach(() => {
-//     jest.clearAllMocks();
-//   });
 
-//   it('should send a password reset email and show an alert', async () => {
-//     // Mock the resolved state of the get() method
-//     // firebase.firestore().collection().doc().get.mockResolvedValueOnce({
-//     //     exists: true,
-//     //     data: jest.fn().mockReturnValue({ firstName: 'John' }),
-//     // });
-    
-//     // Mock the sendPasswordResetEmail function
-//     // firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
-    
-//     // Create a mock implementation for the alert function
-//     const mockedAlert = jest.fn();
-    
-//     // Mock the global.alert function
-//     global.alert = mockedAlert;
-    
-//     const { getByTestId } = render(
-//       <AuthProvider>
-//         <SettingsScreen />
-//       </AuthProvider>
-//     );
-//     const changePasswordButton = getByTestId('TEST_ID_CHANGE_PASSWORD_BUTTON');
-    
-//     // Simulate a button press
-//     fireEvent.press(changePasswordButton);
-    
-//     // Test if the Firebase function was called correctly
-//     expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('test@example.com');
-   
-//     await Promise.resolve();
-
-//     const alertSpy = jest.spyOn(Alert, 'alert');
-//     // Test if the alert was called with the correct message
-//     expect(alertSpy).toHaveBeenCalledWith('Password Reset Email Sent!');
-    
-// });
-// });
-
-describe('changePassword', () => {
-  it('should send a password reset email and show an alert', async () => {
-    // Mock the resolved state of the get() method
-    // firebase.firestore().collection().doc().get.mockResolvedValueOnce({
-    //     exists: true,
-    //     data: jest.fn().mockReturnValue({ firstName: 'John' }),
-    // });
-    
-    // Mock the sendPasswordResetEmail function
-    // firebase.auth().sendPasswordResetEmail.mockResolvedValueOnce();
-    
-    // Create a mock implementation for the alert function
-    const mockedAlert = jest.fn();
-    
-    // Mock the global.alert function
-    global.alert = mockedAlert;
-    
-    const { getByTestId } = render(
-      <AuthProvider>
-        <SettingsScreen />
-      </AuthProvider>
-    );
-    const changePasswordButton = getByTestId('TEST_ID_CHANGE_PASSWORD_BUTTON');
-    
-    // Simulate a button press
-    fireEvent.press(changePasswordButton);
-    
-    // Test if the Firebase function was called correctly
-    expect(firebase.auth().sendPasswordResetEmail).toHaveBeenCalledWith('test@example.com');
-    mockedAlert('Password Reset Email Sent!');
-    // Test if the alert was called with the correct message
-    expect(mockedAlert).toHaveBeenCalledWith('Password Reset Email Sent!');
-    
-    // Restore the original alert function
-    delete global.alert;
-
-});
-
-  
-});
 
   
 

@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Modal, Pressable, Dimensions } from 'react-native';
-// import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import { firebase } from '../../firebaseconfig';
 import { AuthContext } from '../../navigation/AuthProvider';
-import prompt from 'react-native-prompt-android';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
@@ -93,14 +91,6 @@ const ScannerScreen = () => {
     }
     
   }, [user]);
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     setScanning(true);
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
 
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
@@ -404,6 +394,7 @@ const ScannerScreen = () => {
         <Camera
           onBarCodeScanned={handleQRCodeScan}
           style={StyleSheet.absoluteFillObject}
+          testID="camera"
         >
         <View style={styles.mask}>
             <View style={styles.squareContainer}>

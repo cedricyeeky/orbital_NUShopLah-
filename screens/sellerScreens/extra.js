@@ -11,26 +11,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import VoucherTypeSelection from '../../components/VoucherTypeSelection';
 import { Ionicons } from '@expo/vector-icons';
 
-export const createVoucherInFirestore = async (voucherData) => {
-  // try {
-    const voucherId = firebase.firestore().collection('vouchers').doc().id;
-    console.log("voucherId:", voucherId);
-
-    await firebase.firestore().collection('vouchers').doc(voucherId).set({
-      ...voucherData,
-      voucherId
-      // timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-      // sellerId: firebase.auth().currentUser.uid,
-    });
-
-    console.log('Voucher created successfully!');
-    return voucherId; 
-  // } catch (error) {
-  //   console.log('Error creating voucher:', error);
-  //   throw new Error('Failed to create voucher.');
-  // }
-};
-
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useContext(AuthContext)
@@ -45,49 +25,28 @@ const HomeScreen = () => {
   const [voucherPercentage, setVoucherPercentage] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
 
-  
-
   useEffect(() => {
     console.log("(Seller Home) useEffect running...");
 
-    
     if (user && user.uid) {
-      const fetchUserData = async () => {
-        try {
-          const userCollectionRef = firebase.firestore().collection('users');
-          const userData = await userCollectionRef.doc(user.uid).get();
-          if (userData.exists) {
-            const { firstName } = userData.data();
-            setFirstName(firstName);
-          }
-        } catch (error) {
-          console.log('Error fetching user data:', error);
+      firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          setFirstName(snapshot.data().firstName);
+        } else {
+          console.log('User does not exist');
         }
-      };
-
-      fetchUserData();
-
+      })
+      .catch((error) => {
+        console.log('Error getting user:', error);
+      });
     } else {
-        console.log("Seller has logged out! (Homescreen)");
-    } 
-    //   firebase
-    //   .firestore()
-    //   .collection('users')
-    //   .doc(firebase.auth().currentUser.uid)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot.exists) {
-    //       setFirstName(snapshot.data().firstName);
-    //     } else {
-    //       console.log('User does not exist');
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('Error getting user:', error);
-    //   });
-    // } else {
-    //   console.log("Seller has logged out! (Homescreen)");
-    // }
+      console.log("Seller has logged out! (Homescreen)");
+    }
     
   }, [user]);
 
@@ -157,43 +116,25 @@ const HomeScreen = () => {
               //   .getDownloadURL()
               //   .then((downloadURL) => {
                   // Create the voucher document in Firestore
-                  // firebase
-                  //   .firestore()
-                  //   .collection('vouchers')
-                  //   .doc(voucherId)
-                  //   .set({
-                  //     isVoucher: true,
-                  //     pointsRequired,
-                  //     sellerName: firstName,
-                  //     sellerId: firebase.auth().currentUser.uid,
-                  //     timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  //     usedBy: [], // Initialize the usedBy array as empty
-                  //     voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
-                  //     voucherDescription,
-                  //     voucherId,
-                  //     voucherImage: downloadURL, 
-                  //     voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
-                  //     voucherType,
-                  //   })
-
-                  await createVoucherInFirestore({
-                    isVoucher: true,
-                    pointsRequired,
-                    sellerName: firstName,
-                    usedBy: [], // Initialize the usedBy array as empty
-                    voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
-                    voucherDescription,
-                    voucherImage: downloadURL, 
-                    voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
-                    voucherType,
-                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    sellerId: firebase.auth().currentUser.uid,
-                  }).catch((error) => {
-                    console.log('Error creating voucher:', error);
-                    Alert.alert('Error!', 'Failed to create voucher.');
-                  });
-              
-                    // .then(() => {
+                  firebase
+                    .firestore()
+                    .collection('vouchers')
+                    .doc(voucherId)
+                    .set({
+                      isVoucher: true,
+                      pointsRequired,
+                      sellerName: firstName,
+                      sellerId: firebase.auth().currentUser.uid,
+                      timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                      usedBy: [], // Initialize the usedBy array as empty
+                      voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
+                      voucherDescription,
+                      voucherId,
+                      voucherImage: downloadURL, 
+                      voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
+                      voucherType,
+                    })
+                    .then(() => {
                       console.log('Voucher created successfully!');
                       Alert.alert('Success! Voucher created successfully!');
                       // Reset the input fields
@@ -203,11 +144,11 @@ const HomeScreen = () => {
                       setVoucherDescription('');
                       // setVoucherType('dollar');
                       setVoucherPercentage('');
-                    // })
-                    // .catch((error) => {
-                    //   console.log('Error creating voucher:', error);
-                    //   Alert.alert('Error!', 'Failed to create voucher.');
-                    // });
+                    })
+                    .catch((error) => {
+                      console.log('Error creating voucher:', error);
+                      Alert.alert('Error!', 'Failed to create voucher.');
+                    });
                 
                 // .catch((error) => {
                 //   console.log('Error getting image download URL:', error);
@@ -284,7 +225,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView>
-      <View style={styles.container} testID="test-id-container">
+      <View style={styles.container}>
           <Image
             source={require('../../assets/NUShopLah!-logo.png')}
             style={styles.logo}
