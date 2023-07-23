@@ -5,7 +5,7 @@ import HomeScreen from './HomeScreen';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createVoucherInFirestore } from './HomeScreen';
-import { firebase } from '../../firebaseconfig';
+// import { firebase } from '../../firebaseconfig';
 
 
 jest.mock('expo-image-picker', () => ({
@@ -86,7 +86,7 @@ describe('HomeScreen', () => {
         jest.restoreAllMocks();
         });
 
-  test('renders home screen wihtout error', () => {
+  it('should render without error', () => {
     const { getByText } = render(
       <AuthProvider>
         <HomeScreen />
@@ -94,7 +94,7 @@ describe('HomeScreen', () => {
     );
   });
 
-  test('renders welcome message with user firstName displayed', async () => {
+  it('should render welcome message with user firstName displayed', async () => {
     const { getByText, getByTestId } = render(
         <TestComponent />
       );
@@ -106,7 +106,7 @@ describe('HomeScreen', () => {
 
   });
 
-  it('renders voucher amount input', () => {
+  it('should render Voucher Amount input for Dollar Voucher creation card', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
@@ -118,7 +118,7 @@ describe('HomeScreen', () => {
     expect(getByTestId('Voucher Amount ($)')).toBeDefined();
   });
 
-  it('renders points required input', () => {
+  it('should render Points Required input for voucher creation card', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
@@ -130,7 +130,7 @@ describe('HomeScreen', () => {
     expect(getByTestId('Points Required')).toBeDefined();
   });
 
-  it('renders voucher description input', () => {
+  it('should render Voucher Description input', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
@@ -142,7 +142,7 @@ describe('HomeScreen', () => {
     expect(getByTestId('Voucher Description')).toBeDefined();
   });
 
-  it('renders voucher percentage input', () => {
+  it('should render Voucher Percentage input for Percentage Voucher creation card', () => {
     const { getByTestId } = render(
         <AuthProvider >
           <HomeScreen />
@@ -154,7 +154,7 @@ describe('HomeScreen', () => {
     expect(getByTestId('Voucher Percentage')).toBeDefined();
   });
 
-  it('displays error alert for negative voucher amount values', async () => {
+  it('should display error alert for negative Voucher Amount input values for Dollar Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -174,7 +174,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('displays error alert for empty (no input) voucher amount values', async () => {
+  it('should display error alert for empty (no input) Voucher Amount input values for Dollar Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -194,7 +194,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('displays error alert for negative points required values', async () => {
+  it('should display error alert for negative Points Required input values for voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -216,7 +216,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('displays error alert for empty (no input) points required values', async () => {
+  it('should display error alert for empty (no input) Points Required input values for voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -238,7 +238,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('displays error alert for negative voucher percentage values', async () => {
+  it('should display error alert for negative Voucher Percentage input values for Percentage Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -260,7 +260,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('displays error alert for empty (no input) voucher percentage values', async () => {
+  it('should display error alert for empty (no input) Voucher Percentage input values for Percentage Voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -283,7 +283,7 @@ describe('HomeScreen', () => {
   });
 
 
-  it('displays error alert when no voucher image is selected', async () => {
+  it('should display error alert when no Voucher Image is selected for voucher creation card', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -307,7 +307,7 @@ describe('HomeScreen', () => {
   });
 
 
-it('should ask for permission upon press of Choose Image from library', async () => {
+  it('should ask for permission upon press of Choose Image from library button', async () => {
     const { getByText, getByTestId } = render(
       <AuthProvider >
         <HomeScreen />
@@ -342,47 +342,6 @@ it('should ask for permission upon press of Choose Image from library', async ()
 
   });
 
-    // const { getByText, getByTestId } = render(
-    //   <AuthProvider >
-    //     <HomeScreen />
-    //   </AuthProvider>
-    // );
-
-    // fireEvent.press(getByTestId('dollar-voucher-button'));
-
-    // fireEvent.changeText(getByTestId('Voucher Amount ($)'), '10');
-    // fireEvent.changeText(getByTestId('Points Required'), '100');
-    // fireEvent.changeText(getByTestId('Voucher Description'), 'hi this is a voucher');
-
-    // fireEvent.press(getByTestId('voucher-image-button'));
-
-    // expect(ImagePicker.requestMediaLibraryPermissionsAsync).toHaveBeenCalled();
-    // expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalled();
-
-    // fireEvent.press(getByText('Create'));
-    
-    // const alertSpy = jest.spyOn(Alert, 'alert');
-
-    // jest.runAllTimers();
-
-    // expect(mockFirestore.collection).toHaveBeenCalledWith('vouchers');
-    // expect(firebase.firestore().collection('vouchers').doc).toHaveBeenCalledWith('mocked-voucher-id');
-    // expect(firebase.firestore().collection('vouchers').doc().set).toHaveBeenCalledWith({
-    //   isVoucher: true,
-    //   pointsRequired: '100',
-    //   sellerName: 'mocked-first-name',
-    //   sellerId: 'mocked-current-user-id',
-    //   timeStamp: 'mocked-server-timestamp',
-    //   usedBy: [],
-    //   voucherAmount: '10',
-    //   voucherDescription: 'hi this is a voucher',
-    //   voucherId: 'mocked-voucher-id',
-    //   voucherImage: 'mocked-image-url',
-    //   voucherPercentage: '0',
-    //   voucherType: 'dollar',
-    // });
-    // expect(alertSpy).toHaveBeenCalledWith('Success!', 'Voucher created successfully!');
-
     it('should store the voucher details in Firestore', async () => {
       const voucherData = {
         isVoucher: true,
@@ -409,10 +368,15 @@ it('should ask for permission upon press of Choose Image from library', async ()
       });
     });
 
+  });
+
   
 
 
-    it('logs out the user', () => {
+
+  describe('Log out button', () => {
+
+    it('should log out the user', () => {
       const logoutMock = jest.fn();
       const { getByText } = render(
         <AuthContext.Provider value={{ user: { uid: 'testUserId' }, logout: logoutMock }}>
@@ -426,4 +390,4 @@ it('should ask for permission upon press of Choose Image from library', async ()
     });
 
 
-});
+  });
