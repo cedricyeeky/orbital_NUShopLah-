@@ -1,182 +1,106 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Button, FlatList, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
+import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
- import { Card, Searchbar} from 'react-native-paper';
+import { Card, Searchbar } from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 import { Ionicons } from '@expo/vector-icons';
 
-// export const fetchAvailableVouchers = (setVouchers, setRedeemedVouchers) => {
-//   const unsubscribe = firebase
-//   .firestore()
-//   .collection('vouchers')
-//   .orderBy('sellerName', 'asc')
-//   .onSnapshot((snapshot) => {
-//     const vouchersData = [];
-//     const redeemedVouchersData = [];
+export const handleVoucherRedemption = (voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse) => {
+  console.log("Voucher is:", voucher.voucherId);
+  setRedeemedVoucher(voucher);
+  toggleTrue();
+  setIsUseNowButtonClicked(true);
 
-//     snapshot.forEach((doc) => {
-//       const voucher = doc.data();
-//       voucher.voucherId = doc.id;
+  Alert.alert(
+    "Alert",
+    "Show the Voucher QR Code to the Seller to redeem this Voucher"
+  );
+}
 
-//       if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
-//         redeemedVouchersData.push(voucher);
-//       } else {
-//         vouchersData.push(voucher);
-//       }
-//     });
+// Function to retrieve voucher data
+export const retrieveVoucherData = async () => {
+  try {
+    const snapshot = await firebase
+      .firestore()
+      .collection('vouchers')
+      .orderBy('sellerName', 'asc')
+      .get();
 
-//     setVouchers(vouchersData);
-//     setRedeemedVouchers(redeemedVouchersData);
-//   });
+    const vouchersData = [];
+    const redeemedVouchersData = [];
 
-//   return unsubscribe;
-// };
+    snapshot.forEach((doc) => {
+      const voucher = doc.data();
+      voucher.voucherId = doc.id;
 
-// export const redeemVoucher = (voucher, currentPoint, setRedeemedVoucher, setIsUseNowButtonClicked) => {
+      if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
+        redeemedVouchersData.push(voucher);
+      } else {
+        vouchersData.push(voucher);
+      }
+    });
 
-//   //Checks if user is logged in.
-//   const currentUser = firebase.auth().currentUser;
-//   if (!currentUser) {
-//     console.log("User is not logged in!");
-//     return;
-//   }
-  
-//   if (voucher.pointsRequired > currentPoint) {
-//     Alert.alert("Warning", "Insufficient Point Balance!");
-//   } else {
-//     // Confirm with the user if they want to redeem the voucher
-//     Alert.alert(
-//       'Redeem Voucher',
-//       'Are you sure you want to redeem this voucher?',
-//       [
-//         {
-//           text: 'Cancel',
-//           style: 'cancel',
-//         },
-//         {
-//           text: 'Confirm',
-//           onPress: () => {
-//             const currentUserUid = firebase.auth().currentUser.uid;
-//             console.log("Voucher is:", voucher.voucherId);
-//             setRedeemedVoucher(voucher);
-//             toggleTrue();
-//             setIsUseNowButtonClicked(true);
+    return { vouchersData, redeemedVouchersData };
+  } catch (error) {
+    console.log('Error retrieving voucher data:', error);
+    return { vouchersData: [], redeemedVouchersData: [] };
+  }
+};
 
-//             Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
+export const fetchAvailableVouchers = (setVouchers, setRedeemedVouchers) => {
+  const unsubscribe = firebase
+  .firestore()
+  .collection('vouchers')
+  .orderBy('sellerName', 'asc')
+  .onSnapshot((snapshot) => {
+    const vouchersData = [];
+    const redeemedVouchersData = [];
 
-//             // DISPLAY TIMER IN FUTURE
-            
-//             //Automatically hide the voucher QR code modal after 5 minutes
-//             setTimeout(() => {
-//               toggleFalse();
-//               setIsUseNowButtonClicked(false);
-//             }, 5 * 60 * 1000); // 5 minutes in milliseconds
+    snapshot.forEach((doc) => {
+      const voucher = doc.data();
+      voucher.voucherId = doc.id;
 
-//           },
-//         },
-//       ]
-//     );
-//   }
-// };
+      if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
+        redeemedVouchersData.push(voucher);
+      } else {
+        vouchersData.push(voucher);
+      }
+    });
 
-// export const renderItem = ({ item }) => {
-  
-//   if (firebase.auth().currentUser && firebase.auth().currentUser.uid) {
-//     const currentUser = firebase.auth().currentUser;
-//     const currentUserUid = firebase.auth().currentUser.uid;
-//     const usedBy = item.usedBy; 
+    setVouchers(vouchersData);
+    setRedeemedVouchers(redeemedVouchersData);
+  });
 
-//     const isRedeemed = usedBy.includes(currentUserUid);
+  return unsubscribe;
+};
 
-//       if (isRedeemed) {
-//         if (item.voucherType === "dollar") {
-//           return (
-//             <View style={styles.voucherCardRedeemed}>
-//               <Card.Content>
-//                 <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} /> 
-//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
-//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
-//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-//                 <Text style={styles.voucherTitle}>Voucher Amount: ${item.voucherAmount}</Text>
-//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
-//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
-//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-//                 <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
-//               </Card.Content>
-//             </View>
-//           );
-//         } else {
-//           return (
-//             <View style={styles.voucherCardRedeemed}>
-//               <Card.Content>
-//                 <Image source={{ uri: item.voucherImage }} style={styles.voucherImage} /> 
-//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
-//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
-//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-//                 <Text style={styles.voucherTitle}>Voucher Percentage: %{item.voucherPercentage}</Text>
-//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
-//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
-//                 <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-//                 <Text style={styles.voucherStatus}>Voucher Redeemed</Text>
-//               </Card.Content>
-//             </View>
-//           );
-//         }
-//       } else {
-//         if (item.voucherType === "dollar") {
-//           return (
-//             <View style={styles.dollarVoucherCard}>
-//               <Card.Content>
-//                 <Image src={item.voucherImage} style={styles.voucherImage} />
-//                 <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
-//                 <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
-//                 <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
-//                 <Text style={styles.voucherTitle}>Voucher Amount: ${item.voucherAmount}</Text>
-//                 <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
-//                 <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
-//                 <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
-//                 <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
-//                 <View style={styles.useNow}>
-//                   <FormButton
-//                     buttonTitle="USE NOW"
-//                     onPress={() => redeemVoucher(item)}
-//                   />
-//                 </View>
-//               </Card.Content>
-//             </View>
-//           );
-//         } else {
-//           return (
-//             <View style={styles.percentageVoucherCard}>
-//                     <Card.Content>
-//                       <Image src={item.voucherImage} style={styles.voucherImage} />
-//                       <Text style={styles.voucherTitle}>Seller: {item.sellerName}</Text>
-//                       <Text style={styles.voucherTitle1}>Seller ID: {item.sellerId}</Text>
-//                       <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
-//                       <Text style={styles.voucherTitle}>Voucher Percentage: {item.voucherPercentage}%</Text>
-//                       <Text style={styles.voucherTitle}>Cost: {item.pointsRequired} points</Text>
-//                       <Text style={styles.voucherTitle}>Description: {item.voucherDescription}</Text>
-//                       <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
-//                       <Text style={styles.voucherStatus}>Not Redeemed yet. Click to redeem.</Text>
-//                       <View style={styles.useNow}>
-//                         <FormButton
-//                           buttonTitle="USE NOW"
-//                           onPress={() => redeemVoucher(item)}
-//                         />
-//                       </View>
-//                     </Card.Content>
-//                   </View>
-//           );
-//         }
-//       }
-//   } else {
-//     console.log("User has logged out.");
-//   }
-  
+export const generateQRCodeData = (user, firstName, redeemedVoucher) => {
+  if (user && user.uid) {
+    const qrCodeData = {
+        customerId: firebase.auth().currentUser.uid,
+        customerName: firstName,
+        pointsRequired: redeemedVoucher.pointsRequired,
+        isVoucher: true,
+        sellerId: redeemedVoucher.sellerId,
+        voucherAmount: redeemedVoucher.voucherAmount,
+        voucherDescription: redeemedVoucher.voucherDescription,
+        voucherId: redeemedVoucher.voucherId,
+        voucherPercentage: redeemedVoucher.voucherPercentage,
+        voucherType: redeemedVoucher.voucherType,
+    };
+    return JSON.stringify(qrCodeData);
+  } else {
+    console.log("User has logged out. (generateQRCode Data)");
+  }
+};
 
-// };
+export const filteredVouchers = (vouchers, searchQuery) => {
+  return vouchers.filter((voucher) =>
+    voucher.sellerName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+};
 
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
@@ -184,32 +108,6 @@ const HomeScreen = () => {
     const [totalPoint, setTotalPoint] = useState(0);
     const [firstName, setFirstName] = useState('');
     const logoImage = require('../../assets/NUShopLah!.png');
-    const [sellerNames, setSellerNames] = useState([]);
-    const [expanded, setExpanded] = useState(false);
-    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-
-    // Fetch Seller Names from Firestore
-    // useEffect(() => {
-    //   const unsubscribe = firebase.firestore()
-    //     .collection('users')
-    //     .where('userType', '==', 'Seller')
-    //     .orderBy('firstName', 'asc')
-    //     .onSnapshot((querySnapshot) => {
-    //       const names = [];
-    //       querySnapshot.forEach((doc) => {
-    //         const {firstName} = doc.data();
-    //         names.push(firstName);
-    //       });
-    //       setSellerNames(names);
-    //     });
-  
-    //   return () => unsubscribe();
-    // }, []);
-
-    const toggleExpanded = () => {
-      setExpanded(!expanded);
-    };
-
 
     //Modal
     const [showVoucherQRCodeModal, setShowVoucherQRCodeModal] = useState(false);
@@ -237,21 +135,35 @@ const HomeScreen = () => {
 
     //For Customer Details
     useEffect(() => {
-      console.log("Homescreen useEffect running...");
+      //console.log("Homescreen useEffect running...");
 
       if (user && user.uid) {
-        firebase.firestore().collection('users')
-        .doc(firebase.auth().currentUser.uid).get()
-        .then((snapshot) => {
-            if (snapshot.exists) {
-                setFirstName(snapshot.data().firstName)
-            } else {
-                console.log('User does not exist')
+        // firebase.firestore().collection('users')
+        // .doc(firebase.auth().currentUser.uid).get()
+        // .then((snapshot) => {
+        //     if (snapshot.exists) {
+        //         setFirstName(snapshot.data().firstName)
+        //     } else {
+        //         console.log('User does not exist')
+        //     }
+        // })
+        // .catch((error) => {
+        //     console.log("Error getting user: ", error)
+        // });
+
+        const fetchUserData = async () => {
+          try {
+            const userCollectionRef = firebase.firestore().collection('users');
+            const userData = await userCollectionRef.doc(user.uid).get();
+            if (userData.exists) {
+              const { currentPoint, totalPoint } = userData.data();
+              setCurrentPoint(currentPoint);
+              setTotalPoint(totalPoint);
             }
-        })
-        .catch((error) => {
-            console.log("Error getting user: ", error)
-        });
+          } catch (error) {
+            console.log('Error fetching user data:', error);
+          }
+        };
 
         // Create a Firestore listener for the user's document
         const userCollectionRef = firebase.firestore().collection('users');
@@ -266,46 +178,80 @@ const HomeScreen = () => {
           }
         });
 
+        fetchUserData();
+
       } else {
         console.log("User has logged out! Stop fetching UID (Homescreen)");
       }
     }, [user])
 
-    //For Fetching Vouchers
     useEffect(() => {
-        firebase
-          .firestore()
-          .collection('vouchers')
-          .orderBy('sellerName', 'asc')
-          .onSnapshot((snapshot) => {
-            const vouchersData = [];
-            const redeemedVouchersData = [];
-    
-            snapshot.forEach((doc) => {
-              const voucher = doc.data();
-              voucher.voucherId = doc.id;
-    
-              if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
-                redeemedVouchersData.push(voucher);
-              } else {
-                vouchersData.push(voucher);
-              }
-            });
-    
-            setVouchers(vouchersData);
-            setRedeemedVouchers(redeemedVouchersData);
-          });
+      if (user && user.uid) {
+        firebase.firestore().collection('users')
+        .doc(firebase.auth().currentUser.uid).get()
+        .then((snapshot) => {
+            if (snapshot.exists) {
+                setFirstName(snapshot.data().firstName)
+            } else {
+                console.log('User does not exist')
+            }
+        })
+        .catch((error) => {
+            console.log("Error getting user: ", error)
+        })
+      } else {
+        console.log("User has logged out! Stop fetching UID (HomeScreen)")
+      }
+    }, [user])
 
-      // if (user && user.uid) {
-      //   const unsubscribe = fetchAvailableVouchers(setVouchers, setRedeemedVouchers);
+    //For Vouchers
+    useEffect(() => {
+        // Fetch all vouchers from Firestore
+        // firebase
+        //   .firestore()
+        //   .collection('vouchers')
+        //   .orderBy('sellerName', 'asc')
+        //   .onSnapshot((snapshot) => {
+        //     const vouchersData = [];
+        //     const redeemedVouchersData = [];
+    
+        //     snapshot.forEach((doc) => {
+        //       const voucher = doc.data();
+        //       voucher.voucherId = doc.id;
+    
+        //       if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
+        //         redeemedVouchersData.push(voucher);
+        //       } else {
+        //         vouchersData.push(voucher);
+        //       }
+        //     });
+    
+        //     setVouchers(vouchersData);
+        //     setRedeemedVouchers(redeemedVouchersData);
+        //   });
 
-      //   return () => unsubscribe();
-      // } else {
-      //   console.log("User has logged out!");
-      // }
+        if (user && user.uid) {
+          const unsubscribe = fetchAvailableVouchers(setVouchers, setRedeemedVouchers);
+ 
+          return () => unsubscribe();
+        } else {
+          console.log("User has logged out!");
+        }
+
+        //Refactored version
+        // const fetchData = async () => {
+        //   try {
+        //     const { vouchersData, redeemedVouchersData } = await retrieveVoucherData();
+        //     setVouchers(vouchersData);
+        //     setRedeemedVouchers(redeemedVouchersData);
+        //   } catch (error) {
+        //     console.log('Error retrieving voucher data:', error);
+        //   }
+        // };
+    
+        // fetchData();
+
     }, []);
-
-    
 
     //Function to handle redeem vouchers for Customers
     const redeemVoucher = (voucher) => {
@@ -332,30 +278,39 @@ const HomeScreen = () => {
             {
               text: 'Confirm',
               onPress: () => {
-                const currentUserUid = firebase.auth().currentUser.uid;
-                console.log("Voucher is:", voucher.voucherId);
-                setRedeemedVoucher(voucher);
-                toggleTrue();
-                setIsUseNowButtonClicked(true);
+                // const currentUserUid = firebase.auth().currentUser.uid;
+                // console.log("Voucher is:", voucher.voucherId);
+                // setRedeemedVoucher(voucher);
+                // toggleTrue();
+                // setIsUseNowButtonClicked(true);
 
-                Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
-
-                // DISPLAY TIMER IN FUTURE
-                
-                //Automatically hide the voucher QR code modal after 5 minutes
-                setTimeout(() => {
-                  toggleFalse();
-                  setIsUseNowButtonClicked(false);
-                }, 5 * 60 * 1000); // 5 minutes in milliseconds
+                // Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
+                handleVoucherRedemption(voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse);
 
               },
             },
           ]
         );
+
       }
+      
     };
+
+    // const handleVoucherRedemption = (voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse) => {
+    //   console.log("Voucher is:", voucher.voucherId);
+    //   setRedeemedVoucher(voucher);
+    //   toggleTrue();
+    //   setIsUseNowButtonClicked(true);
   
+    //   Alert.alert(
+    //     "Alert",
+    //     "Show the Voucher QR Code to the Seller to redeem this Voucher"
+    //   );
+    // }
+  
+
     //Data for Voucher QR Code
+    //exported
     const generateQRCodeData = () => {
       if (user && user.uid) {
         const qrCodeData = {
@@ -375,24 +330,16 @@ const HomeScreen = () => {
         console.log("User has logged out. (generateQRCode Data)");
       }
     };
+    //const generateQRCodeData = (user, firstName, redeemedVoucher);
     
-    const filteredVouchers = vouchers.filter(voucher =>
+    //const filteredVouchers(vouchers, searchQuery);
+    const filteredVouchers = vouchers.filter(voucher => 
       voucher.sellerName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // const handleScroll = (event) => {
-    //   const scrollPosition = event.nativeEvent.contentOffset.y;
-    //   if (scrollPosition > 0 && isHeaderVisible) {
-    //     setIsHeaderVisible(false);
-    //   } else if (scrollPosition === 0 && !isHeaderVisible) {
-    //     setIsHeaderVisible(true);
-    //   }
-    // };
-
     return (
       <ScrollView>
-        <View style={styles.container}>
-              
+        <View style={styles.container} testID='TEST_ID_CONTAINER'>
           <Image 
             source={require('../../assets/NUShopLah!-logo.png')}
             style={styles.logo}
@@ -400,10 +347,9 @@ const HomeScreen = () => {
           />
           <Text style={styles.text}>Welcome! {firstName}</Text>
           <Text style={styles.text}>Your Current Point Balance: {currentPoint}</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
           <FormButton buttonTitle='Logout' onPress={logout} />
-          <Text style={styles.whiteSpaceText}>White Space.</Text> 
-
-            
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
 
           {Platform.OS === "android" && (
             <Searchbar
@@ -413,28 +359,11 @@ const HomeScreen = () => {
             style={styles.searchBar}
             icon={() => <Ionicons name="search" size={20} />}
             clearIcon={() => <Ionicons name="close" size={20} />}
-          />
+            />
           )}
-          
-          {/* <Text style={styles.heading}>Participating Sellers</Text>
-          <View style={styles.sellerCard}>
-          {sellerNames.map((name, index) => (
-          <View key={index}>
-            <Text style={styles.seller}>{name}</Text>
-          </View>
-          ))}
-          </View> */}
 
           <Text style={styles.heading}>Available Vouchers</Text>
-          
-          {/* <FlatList
-            data={[...filteredVouchers, ...redeemedVouchers]}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.voucherId}
-            contentContainerStyle={styles.listContainer}
-             onScroll={handleScroll}
-          /> */}
-
+          <View>
             {/* Render available vouchers */}
             {filteredVouchers.map((voucher) => (
                 <View
@@ -443,12 +372,12 @@ const HomeScreen = () => {
 
                 {voucher.voucherType === 'dollar' && (
                 <View style={styles.dollarVoucherCard}>
-                  <Card.Content>
+                  <Card.Content testID='TEST_ID_DOLLAR_VOUCHER_CARD'>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
-                    <Text style={styles.voucherTitle}>Voucher Amount: ${voucher.voucherAmount}</Text>
+                    <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                     <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                     <Text style={styles.voucherSubtitle2}>Seller ID: </Text>
@@ -466,12 +395,12 @@ const HomeScreen = () => {
 
                 {voucher.voucherType === 'percentage' && (
                 <View style={styles.percentageVoucherCard}>
-                  <Card.Content>
+                  <Card.Content testID='TEST_ID_PERCENTAGE_VOUCHER_CARD'>
                     <Image src={voucher.voucherImage} style={styles.voucherImage} />
                     <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                     <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                     <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
-                    <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}%</Text>
+                    <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
                     <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                     <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                     <Text style={styles.voucherSubtitle3}>Seller ID: </Text>
@@ -488,7 +417,7 @@ const HomeScreen = () => {
                 )}
                   
                 </View>
-            ))} 
+            ))}
 
             {/* Render redeemed vouchers */}
             {redeemedVouchers.map((voucher) => (
@@ -500,12 +429,12 @@ const HomeScreen = () => {
 
                 {voucher.voucherType === 'dollar' && (
                   <View>
-                    <Card.Content>
+                    <Card.Content testID='TEST_ID_REDEEMED_DOLLAR_VOUCHER_CARD'>
                       <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                       <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-                      <Text style={styles.voucherTitle}>Voucher Amount: ${voucher.voucherAmount}</Text>
+                      <Text style={styles.voucherTitle}>Voucher Amount: {voucher.voucherAmount}</Text>
                       <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                       <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
@@ -516,12 +445,12 @@ const HomeScreen = () => {
                 
                 {voucher.voucherType === 'percentage' && (
                   <View>
-                    <Card.Content>
+                    <Card.Content testID='TEST_ID_REDEEMED_PERCENTAGE_VOUCHER_CARD'>
                       <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} /> 
                       <Text style={styles.voucherTitle}>Seller: {voucher.sellerName}</Text>
                       <Text style={styles.voucherTitle1}>Seller ID: {voucher.sellerId}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
-                      <Text style={styles.voucherTitle}>Voucher Percentage: %{voucher.voucherPercentage}</Text>
+                      <Text style={styles.voucherTitle}>Voucher Percentage: {voucher.voucherPercentage}</Text>
                       <Text style={styles.voucherTitle}>Cost: {voucher.pointsRequired} points</Text>
                       <Text style={styles.voucherTitle}>Description: {voucher.voucherDescription}</Text>
                       <Text style={styles.voucherSubtitle1}>Seller ID: </Text>
@@ -531,8 +460,9 @@ const HomeScreen = () => {
                 )}
 
                 </View>
-            ))} 
+            ))}
 
+          </View>
           
           {/* Modal for Voucher QR Code */}
           {isUseNowButtonClicked && (
@@ -541,12 +471,13 @@ const HomeScreen = () => {
               visible={showVoucherQRCodeModal}
               animationType = "slide"
               transparent={true}
+              testID='TEST_ID_VOUCHER_QR_CODE_MODAL'
             >
               <View style={styles.modalContent}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Scan the QR code below to redeem</Text>
                 </View>
-                <QRCodeWithLogo value={generateQRCodeData()} logo={logoImage} />
+                <QRCodeWithLogo value={generateQRCodeData()} logo={logoImage} testID='TEST_ID_VOUCHER_QR_CODE'/>
                 <Pressable onPress={() => toggleFalse()}>
                   <Text style={styles.closeButtonText}>Cancel (Voucher will not be voided)</Text>
                 </Pressable>
@@ -559,9 +490,10 @@ const HomeScreen = () => {
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
           <Text style={styles.whiteSpaceText}>White Space.</Text>
+          <Text style={styles.whiteSpaceText}>White Space.</Text>
         </View>
-      </ScrollView>
       
+      </ScrollView>
     );
 }
 
@@ -576,46 +508,37 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       padding: 15,
       backgroundColor: '#003d7c',
-      borderRadius: 20,
     },
     container: {
         backgroundColor: '#fff',
         flex: 0.9,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 15,
+        padding: 20,
     },
     dollarVoucherCard: {
       backgroundColor: '#f07b10',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      padding: 10,
+      padding: 20,
       marginVertical: 10,
     },
     heading: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 'bold',
-      marginVertical: 8,
-    },
-    headerContainer: {
-      backgroundColor: '#fff',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    listContainer: {
-      flexGrow: 1,
+      marginVertical: 20,
     },
     logo: {
+      height: 150,
       width: '100%',
       resizeMode: 'contain',
-      height: 150,
     },
     modalContent: {
-      height: '60%',
+      height: '50%',
       width: '100%',
       backgroundColor: '#f07b10',
-      borderTopRightRadius: 20,
-      borderTopLeftRadius: 20,
+      borderTopRightRadius: 18,
+      borderTopLeftRadius: 18,
       position: 'absolute',
       bottom: 0,
       alignItems: 'center', 
@@ -624,7 +547,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#db7b98',
       borderRadius: 20,
       width: deviceWidth * 0.9,
-      padding: 10,
+      padding: 20,
       marginVertical: 10,
     },
     qrCodeText: {
@@ -634,30 +557,9 @@ const styles = StyleSheet.create({
     },
     searchBar: {
       backgroundColor: '#f6eee3',
-      height: 50,
-    },
-    searchInput: {
-      fontSize: 12, 
-      justifyContent: 'center',
-      height: 10,
-    },
-    seller: {
-      color: 'white',
-      fontSize: 16,
-      marginVertical: 5,
-      fontWeight: 'bold',
-    },
-    sellerCard: {
-      padding: 10,
-      margin: 10,
-      backgroundColor: '#003d7c',
-      width: '100%',
-      borderRadius: 20,
-      alignItems: 'center',
-      
     },
     text: {
-        fontSize: 18,
+        fontSize: 20,
         color: '#333333',
         fontWeight: 'bold',
     },
@@ -696,7 +598,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#828282',
         borderRadius: 20,
         width: deviceWidth * 0.9,
-        padding: 10,
+        padding: 20,
         marginVertical: 10,
     },
     voucherTitle: {
