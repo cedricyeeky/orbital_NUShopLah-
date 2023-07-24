@@ -157,43 +157,25 @@ const HomeScreen = () => {
               //   .getDownloadURL()
               //   .then((downloadURL) => {
                   // Create the voucher document in Firestore
-                  // firebase
-                  //   .firestore()
-                  //   .collection('vouchers')
-                  //   .doc(voucherId)
-                  //   .set({
-                  //     isVoucher: true,
-                  //     pointsRequired,
-                  //     sellerName: firstName,
-                  //     sellerId: firebase.auth().currentUser.uid,
-                  //     timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  //     usedBy: [], // Initialize the usedBy array as empty
-                  //     voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
-                  //     voucherDescription,
-                  //     voucherId,
-                  //     voucherImage: downloadURL, 
-                  //     voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
-                  //     voucherType,
-                  //   })
-
-                  await createVoucherInFirestore({
-                    isVoucher: true,
-                    pointsRequired,
-                    sellerName: firstName,
-                    usedBy: [], // Initialize the usedBy array as empty
-                    voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
-                    voucherDescription,
-                    voucherImage: downloadURL, 
-                    voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
-                    voucherType,
-                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    sellerId: firebase.auth().currentUser.uid,
-                  }).catch((error) => {
-                    console.log('Error creating voucher:', error);
-                    Alert.alert('Error!', 'Failed to create voucher.');
-                  });
-              
-                    // .then(() => {
+                  firebase
+                    .firestore()
+                    .collection('vouchers')
+                    .doc(voucherId)
+                    .set({
+                      isVoucher: true,
+                      pointsRequired,
+                      sellerName: firstName,
+                      sellerId: firebase.auth().currentUser.uid,
+                      timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                      usedBy: [], // Initialize the usedBy array as empty
+                      voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
+                      voucherDescription,
+                      voucherId,
+                      voucherImage: downloadURL, 
+                      voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
+                      voucherType,
+                    })
+                    .then(() => {
                       console.log('Voucher created successfully!');
                       Alert.alert('Success! Voucher created successfully!');
                       // Reset the input fields
@@ -203,11 +185,28 @@ const HomeScreen = () => {
                       setVoucherDescription('');
                       // setVoucherType('dollar');
                       setVoucherPercentage('');
-                    // })
-                    // .catch((error) => {
-                    //   console.log('Error creating voucher:', error);
-                    //   Alert.alert('Error!', 'Failed to create voucher.');
-                    // });
+                    })
+                    .catch((error) => {
+                      console.log('Error creating voucher:', error);
+                      Alert.alert('Error!', 'Failed to create voucher.');
+                    });
+
+                  // await createVoucherInFirestore({
+                  //   isVoucher: true,
+                  //   pointsRequired,
+                  //   sellerName: firstName,
+                  //   usedBy: [], // Initialize the usedBy array as empty
+                  //   voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
+                  //   voucherDescription,
+                  //   voucherImage: downloadURL, 
+                  //   voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
+                  //   voucherType,
+                  //   timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  //   sellerId: firebase.auth().currentUser.uid,
+                  // }).catch((error) => {
+                  //   console.log('Error creating voucher:', error);
+                  //   Alert.alert('Error!', 'Failed to create voucher.');
+                  // });
                 
                 // .catch((error) => {
                 //   console.log('Error getting image download URL:', error);

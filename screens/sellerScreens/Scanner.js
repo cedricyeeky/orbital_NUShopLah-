@@ -8,6 +8,67 @@ import FormButton from '../../components/FormButton';
 import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
 import { useNavigation } from '@react-navigation/native';
 
+export const updateCurrentPointInFirestore = async (customerId, updatedCustomerCurrentPoint) => {
+  try {
+    await firebase.firestore().collection('users').doc(customerId).update({
+      currentPoint: updatedCustomerCurrentPoint,
+    });
+
+    console.log('Customer Current Point Updated!');
+  } catch (error) {
+    console.log('Error updating points:', error);
+  }
+};
+
+export const addPointsTransactionInFirestore = async ({
+  amountPaid,
+  customerId,
+  customerName,
+  sellerId,
+  sellerName,
+  currentPoint,
+  newCurrentPoint,
+}) => {
+  const transactionsCollectionRef = firebase.firestore().collection('transactions');
+  await transactionsCollectionRef.add({
+    amountPaid: amountPaid,
+    customerId: customerId,
+    customerName: customerName,
+    pointsAwarded: newCurrentPoint - currentPoint,
+    sellerId: sellerId,
+    sellerName: sellerName,
+    // timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+    transactionType: "Points Transaction",
+    voucherAmount: 0,
+  });
+};
+
+export const addVoucherTransactionInFirestore = async ({
+  finalAmount,
+  customerId,
+  customerName,
+  sellerId,
+  sellerName,
+  data,
+}) => {
+  const transactionsCollectionRef = firebase.firestore().collection('transactions');
+  await transactionsCollectionRef.add({
+    amountPaid: finalAmount,
+    customerId: customerId,
+    customerName: customerName,
+    pointsAwarded: 0,
+    sellerId: sellerId,
+    sellerName: sellerName,
+    // timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+    transactionType: "Voucher Transaction",
+    voucherAmount: data.voucherAmount,
+    voucherDescription: data.voucherDescription,
+    voucherId: data.voucherId,
+    voucherPercentage: data.voucherPercentage,
+    voucherType: data.voucherType,
+  });
+};
+
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
 
@@ -40,6 +101,48 @@ export const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   }
   return newTotalPoint;
 }
+
+export const handleQRCodeScan = async ({ data }, setScanning, setData, setShowPromptModal, user) => {
+  setScanning(false);
+  
+  try {
+    const qrCodeData = JSON.parse(data);
+
+    if (qrCodeData.isVoucher) {
+      //VOUCHER QR CODE. Cannot Award Points.#000
+      const { voucherId, voucherAmount, pointsRequired, voucherDescription, customerId, customerName, sellerId, isVoucher} = qrCodeData;
+      console.log("Seller ID from QR Code", qrCodeData.sellerId);
+      console.log(qrCodeData);
+      console.log("Seller ID from Auth Context:", user.uid);
+
+      if (qrCodeData.sellerId === user.uid) {
+        // This Voucher is Indeed from the Seller who is creating it. And that the Cusstomer is using it at that Seller's store
+        // Otherwise it will be like using Watson's voucher at Guardian.
+        
+        setData(qrCodeData);
+        setShowPromptModal(true);  
+      } else {
+        throw new Error("This QR Code is from other Sellers! Or it is not valid anymore!");
+      }
+    } else {
+      //PERSONAL ID. Can Award Points.
+      setData(qrCodeData); //Parsed version
+      setShowPromptModal(true);
+      
+    }
+    
+  } catch (err) {
+    if (err.message === 'Points cannot be negative!') {
+      Alert.alert('Error', 'Points cannot be negative! Please ensure amount paid is correct.');
+    } else if (err.message === "This QR Code is from other Sellers! Or it is not valid anymore!") {
+      console.log('This voucher is from another seller! Otherwise, This voucher is Invalid!');
+      Alert.alert('This voucher is from another seller! Otherwise, This voucher is Invalid!');
+    } else {
+      console.log('Error scanning QR code:', err);
+      Alert.alert('Error', 'Invalid QR code');
+    }
+  }
+};
 
 const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
@@ -207,7 +310,7 @@ const ScannerScreen = () => {
         
         let voucherPercentageTrimmed = data.voucherPercentage;
         console.log("voucher percentage:", voucherPercentageTrimmed);
-        let finalAmount = originalPrice * ( (100 - parseFloat(voucherPercentageTrimmed, 10)) / 100); //GOT NAN for finalAmount
+        let finalAmount = originalPrice * ( (100 - parseFloat(voucherPercentageTrimmed, 10)) / 100); 
         console.log("After parsing, finalAmount:", finalAmount);
         finalAmount = Number(finalAmount.toFixed(2));
         finalAmount = (finalAmount < 0) ? 0 : finalAmount; //Make negative payables to 0
@@ -377,7 +480,7 @@ const ScannerScreen = () => {
         Alert.alert('This voucher is from another seller! Otherwise, This voucher is Invalid!');
       } else {
         console.log('Error scanning QR code:', err);
-        Alert.alert('Error', 'Invalid QR code');
+        Alert.alert('Error', 'Invalid QR code', err);
       }
     }
   };
