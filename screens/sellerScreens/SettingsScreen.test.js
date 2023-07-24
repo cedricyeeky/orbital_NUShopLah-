@@ -177,7 +177,7 @@ describe('renderItem', () => {
     jest.clearAllMocks();
   });
   
-  it('should render the created dollar voucher card transaction log with correct format', () => {
+  it('should render the created dollar voucher card with correct format', () => {
     // Mock item data
     const mockItem = {
       voucherType: 'dollar',
