@@ -480,7 +480,7 @@ const ScannerScreen = () => {
         Alert.alert('This voucher is from another seller! Otherwise, This voucher is Invalid!');
       } else {
         console.log('Error scanning QR code:', err);
-        Alert.alert('Error', 'Invalid QR code', err);
+        Alert.alert('Error', 'Invalid QR code');
       }
     }
   };
@@ -492,7 +492,7 @@ const ScannerScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Scanner</Text>
+      <Text style={styles.title1}>Scanner</Text>
       {(scanning)  ? (
         <Camera
           onBarCodeScanned={handleQRCodeScan}
@@ -658,10 +658,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0)',
     borderColor: '#fff',
   },
-  title: {
+  title1: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#f07b10',
   },
   titleContainer: {
     height: '16%',

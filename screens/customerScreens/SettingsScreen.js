@@ -320,7 +320,7 @@ const SettingsScreen = () => {
               testID='TEST_ID_CARD_CONTENT'
             >
 
-              <Text style={styles.text}>Total Points: {totalPoint}</Text>
+              <Text style={styles.text}>Total Accumulated Points: {totalPoint}</Text>
               {/* {renderProgressBar()} */}
               {loyaltyTier !== 'Platinum' && (
                 <><Text style={styles.label} testID='TEST_ID_REMAINING_TEXT'>
