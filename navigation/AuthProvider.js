@@ -1,5 +1,6 @@
 import React, {createContext, useState} from 'react';
 import { firebase } from '../firebaseconfig';
+import { Alert } from 'react-native';
 
 export const AuthContext = createContext();
 
@@ -38,7 +39,7 @@ export const AuthProvider = ({children}) => {
                             url: 'https://nushoplah.firebaseapp.com',
                         })
                         .then(() => {
-                            alert('Verification email sent!')
+                            Alert.alert('Verification email sent!', 'Please reload the app after verifying your email.')
                         })
                         .then(() => {
                             //Version 1: Store everything as "users"
