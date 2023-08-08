@@ -1,3 +1,8 @@
+/**
+ * @file This file contains the LoginScreen component, which allows users to log in.
+ * @module LoginScreen
+ */
+
 import React, {useContext, useState} from 'react';
 import {
   ScrollView,
@@ -12,13 +17,22 @@ import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
 import { firebase } from '../firebaseconfig';
 
+/**
+ * The main LoginScreen component.
+ * @component
+ * @param {object} navigation - React Navigation prop to enable navigation to other screens.
+ * @returns {JSX.Element} - The rendered LoginScreen component.
+ */
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
 
   const {login} = useContext(AuthContext)
 
-  // Forget Password
+  /**
+   * Sends a password reset email to the provided email address.
+   * @function
+   */
   const forgetPassword = () => {
     firebase.auth().sendPasswordResetEmail(email) //this email is from the email input bar. check if it is correct
     .then(() => {
@@ -29,11 +43,19 @@ const LoginScreen = ({navigation}) => {
     })
   }
 
-  //Custom functions to show Alert
+  /**
+   * Custom function to display an alert message.
+   * @function
+   * @param {string} message - The message to be displayed in the alert.
+   */
   const showAlert = (message) => {
     console.log('Alert:', message);
   };
 
+  /**
+   * Custom function to display a success message for password reset.
+   * @function
+   */
   const showPasswordResetSuccessMessage = () => {
     Alert.alert("Password Reset Email Sent!");
     console.log('Password Reset Email Sent!');
