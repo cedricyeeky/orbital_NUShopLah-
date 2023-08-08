@@ -1,3 +1,8 @@
+/**
+ * @file This file contains components and functions related to the HomeScreen, which allows sellers to create vouchers.
+ * @module HomeScreen
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, Alert, Button, Pressable, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +16,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import VoucherTypeSelection from '../../components/VoucherTypeSelection';
 import { Ionicons } from '@expo/vector-icons';
 
+/**
+ * Creates a voucher in Firestore.
+ *
+ * @param {object} voucherData - The data for the voucher.
+ * @returns {Promise<string>} - The ID of the created voucher.
+ */
 export const createVoucherInFirestore = async (voucherData) => {
   // try {
     const voucherId = firebase.firestore().collection('vouchers').doc().id;
@@ -31,6 +42,11 @@ export const createVoucherInFirestore = async (voucherData) => {
   // }
 };
 
+/**
+ * Represents the Home Screen for sellers to create vouchers.
+ *
+ * @returns {JSX.Element} - JSX element representing the Home Screen.
+ */
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useContext(AuthContext)
@@ -70,27 +86,14 @@ const HomeScreen = () => {
     } else {
         console.log("Seller has logged out! (Homescreen)");
     } 
-    //   firebase
-    //   .firestore()
-    //   .collection('users')
-    //   .doc(firebase.auth().currentUser.uid)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot.exists) {
-    //       setFirstName(snapshot.data().firstName);
-    //     } else {
-    //       console.log('User does not exist');
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('Error getting user:', error);
-    //   });
-    // } else {
-    //   console.log("Seller has logged out! (Homescreen)");
-    // }
     
   }, [user]);
 
+  /**
+   * Creates a voucher based on the provided input values.
+   * Handles the creation of a voucher document in Firestore and the upload of voucher image to Firebase Storage.
+   * Displays alerts for error and success messages.
+   */
   const createVoucher = () => {
     //Added try-catch to handle negative voucherAmount input
     try {
@@ -148,14 +151,10 @@ const HomeScreen = () => {
               console.log('Error uploading image:', error);
             },
             async () => {
-              // Image upload complete, get the download URL
-              // const imagePath = imageRef.fullPath;
 
               const downloadURL = await imageRef.getDownloadURL();
               console.log('Image download URL:', downloadURL);
-              // uploadTask.snapshot.ref
-              //   .getDownloadURL()
-              //   .then((downloadURL) => {
+
                   // Create the voucher document in Firestore
                   firebase
                     .firestore()
@@ -183,7 +182,6 @@ const HomeScreen = () => {
                       setVoucherAmount('');
                       setPointsRequired('');
                       setVoucherDescription('');
-                      // setVoucherType('dollar');
                       setVoucherPercentage('');
                     })
                     .catch((error) => {
@@ -191,27 +189,6 @@ const HomeScreen = () => {
                       Alert.alert('Error!', 'Failed to create voucher.');
                     });
 
-                  // await createVoucherInFirestore({
-                  //   isVoucher: true,
-                  //   pointsRequired,
-                  //   sellerName: firstName,
-                  //   usedBy: [], // Initialize the usedBy array as empty
-                  //   voucherAmount: voucherType === 'percentage' ? "0" : voucherAmount,
-                  //   voucherDescription,
-                  //   voucherImage: downloadURL, 
-                  //   voucherPercentage: voucherType === 'percentage' ? voucherPercentage : "0",
-                  //   voucherType,
-                  //   timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  //   sellerId: firebase.auth().currentUser.uid,
-                  // }).catch((error) => {
-                  //   console.log('Error creating voucher:', error);
-                  //   Alert.alert('Error!', 'Failed to create voucher.');
-                  // });
-                
-                // .catch((error) => {
-                //   console.log('Error getting image download URL:', error);
-                //   Alert.alert('Error!', 'Failed to create voucher.');
-                // });
             }
           );
         };
@@ -231,7 +208,12 @@ const HomeScreen = () => {
     
   };
   
-
+  /**
+   * Prompts the user to select an image from the device's media library.
+   * Requests media library permissions and opens the image picker dialog.
+   * If an image is selected, updates the state with the selected image URI.
+   * @returns {Promise<void>} A promise that resolves when the image is selected.
+   */
   const selectImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   
@@ -253,6 +235,12 @@ const HomeScreen = () => {
     }
   }
 
+  /**
+   * Uploads the selected voucher image to Firebase Storage.
+   * Fetches the image as a blob and stores it in the storage bucket.
+   * Updates the state to indicate uploading progress and completion.
+   * @returns {Promise<void>} A promise that resolves when the image is uploaded.
+   */
   const uploadImage = async () => {
       setUploading(true);
       const response = await fetch(voucherImage.uri)
@@ -269,17 +257,6 @@ const HomeScreen = () => {
       Alert.alert('Voucher Image Uploaded!');
       setVoucherImage(null);
     }
-  // };
-
-  const handlePress = (option) => {
-    setSelectedOption(option);
-    switch (option) {
-      case 'percentageVoucher':
-        setVoucherType('percentage');
-      default:
-        setVoucherType('dollar');
-    }
-  };
 
   return (
     <ScrollView>
