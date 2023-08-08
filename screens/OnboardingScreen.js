@@ -1,9 +1,28 @@
+/**
+ * @file This file contains the onboarding screen that introduces users to the app's features.
+ *
+ * @module OnboardingScreen
+ * @requires react
+ * @requires react-native
+ * @requires react-native-onboarding-swiper
+ * @requires components/FormButton
+ * @requires components/FormInput
+ * @requires components/SocialButton
+ * @requires navigation/AuthProvider
+ * @requires firebaseconfig
+ */
+
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-
 import Onboarding from 'react-native-onboarding-swiper';
 
 //Props
+/**
+ * Dots component used as dot indicators for the onboarding screens.
+ *
+ * @param {Object} selected - Indicates if the dot is currently selected.
+ * @returns {JSX.Element} Dot indicator.
+ */
 const Dots = ({ selected }) => {
   let backgroundColor;
 
@@ -23,6 +42,12 @@ const Dots = ({ selected }) => {
   )
 }
 
+/**
+ * Skip button component with customized styling.
+ *
+ * @param {Object} props - Button properties.
+ * @returns {JSX.Element} Skip button.
+ */
 const Skip = ({...props}) => (
 <TouchableOpacity 
   style = {{
@@ -43,6 +68,12 @@ const Skip = ({...props}) => (
 </TouchableOpacity>
 )
 
+/**
+ * Next button component with customized styling.
+ *
+ * @param {Object} props - Button properties.
+ * @returns {JSX.Element} Next button.
+ */
 const Next = ({...props}) => (
 <TouchableOpacity 
   style = {{
@@ -64,6 +95,12 @@ const Next = ({...props}) => (
 </TouchableOpacity>
 )
 
+/**
+ * Done button component with customized styling.
+ *
+ * @param {Object} props - Button properties.
+ * @returns {JSX.Element} Done button.
+ */
 const Done = ({...props}) => (
 <TouchableOpacity 
     style = {{
@@ -85,6 +122,12 @@ const Done = ({...props}) => (
 )
 
 //Main Onboarding Screen Codes
+/**
+ * Main OnboardingScreen component.
+ *
+ * @param {Object} navigation - Navigation object.
+ * @returns {JSX.Element} Onboarding screen component.
+ */
 const OnboardingScreen = ({navigation}) => {
     return (
         <Onboarding

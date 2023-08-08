@@ -1,3 +1,16 @@
+/**
+ * @file This file contains the user signup screen.
+ *
+ * @module screens/SignupScreen
+ * @requires react
+ * @requires react-native
+ * @requires components/FormButton
+ * @requires components/FormInput
+ * @requires components/SocialButton
+ * @requires navigation/AuthProvider
+ * @requires components/UserTypeSelection
+ */
+
 import React, {useContext, useState} from 'react';
 import {ScrollView, Text, TouchableOpacity, Platform, StyleSheet, View} from 'react-native';
 import FormInput from '../components/FormInput';
@@ -6,6 +19,12 @@ import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider';
 import UserTypeSelection from '../components/UserTypeSelection';
 
+/**
+ * SignupScreen component for user registration.
+ *
+ * @param {Object} navigation - Navigation object.
+ * @returns {JSX.Element} Signup screen component.
+ */
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
@@ -18,7 +37,6 @@ const SignupScreen = ({navigation}) => {
   const [amountPaid, setAmountPaid] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0); 
   
-  // currentPoint, totalPoint, amountPaid, totalRevenue
   const {register} = useContext(AuthContext);
 
   return (
@@ -44,14 +62,6 @@ const SignupScreen = ({navigation}) => {
           autoCorrect={false}
         />
 
-        {/* <FormInput
-          labelValue={lastName}
-          onChangeText={(lastName) => setLastName(lastName)}
-          placeholderText="Last Name"
-          iconType="user"
-          autoCorrect={false}
-        /> */}
-
         <FormInput
           labelValue={password}
           onChangeText={(userPassword) => setPassword(userPassword)}
@@ -68,7 +78,6 @@ const SignupScreen = ({navigation}) => {
           secureTextEntry={true}
         />
 
-        {/* <UserTypeSelection selectedType={userType} onTypeSelect={(userType) => setUserType(userType)} />  */}
         <UserTypeSelection selectedType={userType} onTypeSelect={setUserType} /> 
 
         {/**Register takes in: email, password, firstName, lastName,
@@ -77,14 +86,6 @@ const SignupScreen = ({navigation}) => {
           buttonTitle="Sign Up"
           onPress={() => register(email, password, firstName, {/**lastName */}, userType, currentPoint, totalPoint, amountPaid, totalRevenue)}
         />
-
-        {/* <SocialButton
-        buttonTitle="Sign Up with Google"
-        btnType="google"
-        color="#de4d41"
-        backgroundColor="#f5e7ea"
-        onPress={() => {}}
-        /> */}
 
         <TouchableOpacity
           style={styles.navButton}
