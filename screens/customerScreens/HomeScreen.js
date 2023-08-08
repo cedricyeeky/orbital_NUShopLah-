@@ -1,3 +1,8 @@
+/**
+ * @file This file contains the HomeScreen component, which displays the main interface for the app's home page.
+ * @module HomeScreen
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Image, Dimensions, Modal, Pressable, View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import FormButton from '../../components/FormButton';
@@ -7,6 +12,16 @@ import { Card, Searchbar } from 'react-native-paper';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 import { Ionicons } from '@expo/vector-icons';
 
+/**
+ * Handles voucher redemption and displays an alert.
+ * @function
+ * @param {Object} voucher - The voucher to be redeemed.
+ * @param {Function} setRedeemedVoucher - A state setter to update the currently redeemed voucher.
+ * @param {Function} toggleTrue - A function to toggle a boolean state variable to true.
+ * @param {Function} setIsUseNowButtonClicked - A state setter to update the "Use Now" button click status.
+ * @param {Function} toggleFalse - A function to toggle a boolean state variable to false.
+ * @returns {void}
+ */
 export const handleVoucherRedemption = (voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse) => {
   console.log("Voucher is:", voucher.voucherId);
   setRedeemedVoucher(voucher);
@@ -19,7 +34,13 @@ export const handleVoucherRedemption = (voucher, setRedeemedVoucher, toggleTrue,
   );
 }
 
-// Function to retrieve voucher data
+/**
+ * Retrieves voucher data from the Firestore database. They should be sorted by sellerName.
+ * Redeemed vouchers should be rendered after the available vouchers
+ * @async
+ * @function
+ * @returns {Promise<{vouchersData: Array, redeemedVouchersData: Array}>} - The retrieved sorted voucher data.
+ */
 export const retrieveVoucherData = async () => {
   try {
     const snapshot = await firebase
@@ -49,6 +70,13 @@ export const retrieveVoucherData = async () => {
   }
 };
 
+/**
+ * Fetches available vouchers from Firestore and sets state variables.
+ * @function
+ * @param {Function} setVouchers - A state setter to update the available vouchers.
+ * @param {Function} setRedeemedVouchers - A state setter to update the redeemed vouchers.
+ * @returns {Function} - An unsubscribe function to stop the Firestore listener.
+ */
 export const fetchAvailableVouchers = (setVouchers, setRedeemedVouchers) => {
   const unsubscribe = firebase
   .firestore()
@@ -76,6 +104,14 @@ export const fetchAvailableVouchers = (setVouchers, setRedeemedVouchers) => {
   return unsubscribe;
 };
 
+/**
+ * Generates QR code data for voucher redemption.
+ * @function
+ * @param {Object} user - The user object.
+ * @param {string} firstName - The user's first name.
+ * @param {Object} redeemedVoucher - The redeemed voucher object.
+ * @returns {string|null} - The JSON stringified QR code data or null if user is logged out.
+ */
 export const generateQRCodeData = (user, firstName, redeemedVoucher) => {
   if (user && user.uid) {
     const qrCodeData = {
@@ -96,12 +132,24 @@ export const generateQRCodeData = (user, firstName, redeemedVoucher) => {
   }
 };
 
+/**
+ * Filters vouchers based on search query.
+ * @function
+ * @param {Array} vouchers - The array of vouchers to filter.
+ * @param {string} searchQuery - The search query string.
+ * @returns {Array} - The filtered vouchers.
+ */
 export const filteredVouchers = (vouchers, searchQuery) => {
   return vouchers.filter((voucher) =>
     voucher.sellerName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 };
 
+/**
+ * The main HomeScreen component.
+ * @component
+ * @returns {JSX.Element} - The rendered HomeScreen component.
+ */
 const HomeScreen = () => {
     const {user, logout} = useContext(AuthContext)
     const [currentPoint, setCurrentPoint] = useState(0);
@@ -138,19 +186,6 @@ const HomeScreen = () => {
       //console.log("Homescreen useEffect running...");
 
       if (user && user.uid) {
-        // firebase.firestore().collection('users')
-        // .doc(firebase.auth().currentUser.uid).get()
-        // .then((snapshot) => {
-        //     if (snapshot.exists) {
-        //         setFirstName(snapshot.data().firstName)
-        //     } else {
-        //         console.log('User does not exist')
-        //     }
-        // })
-        // .catch((error) => {
-        //     console.log("Error getting user: ", error)
-        // });
-
         const fetchUserData = async () => {
           try {
             const userCollectionRef = firebase.firestore().collection('users');
@@ -206,51 +241,12 @@ const HomeScreen = () => {
 
     //For Vouchers
     useEffect(() => {
-        // Fetch all vouchers from Firestore
-        // firebase
-        //   .firestore()
-        //   .collection('vouchers')
-        //   .orderBy('sellerName', 'asc')
-        //   .onSnapshot((snapshot) => {
-        //     const vouchersData = [];
-        //     const redeemedVouchersData = [];
-    
-        //     snapshot.forEach((doc) => {
-        //       const voucher = doc.data();
-        //       voucher.voucherId = doc.id;
-    
-        //       if (voucher.usedBy.includes(firebase.auth().currentUser.uid)) {
-        //         redeemedVouchersData.push(voucher);
-        //       } else {
-        //         vouchersData.push(voucher);
-        //       }
-        //     });
-    
-        //     setVouchers(vouchersData);
-        //     setRedeemedVouchers(redeemedVouchersData);
-        //   });
-
         if (user && user.uid) {
           const unsubscribe = fetchAvailableVouchers(setVouchers, setRedeemedVouchers);
- 
           return () => unsubscribe();
         } else {
           console.log("User has logged out!");
         }
-
-        //Refactored version
-        // const fetchData = async () => {
-        //   try {
-        //     const { vouchersData, redeemedVouchersData } = await retrieveVoucherData();
-        //     setVouchers(vouchersData);
-        //     setRedeemedVouchers(redeemedVouchersData);
-        //   } catch (error) {
-        //     console.log('Error retrieving voucher data:', error);
-        //   }
-        // };
-    
-        // fetchData();
-
     }, []);
 
     //Function to handle redeem vouchers for Customers
@@ -278,15 +274,7 @@ const HomeScreen = () => {
             {
               text: 'Confirm',
               onPress: () => {
-                // const currentUserUid = firebase.auth().currentUser.uid;
-                // console.log("Voucher is:", voucher.voucherId);
-                // setRedeemedVoucher(voucher);
-                // toggleTrue();
-                // setIsUseNowButtonClicked(true);
-
-                // Alert.alert("Alert", "Show the Voucher QR Code to the Seller to redeem this Voucher");
                 handleVoucherRedemption(voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse);
-
               },
             },
           ]
@@ -296,21 +284,8 @@ const HomeScreen = () => {
       
     };
 
-    // const handleVoucherRedemption = (voucher, setRedeemedVoucher, toggleTrue, setIsUseNowButtonClicked, toggleFalse) => {
-    //   console.log("Voucher is:", voucher.voucherId);
-    //   setRedeemedVoucher(voucher);
-    //   toggleTrue();
-    //   setIsUseNowButtonClicked(true);
-  
-    //   Alert.alert(
-    //     "Alert",
-    //     "Show the Voucher QR Code to the Seller to redeem this Voucher"
-    //   );
-    // }
-  
-
     //Data for Voucher QR Code
-    //exported
+    //Exported
     const generateQRCodeData = () => {
       if (user && user.uid) {
         const qrCodeData = {

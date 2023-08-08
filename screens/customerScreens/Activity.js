@@ -1,3 +1,8 @@
+/**
+ * @file This file contains components and functions related to the ActivityScreen, which displays transaction history for customers.
+ * @module ActivityScreen
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
@@ -6,6 +11,13 @@ import { firebase } from '../../firebaseconfig';
 const deviceWidth = Math.round(Dimensions.get('window').width);
 const deviceHeight = Math.round(Dimensions.get('window').height);
 
+/**
+ * Fetches user transactions from Firestore and updates the state with the data.
+ * 
+ * @param {string} customerId - The ID of the customer whose transactions to fetch.
+ * @param {Function} setTransactions - A state update function for transactions.
+ * @returns {Function} - Unsubscribe function for the Firestore listener.
+ */
 export const fetchTransactions = (customerId, setTransactions) => {
   const unsubscribe = firebase
       .firestore()
@@ -23,6 +35,13 @@ export const fetchTransactions = (customerId, setTransactions) => {
   return unsubscribe;
 };
 
+/**
+ * Converts a Firestore Timestamp to a human-readable date string.
+ * This also handles the case if timestamp from Firestore is lagging
+ * 
+ * @param {Timestamp} timestamp - The Firestore Timestamp to convert.
+ * @returns {string} - The formatted date string.
+ */
 export const getDateOfTransaction = (timestamp) => {
   if (timestamp) {
     return timestamp.toDate().toLocaleString();
@@ -31,6 +50,12 @@ export const getDateOfTransaction = (timestamp) => {
   }
 }
 
+/**
+ * Capitalizes the first letter of a given string.
+ * 
+ * @param {string} string - The input string.
+ * @returns {string} - The string with the first letter capitalized.
+ */
 export const capitalizeFirstLetter = (string) => {
   if (!string) {
     return ''; // Return an empty string if the input is empty or undefined
@@ -38,6 +63,12 @@ export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+/**
+ * Calculates the total amount spent based on an array of transactions.
+ * 
+ * @param {Array} transactions - An array of transaction objects.
+ * @returns {number} - The total amount spent.
+ */
 export const calculateTotalSpent = (transactions) => {
   let totalSpent = 0;
 
@@ -51,9 +82,13 @@ export const calculateTotalSpent = (transactions) => {
   return totalSpent;
 };
 
+/**
+ * Renders transaction items with appropriate styling and content.
+ * 
+ * @param {Object} item - The transaction item to render.
+ * @returns {JSX.Element} - The rendered transaction component.
+ */
 export const renderItem = ({ item }) => {
-  // Convert the Firestore Timestamp to a JavaScript Date object
-  // Format the timestamp as a string
   const formattedTimestamp = getDateOfTransaction(item.timeStamp);
   //console.log(item);
   const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
@@ -115,21 +150,7 @@ const ActivityScreen = () => {
     console.log("Activity Screen useEffect running...");
 
     if (user && user.uid) {
-      // const unsubscribe = firebase
-      //   .firestore()
-      //   .collection('transactions')
-      //   .where('customerId', '==', user.uid)
-      //   .orderBy('timeStamp', 'desc')
-      //   .onSnapshot((snapshot) => {
-      //     const data = [];
-      //     snapshot.forEach((doc) => {
-      //       data.push({ id: doc.id, ...doc.data() });
-            
-      //     });
-      //     setTransactions(data);
-      //   });
       const unsubscribe = fetchTransactions(user.uid, setTransactions);
-
       return () => unsubscribe();
     } else {
       console.log("User has logged out! Stop fetching UID (Activity Screen)");
@@ -154,7 +175,6 @@ const ActivityScreen = () => {
     return unsubscribe;
   };
 
-  //Handle if timestamp from Firestore is lagging
   //Exported
   const getDateOfTransaction = (timestamp) => {
     if (timestamp) {
@@ -164,8 +184,7 @@ const ActivityScreen = () => {
     }
   }
 
-  //Capitalize first letter function
-  //exported
+  //Exported
   const capitalizeFirstLetter = (string) => {
     if (!string) {
       return ''; // Return an empty string if the input is empty or undefined
@@ -173,10 +192,7 @@ const ActivityScreen = () => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-
   const renderItem = ({ item }) => {
-    // Convert the Firestore Timestamp to a JavaScript Date object
-    // Format the timestamp as a string
     const formattedTimestamp = getDateOfTransaction(item.timeStamp);
     //console.log(item);
     const roundedAmountPaid = Number(item.amountPaid.toFixed(2));
@@ -243,7 +259,6 @@ const ActivityScreen = () => {
   
     return totalSpent;
   };
-  
 
   return (
     <View style={styles.container}>
@@ -256,7 +271,6 @@ const ActivityScreen = () => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
-
       )
 
       : (
@@ -264,8 +278,6 @@ const ActivityScreen = () => {
       )}
 
       <Text style={styles.whiteSpaceText}>White Space.</Text>
-
-
     </View>
   );
 };

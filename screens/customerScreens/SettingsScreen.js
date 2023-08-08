@@ -1,12 +1,21 @@
+/**
+ * @file This file contains the SettingsScreen component, which displays user settings and loyalty information.
+ * @module SettingsScreen
+ */
 import React, { useContext, useEffect, useState } from 'react';
-import {Alert, Image, View, Text, StyleSheet, Pressable, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import {Alert, Image, View, Text, StyleSheet, Dimensions } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import FormButton from '../../components/FormButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card, ProgressBar } from 'react-native-paper';
 
-//Functions Export for Testing purposes.
+/**
+ * Calculates the loyalty tier based on the total points.
+ * @function
+ * @param {number} points - The total points of the user.
+ * @returns {string} - The loyalty tier ('Member', 'Silver', 'Gold', 'Platinum').
+ */
 export const calculateLoyaltyTier = (points) => {
   if (points >= 5000) {
     return 'Platinum';
@@ -19,6 +28,12 @@ export const calculateLoyaltyTier = (points) => {
   }
 };
 
+/**
+ * Calculates the remaining points needed to reach the next loyalty tier.
+ * @function
+ * @param {number} points - The total points of the user.
+ * @returns {number} - The remaining points needed.
+ */
 export const calculateRemainingPoints = (points) => {
   if (points >= 5000) {
     return 0;
@@ -31,6 +46,12 @@ export const calculateRemainingPoints = (points) => {
   }
 };
 
+/**
+ * Gets the background color based on the loyalty tier.
+ * @function
+ * @param {string} loyaltyTier - The loyalty tier ('Member', 'Silver', 'Gold', 'Platinum').
+ * @returns {string} - The background color.
+ */
 export const getTierBackgroundColor = (loyaltyTier) => {
   switch (loyaltyTier) {
     case 'Silver':
@@ -44,6 +65,12 @@ export const getTierBackgroundColor = (loyaltyTier) => {
   }
 };
 
+/**
+ * Gets the image source based on the loyalty tier.
+ * @function
+ * @param {string} loyaltyTier - The loyalty tier ('Member', 'Silver', 'Gold', 'Platinum').
+ * @returns {ImageSourcePropType} - The image source for the loyalty card.
+ */
 export const getImageSource = (loyaltyTier) => {
   switch (loyaltyTier) {
     case 'Silver':
@@ -57,6 +84,11 @@ export const getImageSource = (loyaltyTier) => {
   }
 };
 
+/**
+ * The main SettingsScreen component.
+ * @component
+ * @returns {JSX.Element} - The rendered SettingsScreen component.
+ */
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [totalPoint, setTotalPoint] = useState(0);
@@ -320,7 +352,7 @@ const SettingsScreen = () => {
               testID='TEST_ID_CARD_CONTENT'
             >
 
-              <Text style={styles.text}>Total Accumulated Points: {totalPoint}</Text>
+              <Text style={styles.text}>Total Points: {totalPoint}</Text>
               {/* {renderProgressBar()} */}
               {loyaltyTier !== 'Platinum' && (
                 <><Text style={styles.label} testID='TEST_ID_REMAINING_TEXT'>
@@ -356,8 +388,6 @@ const SettingsScreen = () => {
 };
 
 const deviceWidth = Math.round(Dimensions.get('window').width);
-const offset = 40;
-const radius = 20;
 
 const styles = StyleSheet.create({
   bulletPointContainer: {
