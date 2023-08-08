@@ -1,8 +1,20 @@
+/** 
+ * @file This file contains components and functions related to the ActivityScreen, which displays transaction history for sellers.
+ * @module ActivityScreen
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
+/**
+ * Fetches transactions for a given seller.
+ *
+ * @param {string} customerId - The ID of the customer (seller).
+ * @param {function} setTransactions - The state function to set transactions.
+ * @returns {function} - Function to unsubscribe from the snapshot listener.
+ */
 export const fetchTransactions = (customerId, setTransactions) => {
   const unsubscribe = firebase
       .firestore()
@@ -21,6 +33,12 @@ export const fetchTransactions = (customerId, setTransactions) => {
   return unsubscribe;
 };
 
+/**
+ * Capitalizes the first letter of a string.
+ *
+ * @param {string} string - The input string.
+ * @returns {string} - The input string with the first letter capitalized.
+ */
 export const capitalizeFirstLetter = (string) => {
   if (!string) {
     return ''; // Return an empty string if the input is empty or undefined
@@ -28,6 +46,12 @@ export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+/**
+ * Converts a Firestore Timestamp to a human-readable date and time string.
+ *
+ * @param {object} timestamp - The Firestore Timestamp object.
+ * @returns {string} - Formatted date and time string.
+ */
 export const getDateOfTransaction = (timestamp) => {
   if (timestamp) {
     return timestamp.toDate().toLocaleString();
@@ -36,6 +60,12 @@ export const getDateOfTransaction = (timestamp) => {
   }
 }
 
+/**
+ * Calculates the total revenue from a list of transactions.
+ *
+ * @param {Array} transactions - List of transaction objects.
+ * @returns {number} - Total revenue calculated from the transactions.
+ */
 export const calculateTotalRevenue = (transactions) => {
   let totalRevenue = 0;
 
@@ -49,6 +79,12 @@ export const calculateTotalRevenue = (transactions) => {
   return totalRevenue;
 };
 
+/**
+ * Renders a transaction item based on its type.
+ *
+ * @param {object} item - The transaction object.
+ * @returns {JSX.Element} - JSX element representing the transaction item.
+ */
 export const renderItem = ({ item }) => {
   // Convert the Firestore Timestamp to a JavaScript Date object
   // Format the timestamp as a string
@@ -59,7 +95,6 @@ export const renderItem = ({ item }) => {
   
   const capitalizedString = capitalizeFirstLetter(item.voucherType);
 
-  //Render According to Transaction Type
   if (item.transactionType == "Voucher Transaction") {
     if (item.voucherType === 'dollar') {
       return (
@@ -117,19 +152,6 @@ const ActivityScreen = () => {
     console.log("(Seller Activity) useEffect running...");
 
     if (user && user.uid) {
-      // const unsubscribe = firebase
-      // .firestore()
-      // .collection('transactions')
-      // .where('sellerId', '==', user.uid)
-      // .orderBy('timeStamp', 'desc')
-      // .onSnapshot((snapshot) => {
-      //   const data = [];
-      //   snapshot.forEach((doc) => {
-      //     data.push({ id: doc.id, ...doc.data()} );
-      //   });
-      //   console.log(data);
-      //   setTransactions(data);
-      // });
 
       const unsubscribe = fetchTransactions(user.uid, setTransactions);
 
@@ -245,3 +267,5 @@ const styles = StyleSheet.create({
 });
 
 export default ActivityScreen;
+
+

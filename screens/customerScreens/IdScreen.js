@@ -1,12 +1,24 @@
+/**
+ * @file This file contains the IdScreen component, which displays the user's ID information and QR code.
+ * @module IdScreen
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 import QRCodeWithLogo from '../../components/QRCodeWithLogo';
 import { Card } from 'react-native-paper';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
 
-//Export Functions for testing
+/**
+ * Generates QR code data for the user's ID.
+ * @function
+ * @param {string} uid - The user's unique identifier.
+ * @param {string} firstName - The user's first name.
+ * @param {number} currentPoint - The user's current point balance.
+ * @param {number} totalPoint - The user's total point balance.
+ * @returns {string|null} - The JSON stringified QR code data or null if user is logged out.
+ */
 export const generateQRCodeData = (uid, firstName, currentPoint, totalPoint) => {
   if (uid) {
     const qrCodeData = {
@@ -24,6 +36,15 @@ export const generateQRCodeData = (uid, firstName, currentPoint, totalPoint) => 
   }
 };
 
+/**
+ * Sets up a Firestore listener for user data updates. 
+ * Updates user current point and total point balances after any chanages occur.
+ * @function
+ * @param {Object} user - The user object.
+ * @param {Function} setCurrentPoint - A state setter to update the current point balance.
+ * @param {Function} setTotalPoint - A state setter to update the total point balance.
+ * @returns {Function} - An unsubscribe function to stop the Firestore listener.
+ */
 export const startFirestoreListener = (user, setCurrentPoint, setTotalPoint) => {
   const userCollectionRef = firebase.firestore().collection('users');
   const userDocRef = userCollectionRef.doc(user.uid);
@@ -35,11 +56,14 @@ export const startFirestoreListener = (user, setCurrentPoint, setTotalPoint) => 
       setTotalPoint(updatedTotalPoint);
     }
   });
-
   return unsubscribe;
 };
 
-
+/**
+ * The main IdScreen component.
+ * @component
+ * @returns {JSX.Element} - The rendered IdScreen component.
+ */
 const IdScreen = () => {
     const { user } = useContext(AuthContext);
     const [currentPoint, setCurrentPoint] = useState(0);
@@ -47,10 +71,8 @@ const IdScreen = () => {
     const [firstName, setFirstName] = useState('');
     const logoImage = require('../../assets/NUShopLah!.png');
 
-
     useEffect(() => {
       //console.log("IdScreen useEffect fetchUserData running...")
-
       if (user && user.uid) {
         const fetchUserData = async () => {
           try {
@@ -86,10 +108,7 @@ const IdScreen = () => {
       }
     }, [user]);
   
-  
-
     useEffect(() => {
-
       if (user && user.uid) {
         firebase.firestore().collection('users')
         .doc(firebase.auth().currentUser.uid).get()
@@ -106,12 +125,9 @@ const IdScreen = () => {
       } else {
         console.log("User has logged out! Stop fetching UID (IdScreen)")
       }
-
-        
     }, [user])
 
     //generateQRCodeData = (user.uid, firstName, currentPoint, totalPoint);
-  
     const generateQRCodeData = () => {
       if (user && user.uid) {
         const qrCodeData = {

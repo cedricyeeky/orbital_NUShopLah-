@@ -1,20 +1,20 @@
+/**
+ * @module SettingsScreen
+ * @description A React Native screen component for sellers to view their created vouchers, and also delete them permanently and change password.
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Pressable, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import FormButton from '../../components/FormButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import { firebase } from '../../firebaseconfig';
 
-// export const changePassword = () => {
-//   if (firebase.auth().currentUser && firebase.auth().currentUser.email) {
-//     firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
-//     .then(() => {
-//       Alert.alert("Password Reset Email Sent!")
-//     }).catch((error) => {
-//       Alert.alert(error)
-//     })
-//   }
-// }
-
+/**
+ * Returns a formatted string representing the date of a voucher's timestamp.
+ *
+ * @param {firebase.firestore.Timestamp} timestamp - The timestamp of the voucher.
+ * @returns {string} - The formatted date string.
+ */
 export const getDateOfVoucher = (timestamp) => {
   //console.log(timestamp);
   if (timestamp) {
@@ -24,6 +24,11 @@ export const getDateOfVoucher = (timestamp) => {
   }
 }
 
+/**
+ * Displays a confirmation dialog to cancel a voucher.
+ *
+ * @param {string} voucherId - The ID of the voucher to be canceled.
+ */
 export const handleCancelVoucher = (voucherId) => {
   Alert.alert(
     'Cancel Voucher',
@@ -43,6 +48,11 @@ export const handleCancelVoucher = (voucherId) => {
   );
 };
 
+/**
+ * Deletes a voucher from Firestore.
+ *
+ * @param {string} voucherId - The ID of the voucher to be deleted.
+ */
 export const deleteVoucher = (voucherId) => {
   firebase
     .firestore()
@@ -57,6 +67,13 @@ export const deleteVoucher = (voucherId) => {
     });
 };
 
+/**
+ * Fetches vouchers for a seller from Firestore.
+ *
+ * @param {string} sellerId - The ID of the seller whose vouchers are to be fetched.
+ * @param {Function} setVouchers - A state setter function to update the vouchers state.
+ * @returns {Function} - A function to unsubscribe from the Firestore listener.
+ */
 export const fetchVouchers = (sellerId, setVouchers) => {
   const unsubscribe = firebase
       .firestore()
@@ -74,6 +91,12 @@ export const fetchVouchers = (sellerId, setVouchers) => {
   return unsubscribe;
 }
 
+/**
+ * Renders a voucher item in a FlatList.
+ *
+ * @param {Object} item - The voucher item to be rendered.
+ * @returns {JSX.Element} - The JSX element representing the voucher item.
+ */
 export const renderItem = ({ item }) => {
 
   if (item.voucherType === 'dollar') {
@@ -109,6 +132,11 @@ export const renderItem = ({ item }) => {
   }
 };
 
+/**
+ * Represents the seller's settings screen.
+ *
+ * @returns {JSX.Element} - The JSX element representing the seller's settings screen.
+ */
 const SettingsScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [firstName, setFirstName] = useState('');
@@ -151,18 +179,6 @@ const SettingsScreen = () => {
   useEffect(() => {
     console.log("(Seller Account) sorting vouchers useEffect running...");
     if (user && user.uid) {
-      // const unsubscribe = firebase
-      // .firestore()
-      // .collection('vouchers')
-      // .where('sellerId', '==', user.uid)
-      // .orderBy('timeStamp', 'desc')
-      // .onSnapshot((snapshot) => {
-      //   const data = [];
-      //   snapshot.forEach((doc) => {
-      //     data.push({ id: doc.id, ...doc.data() });
-      //   });
-      //   setVouchers(data);
-      // });
 
       const unsubscribe = fetchVouchers(user.uid, setVouchers);
 
@@ -171,40 +187,6 @@ const SettingsScreen = () => {
       console.log("Seller has logged out. No need to load vouchers (Activity Screen)")
     }
   }, [user]);
-
-  // const handleCancelVoucher = (voucherId) => {
-  //   Alert.alert(
-  //     'Cancel Voucher',
-  //     'Are you sure you want to cancel this voucher?',
-  //     [
-  //       {
-  //         text: 'Cancel',
-  //         style: 'cancel',
-  //       },
-  //       {
-  //         text: 'Confirm',
-  //         onPress: () => deleteVoucher(voucherId),
-  //         style: 'destructive',
-  //       },
-  //     ],
-  //     { cancelable: true }
-  //   );
-  // };
-
-  // const deleteVoucher = (voucherId) => {
-  //   firebase
-  //     .firestore()
-  //     .collection('vouchers')
-  //     .doc(voucherId)
-  //     .delete()
-  //     .then(() => {
-  //       console.log('Voucher deleted successfully.');
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error deleting voucher:', error);
-  //     });
-  // };
-
 
   return (
       <View style={styles.container}>
@@ -215,93 +197,20 @@ const SettingsScreen = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
-          // onScroll={(event) => {
-          //   const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-          //   const paddingToBottom = 20; // Adjust this value as needed
-        
-          //   if (
-          //     layoutMeasurement.height + contentOffset.y >=
-          //     contentSize.height - paddingToBottom
-          //   ) {
-          //     setIsBottomReached(true);
-          //   } else {
-          //     setIsBottomReached(false);
-          //   }
-          // }}
         />
 
         ) : (
           <Text style={styles.noVouchers}>No Vouchers found.</Text>
         )}
 
-        {/* {vouchers.length > 0 ? ( 
-            vouchers.map((voucher) => (
-              <View 
-                key={voucher.id}  
-                style={voucher.voucherType === 'dollar' ? styles.dollarVoucherContainer : styles.percentageVoucherContainer}
-              >
-
-              {voucher.voucherType === 'dollar' && (
-              <View>
-                <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
-                <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
-                <Text style={styles.voucherText}>Value: ${voucher.voucherAmount}</Text>
-                <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
-                <Text style={styles.whiteSpaceTextOrange}>White Space.</Text>
-                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
-                <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
-                  <Text style={styles.cancelText}>Cancel Voucher</Text>
-                </Pressable>
-              </View>
-              )}
-            
-              {voucher.voucherType === 'percentage' && (
-              <View>
-                <Image source={{ uri: voucher.voucherImage }} style={styles.voucherImage} />
-                <Text style={styles.voucherTextId}>Voucher ID: {voucher.id}</Text>
-                <Text style={styles.voucherText}>Description: {voucher.voucherDescription}</Text>
-                <Text style={styles.voucherText}>Percentage: {voucher.voucherPercentage}%</Text>
-                <Text style={styles.voucherText}>Points Required: {voucher.pointsRequired}</Text>
-                <Text style={styles.whiteSpaceTextPink}>White Space.</Text>
-                <Text style={{fontWeight: 'bold', fontSize: 13, color: 'white'}}>Created On: {getDateOfVoucher(voucher.timeStamp)}</Text>
-                <Pressable style={styles.button} onPress={() => handleCancelVoucher(voucher.id)}>
-                  <Text style={styles.cancelText}>Cancel Voucher</Text>
-                </Pressable>
-              </View>
-              )}
-                  
-              </View>    
-            ))
-        ) : (
-             <Text style={styles.noVouchers}>No vouchers found.</Text>
-        )} */}
-        {/**Change Password Button */}
-          {/* <View style={styles.passwordButton}>
-            <FormButton buttonTitle='Change Password' onPress={() => {changePassword()}} />
-          </View> */}
-
-          {/* {vouchers.length > 0 && (
-            <View>
-              <View style={styles.passwordButton}>
-                <FormButton buttonTitle="Change Password" onPress={changePassword} />
-              </View>
-            </View>
-          )} */}
-
             <View>
               <View style={styles.passwordButton}>
                 <FormButton buttonTitle="Change Password" onPress={() => {changePassword()}} testID="TEST_ID_CHANGE_PASSWORD_BUTTON" />
               </View>
             </View>
-        {/* <Text style={styles.whiteSpaceText}>White Space.</Text>
-        <Text style={styles.whiteSpaceText}>White Space.</Text> */}
-
 
       </View>
-  
-      
-    
+   
   );
 };
 

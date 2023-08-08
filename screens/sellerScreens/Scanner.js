@@ -1,3 +1,8 @@
+/**
+ * @module ScannerScreen
+ * @description A React Native screen component for scanning QR codes, handling transactions, and showing a modal.
+ */
+
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Modal, Pressable, Dimensions } from 'react-native';
 import { Camera } from 'expo-camera';
@@ -8,6 +13,11 @@ import FormButton from '../../components/FormButton';
 import {showVoucherQRCodeModal, toggleModal} from '../customerScreens/HomeScreen';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * Updates the current point balance of a customer in Firestore.
+ * @param {string} customerId - The ID of the customer whose points are being updated.
+ * @param {number} updatedCustomerCurrentPoint - The updated current point value.
+ */
 export const updateCurrentPointInFirestore = async (customerId, updatedCustomerCurrentPoint) => {
   try {
     await firebase.firestore().collection('users').doc(customerId).update({
@@ -20,6 +30,10 @@ export const updateCurrentPointInFirestore = async (customerId, updatedCustomerC
   }
 };
 
+/**
+ * Adds a points transaction entry to Firestore.
+ * @param {object} params - Parameters for the transaction.
+ */
 export const addPointsTransactionInFirestore = async ({
   amountPaid,
   customerId,
@@ -43,6 +57,10 @@ export const addPointsTransactionInFirestore = async ({
   });
 };
 
+/**
+ * Adds a voucher transaction entry to Firestore.
+ * @param {object} params - Parameters for the transaction.
+ */
 export const addVoucherTransactionInFirestore = async ({
   finalAmount,
   customerId,
@@ -72,7 +90,13 @@ export const addVoucherTransactionInFirestore = async ({
 const TIER_STATUS_LIMIT = [500, 1500, 5000]; //Number of points required to move up to next Tier. For example, "500" indicates you can level up from "Member" to "Silver" Tier
 const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum respectively
 
- export const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
+/**
+ * Calculates the new current point balance based on the tier and amount paid.
+ * @param {number} currentPoint - The current point balance.
+ * @param {number} amountPaid - The amount paid in the transaction.
+ * @returns {number} The new calculated current point balance.
+ */
+export const calculateNewCurrentPoint = (currentPoint, amountPaid) => {
   let newCurrentPoint = 0;
   //Member
   if (currentPoint < TIER_STATUS_LIMIT[0]) {
@@ -87,6 +111,12 @@ const POINT_MULTIPLIER = [1, 1.25, 1.5, 2]; //Member, Silver, Gold, Platinum res
   return newCurrentPoint;
 }
 
+/**
+ * Calculates the new total point balance based on the tier and amount paid.
+ * @param {number} totalPoint - The total point balance.
+ * @param {number} amountPaid - The amount paid in the transaction.
+ * @returns {number} The new calculated total point balance.
+ */
 export const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   let newTotalPoint = 0;
   //Member
@@ -102,6 +132,14 @@ export const calculateNewTotalPoint = (totalPoint, amountPaid) => {
   return newTotalPoint;
 }
 
+/**
+ * Handles scanning of QR codes and processes the data.
+ * @param {object} data - The QR code data.
+ * @param {function} setScanning - Setter function to control scanning state.
+ * @param {function} setData - Setter function to set QR code data.
+ * @param {function} setShowPromptModal - Setter function to control modal visibility.
+ * @param {object} user - The authenticated user object.
+ */
 export const handleQRCodeScan = async ({ data }, setScanning, setData, setShowPromptModal, user) => {
   setScanning(false);
   
@@ -144,6 +182,9 @@ export const handleQRCodeScan = async ({ data }, setScanning, setData, setShowPr
   }
 };
 
+/**
+ * Represents the ScannerScreen component.
+ */
 const ScannerScreen = () => {
   const { user } = useContext(AuthContext);
   const [scanning, setScanning] = useState(false);
@@ -213,6 +254,11 @@ const ScannerScreen = () => {
     };
   }, [navigation]);
 
+  /**
+   * Handles the transaction based on the given original price and QR code data.
+   *
+   * @param {number} originalPrice - The original price payable.
+   */
   const handleTransaction = async (originalPrice) => {
     if (data.isVoucher) {
       if (data.voucherType === 'dollar') {
