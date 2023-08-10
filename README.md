@@ -39,21 +39,24 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 
 # Completed Features
 
+For our Loyalty Programme App, we have chosen to categorise our users into 2 main user types: Customer and Seller, and there is interactions between the two.
+
 Key features:
 
+(Common Features)
 1.  Login and Register Screens, secured using Email and Password :white_check_mark:
-2.  Home page 
-    - List of participating brands/retails for users to select and view rewards (indicative of points for voucher exchange) + seasonal promotions offered
-    - User points balance
-3.  Vouchers and Rewards Page. Ability to view both current vouchers purchased as well as past used vouchers. Current voucher purchased would have a validity period (expiry date).
-4.  Personal QR code that is unique to each user to credit the points to each user’s account upon transaction.
-5.  Account Page 
-    - Name
-    - Membership Tier Status (Note: The Membership tier status is calculated using the user’s points earned within a particular period; not their points balance at any particular time)
-    - Activity Page (To view Transaction History and spending expenditure details)
-    - Frequently Asked Questions (FAQ)
-    -Feedback
-    - Logout
+2.  Forget Password function on Login Screen (sent through email link) :white_check_mark:
+3.  Email Verification (sent through email link) upon account registration :white_check_mark:
+
+(Customer)
+1.  Home Screen 
+- Voucher Catalogue (featuring colour-coded voucher cards with horizontal scrollview) :white_check_mark:
+- Current Point Balance :white_check_mark:
+- Logout button :white_check_mark:
+
+2.  Activity Screen
+
+
 
 # App Setup
 
@@ -122,9 +125,6 @@ Firebase Firestore was used to create and store different collections of user da
 
 Firebase storage function on the other hand was used to handle the storage of photo images for voucher cards created by Seller accounts.
 
-# Software Diagram on Current App Navigation Flow
-
-![NUShopLah! Flowchart Milestone 1 drawio](https://github.com/cedricyeeky/orbital_NUShopLah-/assets/108988934/c7a3ca26-6c8d-4237-911d-0e337aeed0fe)
 
 
 
