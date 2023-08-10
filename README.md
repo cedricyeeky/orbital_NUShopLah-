@@ -1,33 +1,15 @@
-# orbital_NUShopLah!
+# Team NUShopLah!
 NUShopLah! 
 - Apollo 11 
-- Milestone 1
+- Mobile app developed for CP2106 Independent Software Development Project (Orbital) 2023
+
+Team Members
+- Freddy Chen You Ren
+- Yee Kai Yang, Cedric
 
 # Scope of Project:
-
-We hope to create a mobile application with an intuitive and simple to use user interface for a loyalty program within NUS premises to benefit NUS students, staff and retail shops/dining outlets on campus.
-
-# Features to be completed by mid June:
-
-Customer-side
-- Better UI for the Home screen, showing Customers’ Points Balance
-- Feature more vouchers that can be used
-- Transaction History for Customers to track their spending
-- Showing Customers’ Membership Tier Status and Total accumulated points
- 
- Retailer-side
-- Ability to scan Customer’s QR Code and key in the amount transacted so that points can be given to Customers accordingly
-- Transaction History for Retailers to track Customers who use NUShopLah! App
- 
- Mechanism to collect datasets for calculations and analysis
-
-
-# Features to be completed by mid July:
-Customer-Side
-- Converting Points Balance to Cash Value that can be used to deduct their spending
-- List of Brands/Retailers in NUS that supports NUShopLah!, so that user can click and view their available rewards
-
-
+About
+- We hope to create a mobile application with an intuitive and simple to use user interface for a loyalty program within NUS premises to benefit NUS students, staff and retail shops/dining outlets on campus.
 
 # Problem Motivation 
 
@@ -48,8 +30,6 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 
 # User Stories
 
-[Please describe what the users would be able to do with your system.]
-
 1. As a NUS student/staff, I would be able to gain points with every dollar that I spend at all retails within NUS premises and exchange for vouchers / rewards. These vouchers / rewards would save me some money in the long-run.
 
 2. As a NUS Student/Staff, I would want track my expenditure and spending habits in NUS. (This is especially the case for those with tight financial budgets such as Exchange Students)
@@ -57,12 +37,12 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 3. As a retailer of NUS, I can expect more students/staff to patronize my store as I offer vouchers in the loyalty app as well as introduce seasonal promotions in terms of “upsized points”. (Retailers may also include merchandise shops set up buy NUS clubs/societies)
 
 
-# Proposed Features
+# Completed Features
 
 Key features:
 
-1.  Login and Authentication Page, secured using Email and Password
-2.  Home page. We envision our home page to encompass the following features:
+1.  Login and Register Screens, secured using Email and Password :white_check_mark:
+2.  Home page 
     - List of participating brands/retails for users to select and view rewards (indicative of points for voucher exchange) + seasonal promotions offered
     - User points balance
 3.  Vouchers and Rewards Page. Ability to view both current vouchers purchased as well as past used vouchers. Current voucher purchased would have a validity period (expiry date).
