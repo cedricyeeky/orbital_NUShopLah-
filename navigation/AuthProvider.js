@@ -4,6 +4,12 @@ import { Alert } from 'react-native';
 
 export const AuthContext = createContext();
 
+/**
+ * Component responsible for managing authentication-related state and actions.
+ * @param {object} props - React component props.
+ * @param {React.ReactNode} props.children - Child components to be wrapped by the AuthProvider.
+ * @returns {JSX.Element} JSX element wrapping the child components with authentication context.
+ */
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null)
 
@@ -15,23 +21,14 @@ export const AuthProvider = ({children}) => {
             login: async (email, password) => {
                 try {
                     console.log(email);
-                    // console.log(firebase.auth().currentUser.emailVerified);
-                    //console.log(user);
-                    // if (firebase.auth().currentUser.emailVerified) {
-                        // await firebase.auth().currentUser.reload();
-                        await firebase.auth().signInWithEmailAndPassword(email, password);
-                    // } else {
-                    //     Alert.alert('Email unergoing verification', 'Please try again in a few minutes');
-                    // }
-                    
+                    await firebase.auth().signInWithEmailAndPassword(email, password);
                 } catch(e) {
                     console.log(e);
                     alert(e);
                 }
             },
-            register: async (email, password, firstName, {/** lastName */}, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
+            register: async (email, password, firstName, userType, currentPoint, totalPoint, amountPaid, totalRevenue) => {
                 try {
-                    // console.log('Registered User Type:', userType);
                     await firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(() => {
                         firebase.auth().currentUser.sendEmailVerification({
@@ -42,7 +39,6 @@ export const AuthProvider = ({children}) => {
                             Alert.alert('Verification email sent!', 'Please reload the app after verifying your email.')
                         })
                         .then(() => {
-                            //Version 1: Store everything as "users"
                             firebase.firestore().collection('users')
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
@@ -52,57 +48,11 @@ export const AuthProvider = ({children}) => {
                                     email,
                                     totalPoint,
                                     userType,
-                                    // lastName,
-                                    // totalRevenue,
                                 }); 
                             
                         })
                     })
-                    
-                    // await firebase.auth().createUserWithEmailAndPassword(email, password);
-                    // await firebase.auth().currentUser.sendEmailVerification({
-                    //             handleCodeInApp: true,
-                    //             url: 'https://nushoplah.firebaseapp.com',
-                    //         });
-                    // await firebase.firestore().collection('users')
-                    //                     .doc(firebase.auth().currentUser.uid)
-                    //                     .set({
-                    //                         amountPaid,
-                    //                         currentPoint,
-                    //                         firstName,
-                    //                         email,
-                    //                         totalPoint,
-                    //                         userType,
-                    //                         // lastName,
-                    //                         // totalRevenue,
-                    //                     }); 
-
-                    // await firebase.auth().createUserWithEmailAndPassword(email, password);
-
-    // Send the verification email to the user
-    // await firebase.auth().currentUser.sendEmailVerification({
-    //   handleCodeInApp: true,
-    //   url: 'https://nushoplah.firebaseapp.com',
-    // });
-
-    // Wait for the user to verify their email
-    await firebase.auth().currentUser.reload();
-    // const user = firebase.auth().currentUser;
-
-    //   await firebase.firestore().collection('users').doc(user.uid).set({
-    //     amountPaid,
-    //     currentPoint,
-    //     firstName,
-    //     email,
-    //     totalPoint,
-    //     userType,
-    //     // lastName,
-    //     // totalRevenue,
-    //   });
-
-      // Additional logic or actions after successful registration
-
-        // alert('Registration successful! Please check your email to verify your account.');
+                    await firebase.auth().currentUser.reload();
 
                 } catch(e) {
                     console.log(e);

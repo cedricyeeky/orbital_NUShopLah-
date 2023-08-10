@@ -1,4 +1,4 @@
-// correct version
+
 import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from './AuthProvider';
@@ -7,11 +7,20 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import AppStackSeller from './AppStackSeller';
 
+/**
+ * Component that handles routing and navigation based on user authentication and type.
+ * @returns {JSX.Element} JSX element representing the navigation container and associated stacks.
+ */
 const Routes = () => {
   const { user, setUser } = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
   const [userType, setUserType] = useState('');
 
+  /**
+   * Retrieves the user's type from Firestore based on their UID.
+   * @param {string} uid - User's unique identifier.
+   * @returns {Promise<void>} A Promise that resolves when user type is retrieved.
+   */
   const getUserType = async (uid) => {
     try {
       const userDoc = await firebase.firestore().collection('users').doc(uid).get();
@@ -28,6 +37,11 @@ const Routes = () => {
     }
   };
 
+  /**
+   * Handles the change in authentication state.
+   * @param {object} user - User object representing the authenticated user.
+   * @returns {Promise<void>} A Promise that resolves when authentication state is handled.
+   */
   const onAuthStateChanged = async (user) => {
     setUser(user);
     if (user) {
@@ -54,7 +68,7 @@ const Routes = () => {
 
   useEffect(() => {
     console.log("User Type has changed:", userType);
-  }, [userType]); // Add userType as a dependency
+  }, [userType]); 
 
   if (initializing) return null;
 
