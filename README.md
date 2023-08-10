@@ -39,7 +39,9 @@ From the retailers’ perspective, they could use the opportunity of this loyalt
 
 # Completed Features
 
-For our Loyalty Programme App, we have chosen to categorise our users into 2 main user types: Customer and Seller, and there is interactions between the two.
+For our Loyalty Programme App, we have chosen to categorise our users into 2 main user types: Customer and Seller, and there is interactions between the 2 user types. 
+
+There are 3 main types of Transaction taking place in our app: Points Transaction, Dollar Voucher Transaction (NO points awarded), Percentage Voucher Transaction (NO points awarded).
 
 Key features:
 
@@ -55,10 +57,45 @@ Key features:
 - Logout button :white_check_mark:
 
 2.  Activity Screen
+- Transaction containers (Flatlist style) colour-coded according to the type of Transaction (Points Transaction, Dollar Voucher Transaction, Percentage Voucher Transaction) :white_check_mark:
+- Total Amount Spent :white_check_mark:
+
+3.  Personal ID Screen
+- Personal QR Code to engage with Sellers for Points Transaction :white_check_mark:
+- Current Point Balance :white_check_mark:
+
+4.  Account Screen
+- Loyalty Tier Card :white_check_mark:
+- Loyalty Tier Benefits (According to Loyalty Tier) :white_check_mark:
+- Change Password button :white_check_mark:
+
+(Seller)
+1.  Home Screen
+- Dollar Voucher and Percentage Voucher Creation Card (toggled using customed radio button) :white_check_mark:
+- Choose Image from Device Gallery (using expo-image-picker) :white_check_mark:
+- Store and render chosen image in Firebase storage and Firestore :white_check_mark:
+- Scan QR FAB (designed using React Native Paper) :white_check_mark:
+
+2.  Activity Screen
+- Transaction containers (Flatlist style) colour-coded according to the type of Transaction (Points Transaction, Dollar Voucher Transaction, Percentage Voucher Transaction) :white_check_mark:
+- Total Revenue Earned :white_check_mark:
+
+3.  Scanner Screen
+- Integrated QR scanner using expo-camera :white_check_mark:
+- Camera Permissions rendering using expo-camera permissions methods :white_check_mark:
+- Whole-screen modal post-successful scan rendered :white_check_mark:
+
+4.  Account Screen
+- Voucher Card creation history (colour-coded and rendered with Voucher Images chosen; Flatlist style) :white_check_mark:
+- Deletion of Voucher from Firestore :white_check_mark:
+- Change Password button :white_check_mark:
+
+# App Setup (Android APK)
+You may download our app (Android APK format) should you own an Android device using the following link:
+https://expo.dev/accounts/cedricyeeky/projects/nushoplah-app/builds/3cb14ea2-1332-4772-9e43-6fb55fb26727 
 
 
-
-# App Setup
+# App Setup (Expo Go Tunnel)
 
 **Ensure you have Node.js, npm, git and gitbash installed.**
 
