@@ -55,26 +55,6 @@ Key features:
     -Feedback
     - Logout
 
-
-
-# Our Proposed Timeline
-
-Features
-Completion Date
-Login and Authentication Page - 20 May
-
-Home page - 5 June
-
-Generate Personal QR code - 1 June
-
-Account Page - 10 June
-
-Vouchers and Rewards page - 17 June
-
-Testing (Round 1) - 26 June
-
-Think about Extension - TBC
-
 # App Setup
 
 **Ensure you have Node.js, npm, git and gitbash installed.**
@@ -101,6 +81,16 @@ npm install
 
 This should install all the node.js dependencies required for the project.
 
+Also ensure you install the react-native-dot-env package using the command:
+
+```
+npm i react-native-dotenv
+```
+
+This package is required to run the .env file which contains the API keys to access and use our firebase database. Please contact either Freddy or Cedric for the .env file.
+
+After installing the react-native-dot-env package, place the .env file in the root directory of the project folder.
+
 **Download the Expo Go app on IOS / Android**
 
 In the terminal, input the command:
@@ -109,6 +99,8 @@ In the terminal, input the command:
 npx expo start --tunnel
 ```
 
+(NOTE: Please only start the tunnel after you have put in the .env file in the root directory; else it will render invalid API keys due to the file not being read yet)
+
 Scan the QR code on your phone camera app and wait for the project to build.
 You may start using and testing our app after that!
 
@@ -116,14 +108,19 @@ You may start using and testing our app after that!
 - React Native (Front End)
 - Firebase (Back End)
 - Git and Github (Version Control)
+- Jest (Javascript Unit Testing)
 
 **Database Usage**
 
-Currently, we have successfully integrated Google firebase to to store and mange user data for authentication (email and password login).
+We have successfully integrated Google firebase to to store and mange user data for authentication (email and password login).
 
-We have also managed to utilise Firebase to send authentication emails to new users to verify their email address.
+We have managed to utilise Firebase to send authentication emails to new users to verify their email address, and users can also have the ability to change and forget their password.
 
-We are working on integrating Firestore to group user data into different categories.
+Besides Firebase user authentication, we have utilised 2 other main Firebase features for our project: Firebase Firestore as well as Firebase storage function.
+
+Firebase Firestore was used to create and store different collections of user data for the different components of our app (eg. Transactions collection, Vouchers collection).
+
+Firebase storage function on the other hand was used to handle the storage of photo images for voucher cards created by Seller accounts.
 
 # Software Diagram on Current App Navigation Flow
 
