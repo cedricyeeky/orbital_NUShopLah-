@@ -7,10 +7,14 @@ import SignupScreen from '../screens/SignupScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Stack = createStackNavigator();
 
+/**
+ * Component responsible for handling the authentication stack navigation.
+ * Determines whether to show the Onboarding or Login screen based on isFirstLaunch state.
+ * @returns {JSX.Element|null} JSX element representing the authentication stack or null if isFirstLaunch is null.
+ */
 const AuthStack = () => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null)
   let routeName;
@@ -74,18 +78,6 @@ const AuthStack = () => {
                 shadowColor: '#f9fafd',
                 elevation: 0,
             },
-            // headerLeft: () => (
-            //   // <View style = {{marginLeft: 15}}>
-            //   //     <FontAwesome.Button
-            //   //       name = "long-arrow-left"
-            //   //       size = {25}
-            //   //       color = "#003D7C"
-            //   //       backgroundColor = "#f9fafd"
-                    
-            //   //       onPress = {() => navigation.navigate('Login')}
-            //   // />
-            //   </View>
-            // ),  
           })}
         />
     </Stack.Navigator>
