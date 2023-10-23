@@ -1,7 +1,7 @@
 # Team NUShopLah!
 NUShopLah! 
 - Apollo 11 
-- Mobile app developed for CP2106 Independent Software Development Project (Orbital) 2023
+- Mobile application developed for CP2106 Independent Software Development Project (Orbital) 2023
 
 Team Members
 - Freddy Chen You Ren
